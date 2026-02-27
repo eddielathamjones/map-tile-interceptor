@@ -103,11 +103,13 @@ def build_style(vibe: str) -> dict:
                 paint['line-color'] = road_col
 
         elif ltype == 'symbol':
-            paint['text-color'] = label_col
-            # Skip halo on shield markers — halo bleeds outside the sprite
-            # background and creates a dark ring around the shield shape.
-            if halo and 'shield' not in lid:
-                paint['text-halo-color'] = halo[0]
-                paint['text-halo-width'] = halo[1]
+            # Skip shield markers entirely — they have a sprite background
+            # that provides the colour context; overriding text-color makes
+            # route numbers invisible and halos bleed outside the shape.
+            if 'shield' not in lid:
+                paint['text-color'] = label_col
+                if halo:
+                    paint['text-halo-color'] = halo[0]
+                    paint['text-halo-width'] = halo[1]
 
     return style
