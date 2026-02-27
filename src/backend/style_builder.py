@@ -56,7 +56,7 @@ def build_style(vibe: str) -> dict:
     """
     base = _get_base()
 
-    if vibe == 'liberty':
+    if vibe == 'default':
         return base
 
     style = copy.deepcopy(base)

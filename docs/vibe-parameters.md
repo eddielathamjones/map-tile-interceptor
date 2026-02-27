@@ -128,7 +128,7 @@ Set at the top of the style JSON. Override in `style_builder.py`.
 
 | Vibe | bg | land | water | roads | labels |
 |---|---|---|---|---|---|
-| liberty | — | — | — | — | — |
+| default | — | — | — | — | — |
 | vintage | `#f0e8d0` | `#e8ddc0` | `#c8d8d0` | `#9b7b52` | `#3a2a18` |
 | toner | `#ffffff` | `#f5f5f5` | `#c8c8c8` | `#404040` | `#000000` |
 | blueprint | `#1a3a6c` | `#1e4080` | `#0a1f5c` | `#5588cc` | `#dce8ff` |

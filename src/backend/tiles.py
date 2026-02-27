@@ -15,7 +15,7 @@ tiles_bp = Blueprint('tiles', __name__, url_prefix='/api/tiles')
 _CACHE_DIR = Path(os.environ.get('TILE_CACHE_DIR', '/tmp/tile_cache'))
 _UPSTREAM  = 'https://tiles.openfreemap.org/natural_earth/ne2sr/{z}/{x}/{y}.png'
 _VIBES     = frozenset({
-    'liberty', 'vintage', 'toner', 'blueprint', 'dark', 'watercolor', 'highcontrast',
+    'default', 'vintage', 'toner', 'blueprint', 'dark', 'watercolor', 'highcontrast',
 })
 
 

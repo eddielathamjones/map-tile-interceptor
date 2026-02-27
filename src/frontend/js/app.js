@@ -3,7 +3,7 @@
 // ── Vibe switcher ───────────────────────────────────────────────────────────────
 
 const VIBES = {
-  liberty:      { label: 'Liberty',     styleUrl: 'https://tiles.openfreemap.org/styles/liberty' },
+  default:      { label: 'Default',     styleUrl: 'https://tiles.openfreemap.org/styles/liberty' },
   vintage:      { label: 'Vintage',     styleUrl: '/api/tiles/style/vintage' },
   toner:        { label: 'Toner',       styleUrl: '/api/tiles/style/toner' },
   blueprint:    { label: 'Blueprint',   styleUrl: '/api/tiles/style/blueprint' },
@@ -13,7 +13,7 @@ const VIBES = {
 };
 
 const STORAGE_KEY  = 'mti-vibe';
-const DEFAULT_VIBE = 'liberty';
+const DEFAULT_VIBE = 'default';
 
 function currentVibe() {
   const saved = localStorage.getItem(STORAGE_KEY);
