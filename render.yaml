@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: map-tile-interceptor
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT "src.backend.app:app"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: TILE_CACHE_DIR
+        value: /tmp/tile_cache
