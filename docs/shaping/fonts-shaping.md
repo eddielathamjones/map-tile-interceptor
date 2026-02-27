@@ -57,6 +57,76 @@ Generate glyph PBF files offline from TTF/OTF sources, serve them from Flask, ov
 
 ---
 
+## Detail A: Affordances and Wiring
+
+### UI Affordances
+
+| ID | Affordance | Place | Wires Out |
+|----|------------|-------|-----------|
+| U1 | Map labels rendered in vibe typeface | Browser | — (visual outcome) |
+| U2 | Vibe picker (existing) | Browser | → N7 on change |
+
+### Non-UI Affordances
+
+| ID | Affordance | Place | Wires Out |
+|----|------------|-------|-----------|
+| N1 | `scripts/generate_glyphs.sh` | Dev machine (one-time) | → N2 |
+| N2 | TTF download | Dev machine (Google Fonts / SourceForge) | → N3 |
+| N3 | `build_pbf_glyphs /ttf_dir /out_dir` | Dev machine | → N4 |
+| N4 | Latin prune (`find ... -delete`) | Dev machine | → N5 |
+| N5 | `src/static/glyphs/<fontstack>/*.pbf` | Repo (committed static files) | → N6 |
+| N6 | `GET /api/glyphs/<fontstack>/<range>.pbf` | Flask (new route) | reads N5 → Browser |
+| N7 | `GET /api/tiles/style/<vibe>` | tiles.py (existing route) | → N8 |
+| N8 | `build_style(vibe)` | style_builder.py (modified) | reads N9 → style JSON |
+| N9 | `_VIBE_FONTS` dict | style_builder.py (new constant) | → N8 |
+
+### Wiring by place
+
+```mermaid
+flowchart LR
+  subgraph Dev["Dev machine (one-time)"]
+    N1["generate_glyphs.sh"] --> N2["download TTF"]
+    N2 --> N3["build_pbf_glyphs"]
+    N3 --> N4["Latin prune"]
+  end
+
+  subgraph Repo["src/static/glyphs/"]
+    N5["fontstack/*.pbf\ncommitted"]
+  end
+
+  subgraph Flask["Flask backend"]
+    N9["_VIBE_FONTS dict\nnew constant"]
+    N8["build_style\nmodified"]
+    N7["GET /api/tiles/style/vibe\nexisting"]
+    N6["GET /api/glyphs/\nfontstack/range.pbf\nnew route"]
+  end
+
+  subgraph Browser["Browser"]
+    U2["Vibe picker\nexisting"]
+    Glyph["MapLibre glyph fetch"]
+    U1["Labels in\nvibe typeface"]
+  end
+
+  N4 --> N5
+  N5 --> N6
+  N9 --> N8
+  U2 --> N7
+  N7 --> N8
+  N8 -->|"style JSON\nglyphs URL + text-font"| Glyph
+  Glyph --> N6
+  N6 -->|"PBF bytes"| Glyph
+  Glyph --> U1
+```
+
+### Notes
+
+- `_VIBE_FONTS` maps vibe name → fontstack name string (e.g. `'mockva': 'Bebas Neue Regular'`). Vibes not in the dict skip font override and keep the Liberty default glyph server.
+- `build_style()` change: after applying colour overrides, if vibe is in `_VIBE_FONTS`, set `style['glyphs']` to our endpoint template and iterate symbol layers to set `layout['text-font']`.
+- New glyph route: `send_from_directory(GLYPHS_DIR, f'{fontstack}/{range}.pbf', mimetype='application/x-protobuf')`. Return 404 if file not found — MapLibre silently falls back for missing ranges, which is correct for Latin-only sets.
+- Route placement: `/api/glyphs/` prefix doesn't fit the existing `tiles_bp` (`url_prefix='/api/tiles'`). Options: (a) new `glyphs_bp` blueprint registered in `app.py`, or (b) keep in `tiles.py` with a URL override on the route. Decided at slicing.
+
+---
+
 ## Fit Check: R × A
 
 | Req | Requirement | Status | A |
