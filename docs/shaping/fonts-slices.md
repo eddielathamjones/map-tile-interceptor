@@ -8,14 +8,11 @@ Derived from `fonts-shaping.md` Detail A. Two vertical slices, each ending in de
 
 ---
 
-## Open decision before V1: route placement
+## Decisions
 
-N6 (`GET /api/glyphs/<fontstack>/<range>.pbf`) needs a home. Two options:
-
-- **Option (a):** New `glyphs_bp` Blueprint in `src/backend/glyphs.py`, registered in `app.py`. Clean separation, matches project pattern.
-- **Option (b):** Add route directly to `tiles.py` with an explicit URL (`@tiles_bp.route('/glyphs/<fontstack>/<range>.pbf', endpoint='glyphs')` gives `/api/tiles/glyphs/...`). Simpler but URL doesn't match convention.
-
-**Recommend (a)** — `glyphs_bp` in its own file. The glyph endpoint is conceptually separate from tile serving, and the URL `/api/glyphs/` is what we'll embed in the style JSON. Resolve before starting V1.
+| Decision | Outcome |
+|---|---|
+| Route placement for N6 | `glyphs_bp` in new `src/backend/glyphs.py`, registered in `app.py` |
 
 ---
 
