@@ -18,6 +18,18 @@ _VIBE_COLORS: dict[str, tuple[str, str, str, str, str]] = {
     'dark':         ('#0d1117', '#161b22', '#0d1b2a', '#30363d', '#8b949e'),
     'watercolor':   ('#f5ede0', '#e8dbc8', '#b8ccd8', '#c09060', '#4a3020'),
     'highcontrast': ('#000000', '#111111', '#0033cc', '#ffee00', '#ffffff'),
+    'noir':         ('#080e0d', '#0e1a18', '#060c10', '#8a7844', '#e8dfc8'),
+}
+
+# (halo_color, halo_width) — applied to all symbol layers for the vibe
+_VIBE_HALOS: dict[str, tuple[str, float]] = {
+    'vintage':      ('#f0e8d0', 1.0),
+    'toner':        ('#ffffff', 1.5),
+    'blueprint':    ('#1a3a6c', 1.5),
+    'dark':         ('#0d1117', 1.5),
+    'watercolor':   ('#f5ede0', 1.0),
+    'highcontrast': ('#000000', 2.0),
+    'noir':         ('#080e0d', 1.5),
 }
 
 _LAND_KEYWORDS  = ('land', 'park', 'grass', 'green', 'wood', 'forest',
@@ -61,6 +73,7 @@ def build_style(vibe: str) -> dict:
 
     style = copy.deepcopy(base)
     bg_col, land_col, water_col, road_col, label_col = _VIBE_COLORS[vibe]
+    halo = _VIBE_HALOS.get(vibe)
 
     # Rewrite raster underlay source → our proxy
     for src in style.get('sources', {}).values():
@@ -91,5 +104,8 @@ def build_style(vibe: str) -> dict:
 
         elif ltype == 'symbol':
             paint['text-color'] = label_col
+            if halo:
+                paint['text-halo-color'] = halo[0]
+                paint['text-halo-width'] = halo[1]
 
     return style

@@ -50,6 +50,11 @@ def _pil_transform(vibe: str, img_bytes: bytes) -> bytes:
     elif vibe == 'highcontrast':
         img = ImageEnhance.Contrast(img).enhance(2.2)
         img = ImageEnhance.Color(img).enhance(1.6)
+    elif vibe == 'noir':
+        img = ImageEnhance.Color(img).enhance(0.15)
+        img = _teal_noir_tint(img)
+        img = ImageEnhance.Brightness(img).enhance(0.58)
+        img = ImageEnhance.Contrast(img).enhance(1.15)
 
     buf = io.BytesIO()
     img.save(buf, format='PNG')
@@ -77,6 +82,15 @@ def _blueprint(img: Image.Image) -> Image.Image:
     r_lut = [int(10  + (220 - 10)  * v / 255) for v in range(256)]
     g_lut = [int(31  + (232 - 31)  * v / 255) for v in range(256)]
     b_lut = [int(92  + (255 - 92)  * v / 255) for v in range(256)]
+    return Image.merge('RGB', (r.point(r_lut), g.point(g_lut), b.point(b_lut)))
+
+
+def _teal_noir_tint(img: Image.Image) -> Image.Image:
+    """Teal tint for noir: R×0.55, G×0.65, B×0.72."""
+    r, g, b = img.split()
+    r_lut = [int(v * 0.55) for v in range(256)]
+    g_lut = [int(v * 0.65) for v in range(256)]
+    b_lut = [int(v * 0.72) for v in range(256)]
     return Image.merge('RGB', (r.point(r_lut), g.point(g_lut), b.point(b_lut)))
 
 

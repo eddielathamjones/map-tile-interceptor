@@ -10,6 +10,7 @@ const VIBES = {
   dark:         { label: 'Dark',        styleUrl: '/api/tiles/style/dark' },
   watercolor:   { label: 'Watercolor',  styleUrl: '/api/tiles/style/watercolor' },
   highcontrast: { label: 'Hi-Contrast', styleUrl: '/api/tiles/style/highcontrast' },
+  noir:         { label: 'Noir',        styleUrl: '/api/tiles/style/noir' },
 };
 
 const STORAGE_KEY  = 'mti-vibe';
