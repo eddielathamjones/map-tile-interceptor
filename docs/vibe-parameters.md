@@ -135,7 +135,7 @@ Set at the top of the style JSON. Override in `style_builder.py`.
 | dark | `#0d1117` | `#161b22` | `#0d1b2a` | `#30363d` | `#8b949e` |
 | watercolor | `#f5ede0` | `#e8dbc8` | `#b8ccd8` | `#c09060` | `#4a3020` |
 | highcontrast | `#000000` | `#111111` | `#0033cc` | `#ffee00` | `#ffffff` |
-| noir | `#080e0d` | `#0e1a18` | `#060c10` | `#8a7844` | `#e8dfc8` |
+| noir | `#080e0d` | `#0e1a18` | `#0c1e30` | `#8a7844` | `#e8dfc8` |
 
 `text-halo-color` and `text-halo-width` are now set for all vibes.
 

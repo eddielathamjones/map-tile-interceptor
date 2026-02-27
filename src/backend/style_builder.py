@@ -18,7 +18,7 @@ _VIBE_COLORS: dict[str, tuple[str, str, str, str, str]] = {
     'dark':         ('#0d1117', '#161b22', '#0d1b2a', '#30363d', '#8b949e'),
     'watercolor':   ('#f5ede0', '#e8dbc8', '#b8ccd8', '#c09060', '#4a3020'),
     'highcontrast': ('#000000', '#111111', '#0033cc', '#ffee00', '#ffffff'),
-    'noir':         ('#080e0d', '#0e1a18', '#060c10', '#8a7844', '#e8dfc8'),
+    'noir':         ('#080e0d', '#0e1a18', '#0c1e30', '#8a7844', '#e8dfc8'),
 }
 
 # (halo_color, halo_width) — applied to all symbol layers for the vibe
@@ -104,7 +104,9 @@ def build_style(vibe: str) -> dict:
 
         elif ltype == 'symbol':
             paint['text-color'] = label_col
-            if halo:
+            # Skip halo on shield markers — halo bleeds outside the sprite
+            # background and creates a dark ring around the shield shape.
+            if halo and 'shield' not in lid:
                 paint['text-halo-color'] = halo[0]
                 paint['text-halo-width'] = halo[1]
 
