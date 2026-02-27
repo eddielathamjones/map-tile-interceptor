@@ -4,13 +4,13 @@
 
 const VIBES = {
   default:      { label: 'Default',     styleUrl: 'https://tiles.openfreemap.org/styles/liberty' },
-  vintage:      { label: 'Vintage',     styleUrl: '/api/tiles/style/vintage' },
-  toner:        { label: 'Toner',       styleUrl: '/api/tiles/style/toner' },
-  blueprint:    { label: 'Blueprint',   styleUrl: '/api/tiles/style/blueprint' },
-  dark:         { label: 'Dark',        styleUrl: '/api/tiles/style/dark' },
-  watercolor:   { label: 'Watercolor',  styleUrl: '/api/tiles/style/watercolor' },
-  highcontrast: { label: 'Hi-Contrast', styleUrl: '/api/tiles/style/highcontrast' },
   noir:         { label: 'Noir',        styleUrl: '/api/tiles/style/noir' },
+  vintage:      { label: 'Vintage',     styleUrl: '/api/tiles/style/vintage',     hidden: true },
+  toner:        { label: 'Toner',       styleUrl: '/api/tiles/style/toner',       hidden: true },
+  blueprint:    { label: 'Blueprint',   styleUrl: '/api/tiles/style/blueprint',   hidden: true },
+  dark:         { label: 'Dark',        styleUrl: '/api/tiles/style/dark',        hidden: true },
+  watercolor:   { label: 'Watercolor',  styleUrl: '/api/tiles/style/watercolor',  hidden: true },
+  highcontrast: { label: 'Hi-Contrast', styleUrl: '/api/tiles/style/highcontrast', hidden: true },
 };
 
 const STORAGE_KEY  = 'mti-vibe';
@@ -33,7 +33,8 @@ function switchVibe(vibe) {
 function buildVibePicker() {
   const picker = document.getElementById('vibe-picker');
   const active = currentVibe();
-  for (const [key, { label }] of Object.entries(VIBES)) {
+  for (const [key, { label, hidden }] of Object.entries(VIBES)) {
+    if (hidden) continue;
     const btn = document.createElement('button');
     btn.dataset.vibe = key;
     btn.textContent  = label;
