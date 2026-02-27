@@ -55,6 +55,14 @@ def _pil_transform(vibe: str, img_bytes: bytes) -> bytes:
         img = _channel_tint(img, 0.55, 0.65, 0.72)
         img = ImageEnhance.Brightness(img).enhance(0.58)
         img = ImageEnhance.Contrast(img).enhance(1.15)
+    elif vibe == 'mockva':
+        img = img.convert('L').convert('RGB')
+        r, g, b = img.split()
+        r_lut = [int(42 + 198 * v / 255) for v in range(256)]
+        g_lut = [int(34 + 198 * v / 255) for v in range(256)]
+        b_lut = [int(24 + 192 * v / 255) for v in range(256)]
+        img = Image.merge('RGB', (r.point(r_lut), g.point(g_lut), b.point(b_lut)))
+        img = ImageOps.posterize(img, 3)
 
     buf = io.BytesIO()
     img.save(buf, format='PNG')

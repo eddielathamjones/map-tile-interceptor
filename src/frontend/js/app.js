@@ -5,6 +5,7 @@
 const VIBES = {
   default:      { label: 'Default',     styleUrl: 'https://tiles.openfreemap.org/styles/liberty' },
   noir:         { label: 'Noir',        styleUrl: '/api/tiles/style/noir' },
+  mockva:       { label: 'Mockva',      styleUrl: '/api/tiles/style/mockva' },
   vintage:      { label: 'Vintage',     styleUrl: '/api/tiles/style/vintage',     hidden: true },
   toner:        { label: 'Toner',       styleUrl: '/api/tiles/style/toner',       hidden: true },
   blueprint:    { label: 'Blueprint',   styleUrl: '/api/tiles/style/blueprint',   hidden: true },
