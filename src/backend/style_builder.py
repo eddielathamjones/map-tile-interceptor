@@ -139,17 +139,17 @@ def build_style(vibe: str) -> dict:
                 paint['line-color'] = road_col
 
         elif ltype == 'symbol':
-            # Skip shield markers entirely — they have a sprite background
-            # that provides the colour context; overriding text-color makes
-            # route numbers invisible and halos bleed outside the shape.
+            # Shields: skip colour overrides (sprite background provides context)
+            # but still override text-font — we've redirected the glyphs URL to
+            # our server, so any layer left on Noto Sans will 404 and stall rendering.
             if 'shield' not in lid:
                 paint['text-color'] = label_col
                 if halo:
                     paint['text-halo-color'] = halo[0]
                     paint['text-halo-width'] = halo[1]
-                if font:
-                    layout = layer.setdefault('layout', {})
-                    if 'text-font' in layout:
-                        layout['text-font'] = [font]
+            if font:
+                layout = layer.setdefault('layout', {})
+                if 'text-font' in layout:
+                    layout['text-font'] = [font]
 
     return style
