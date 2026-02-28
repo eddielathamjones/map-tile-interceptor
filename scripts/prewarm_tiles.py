@@ -11,7 +11,10 @@ import sys
 
 import requests
 
-VIBES = ['vintage', 'toner', 'blueprint', 'dark', 'watercolor', 'highcontrast']
+VIBES = [
+    'noir', 'mockva', 'vintage', 'toner', 'blueprint', 'dark', 'watercolor',
+    'highcontrast', 'mario', 'simcity', 'tomclancy', 'deco', 'metro',
+]
 
 
 def tile_coords(max_zoom: int):
@@ -36,7 +39,7 @@ def fetch_tile(session: requests.Session, base_url: str, vibe: str,
 
 def main() -> None:
     parser = argparse.ArgumentParser(description='Pre-warm geochron tile cache')
-    parser.add_argument('--base-url', default='http://localhost:5002',
+    parser.add_argument('--base-url', default='http://localhost:5003',
                         help='Base URL of the running app (default: http://localhost:5002)')
     parser.add_argument('--max-zoom', type=int, default=4,
                         help='Maximum zoom level to warm (default: 4)')
