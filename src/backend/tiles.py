@@ -16,7 +16,7 @@ _CACHE_DIR = Path(os.environ.get('TILE_CACHE_DIR', '/tmp/tile_cache'))
 _UPSTREAM  = 'https://tiles.openfreemap.org/natural_earth/ne2sr/{z}/{x}/{y}.png'
 _VIBES     = frozenset({
     'default', 'vintage', 'toner', 'blueprint', 'dark', 'watercolor', 'highcontrast', 'noir',
-    'mockva',
+    'mockva', 'mario', 'simcity', 'tomclancy', 'deco', 'metro',
 })
 
 

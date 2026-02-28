@@ -6,12 +6,17 @@ const VIBES = {
   default:      { label: 'Default',     styleUrl: 'https://tiles.openfreemap.org/styles/liberty' },
   noir:         { label: 'Noir',        styleUrl: '/api/tiles/style/noir' },
   mockva:       { label: 'Mockva',      styleUrl: '/api/tiles/style/mockva' },
-  vintage:      { label: 'Vintage',     styleUrl: '/api/tiles/style/vintage',     hidden: true },
-  toner:        { label: 'Toner',       styleUrl: '/api/tiles/style/toner',       hidden: true },
-  blueprint:    { label: 'Blueprint',   styleUrl: '/api/tiles/style/blueprint',   hidden: true },
-  dark:         { label: 'Dark',        styleUrl: '/api/tiles/style/dark',        hidden: true },
-  watercolor:   { label: 'Watercolor',  styleUrl: '/api/tiles/style/watercolor',  hidden: true },
-  highcontrast: { label: 'Hi-Contrast', styleUrl: '/api/tiles/style/highcontrast', hidden: true },
+  vintage:      { label: 'Vintage',     styleUrl: '/api/tiles/style/vintage'     },
+  toner:        { label: 'Toner',       styleUrl: '/api/tiles/style/toner'       },
+  blueprint:    { label: 'Blueprint',   styleUrl: '/api/tiles/style/blueprint'   },
+  dark:         { label: 'Dark',        styleUrl: '/api/tiles/style/dark'        },
+  watercolor:   { label: 'Watercolor',  styleUrl: '/api/tiles/style/watercolor'  },
+  highcontrast: { label: 'Hi-Contrast', styleUrl: '/api/tiles/style/highcontrast' },
+  mario:        { label: 'Mario',       styleUrl: '/api/tiles/style/mario'       },
+  simcity:      { label: 'SimCity',     styleUrl: '/api/tiles/style/simcity'     },
+  tomclancy:    { label: 'Tom Clancy',  styleUrl: '/api/tiles/style/tomclancy'   },
+  deco:         { label: 'Deco',        styleUrl: '/api/tiles/style/deco'        },
+  metro:        { label: 'Metro',       styleUrl: '/api/tiles/style/metro'       },
 };
 
 const STORAGE_KEY  = 'mti-vibe';

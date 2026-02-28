@@ -63,6 +63,30 @@ def _pil_transform(vibe: str, img_bytes: bytes) -> bytes:
         b_lut = [int(24 + 192 * v / 255) for v in range(256)]
         img = Image.merge('RGB', (r.point(r_lut), g.point(g_lut), b.point(b_lut)))
         img = ImageOps.posterize(img, 3)
+    elif vibe == 'mario':
+        img = ImageEnhance.Color(img).enhance(2.5)
+        img = ImageEnhance.Contrast(img).enhance(1.8)
+        img = ImageOps.posterize(img, 3)
+    elif vibe == 'simcity':
+        img = ImageOps.posterize(img, 4)
+        img = ImageEnhance.Color(img).enhance(0.85)
+        img = ImageEnhance.Contrast(img).enhance(1.1)
+    elif vibe == 'tomclancy':
+        gray = img.convert('L')
+        r_lut = [int(30 * v / 255) for v in range(256)]
+        g_lut = [int(10 + 190 * v / 255) for v in range(256)]
+        b_lut = [int(30 * v / 255) for v in range(256)]
+        img = Image.merge('RGB', (gray.point(r_lut), gray.point(g_lut), gray.point(b_lut)))
+        img = ImageEnhance.Contrast(img).enhance(2.0)
+        img = ImageEnhance.Sharpness(img).enhance(1.8)
+    elif vibe == 'deco':
+        img = _channel_tint(img, 1.05, 1.0, 0.78)
+        img = ImageEnhance.Contrast(img).enhance(1.3)
+        img = ImageEnhance.Sharpness(img).enhance(1.4)
+    elif vibe == 'metro':
+        img = _channel_tint(img, 1.04, 1.0, 0.82)
+        img = ImageEnhance.Color(img).enhance(0.75)
+        img = ImageEnhance.Contrast(img).enhance(0.85)
 
     buf = io.BytesIO()
     img.save(buf, format='PNG')
