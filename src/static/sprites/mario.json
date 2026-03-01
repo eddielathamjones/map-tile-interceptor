@@ -1,0 +1,51 @@
+{
+  "bus": {
+    "x": 0,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "railway": {
+    "x": 21,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "airport": {
+    "x": 42,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "ferry": {
+    "x": 63,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "car": {
+    "x": 84,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "fuel": {
+    "x": 105,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "parking": {
+    "x": 126,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  }
+}

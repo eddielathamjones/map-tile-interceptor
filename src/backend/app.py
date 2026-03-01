@@ -10,11 +10,14 @@ app = Flask(__name__, static_folder='../frontend', static_url_path='')
 try:
     from .tiles import tiles_bp
     from .glyphs import glyphs_bp
+    from .sprites import sprites_bp
 except ImportError:
     from tiles import tiles_bp  # type: ignore[no-redef]  # direct invocation
     from glyphs import glyphs_bp  # type: ignore[no-redef]
+    from sprites import sprites_bp  # type: ignore[no-redef]
 app.register_blueprint(tiles_bp)
 app.register_blueprint(glyphs_bp)
+app.register_blueprint(sprites_bp)
 
 
 @app.after_request

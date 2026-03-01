@@ -63,6 +63,11 @@ _WATER_KEYWORDS = ('water', 'lake', 'ocean', 'sea', 'river', 'wetland', 'stream'
 _ROAD_KEYWORDS  = ('road', 'highway', 'motorway', 'trunk', 'street', 'path',
                    'bridge', 'tunnel', 'rail', 'transit', 'ferry')
 
+_VIBE_SPRITES: dict[str, str] = {
+    'mario': '/api/sprites/mario',
+    # tomclancy, mockva, deco, metro added as their sprites are built
+}
+
 _base_style: dict | None = None
 _lock = threading.Lock()
 _style_cache: dict[str, dict] = {}
@@ -118,6 +123,11 @@ def build_style(vibe: str) -> dict:
     # Override glyphs endpoint for vibes with custom fonts
     if font:
         style['glyphs'] = '/api/glyphs/{fontstack}/{range}.pbf'
+
+    # Override sprite sheet for vibes with custom sprites
+    sprite = _VIBE_SPRITES.get(vibe)
+    if sprite:
+        style['sprite'] = sprite
 
     # Override vector layer colours and raster layer behaviour
     for layer in style.get('layers', []):
