@@ -65,6 +65,7 @@ _ROAD_KEYWORDS  = ('road', 'highway', 'motorway', 'trunk', 'street', 'path',
 
 _base_style: dict | None = None
 _lock = threading.Lock()
+_style_cache: dict[str, dict] = {}
 
 
 def _fetch_base() -> None:
@@ -87,13 +88,18 @@ def _get_base() -> dict:
 def build_style(vibe: str) -> dict:
     """Return a MapLibre style dict for the given vibe.
 
-    For 'liberty' the base style is returned as-is.
+    For 'default' the base style is returned as-is.
     For all other vibes: raster source tiles URL is rewritten to our proxy,
     and vector layer paint colours are overridden per vibe.
+    Built styles are cached — the layer walk only runs once per vibe.
     """
+    if vibe in _style_cache:
+        return _style_cache[vibe]
+
     base = _get_base()
 
     if vibe == 'default':
+        _style_cache[vibe] = base
         return base
 
     style = copy.deepcopy(base)
@@ -152,4 +158,5 @@ def build_style(vibe: str) -> dict:
                 if 'text-font' in layout:
                     layout['text-font'] = [font]
 
+    _style_cache[vibe] = style
     return style

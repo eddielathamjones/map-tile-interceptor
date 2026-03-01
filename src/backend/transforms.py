@@ -3,20 +3,18 @@ import io
 import logging
 import os
 
+import requests
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
 log = logging.getLogger(__name__)
 
 _AI_URL = os.environ.get('AI_SERVICE_URL', '')
 _AI_KEY = os.environ.get('AI_SERVICE_KEY', '')
-_AI_VIBES = set(v.strip() for v in os.environ.get('AI_VIBES', '').split(',') if v.strip())
+_AI_VIBES = frozenset(v.strip() for v in os.environ.get('AI_VIBES', '').split(',') if v.strip())
 
 
 def transform(vibe: str, img_bytes: bytes, z: int, x: int, y: int) -> bytes:
     """Return transformed PNG bytes for the given vibe."""
-    if vibe == 'liberty':
-        return img_bytes
-
     if _AI_URL and vibe in _AI_VIBES:
         result = _try_ai(vibe, img_bytes, z, x, y)
         if result:
@@ -128,7 +126,6 @@ def _channel_tint(img: Image.Image, rf: float, gf: float, bf: float) -> Image.Im
 def _try_ai(vibe: str, img_bytes: bytes, z: int, x: int, y: int) -> bytes | None:
     """POST to AI_SERVICE_URL; return transformed PNG bytes, or None on failure."""
     try:
-        import requests
         payload = {
             'style': vibe,
             'image_b64': base64.b64encode(img_bytes).decode(),

@@ -18,6 +18,4 @@ def glyphs(fontstack: str, range_str: str) -> object:
     if not font_dir.is_dir():
         abort(404)
     filename = f'{range_str}.pbf'
-    if not (font_dir / filename).exists():
-        abort(404)
     return send_from_directory(font_dir, filename, mimetype='application/x-protobuf')

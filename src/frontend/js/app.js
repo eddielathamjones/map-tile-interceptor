@@ -39,8 +39,7 @@ function switchVibe(vibe) {
 function buildVibePicker() {
   const picker = document.getElementById('vibe-picker');
   const active = currentVibe();
-  for (const [key, { label, hidden }] of Object.entries(VIBES)) {
-    if (hidden) continue;
+  for (const [key, { label }] of Object.entries(VIBES)) {
     const btn = document.createElement('button');
     btn.dataset.vibe = key;
     btn.textContent  = label;
