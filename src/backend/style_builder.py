@@ -128,6 +128,11 @@ def build_style(vibe: str) -> dict:
     sprite = _VIBE_SPRITES.get(vibe)
     if sprite:
         style['sprite'] = sprite
+        # Fix hardcoded icon names in Liberty that don't match our sprite names
+        for layer in style.get('layers', []):
+            layout = layer.get('layout', {})
+            if layer.get('id') == 'airport' and layout.get('icon-image') == 'airport_11':
+                layout['icon-image'] = 'airport'
 
     # Override vector layer colours and raster layer behaviour
     for layer in style.get('layers', []):

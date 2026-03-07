@@ -57,3 +57,45 @@ html, body {
   border-color: rgba(255, 255, 255, 0.35);
   background: rgba(255, 255, 255, 0.07);
 }
+
+/* ── POI panel ───────────────────────────────────────────────── */
+
+#poi-panel {
+  position: absolute;
+  bottom: 30px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: rgba(5, 10, 20, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 5px 7px;
+  pointer-events: auto;
+  user-select: none;
+}
+
+#poi-panel button {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: rgba(200, 210, 230, 0.35);
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-size: 0.67rem;
+  letter-spacing: 0.06em;
+  padding: 3px 7px;
+  text-align: left;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+#poi-panel button:hover {
+  color: #dde4f0;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+#poi-panel button.active {
+  color: #dde4f0;
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.07);
+}
