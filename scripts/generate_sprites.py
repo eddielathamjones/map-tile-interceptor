@@ -76,30 +76,96 @@ MARIO_ICONS = {
     'road_6':           'white rectangular badge widest of all, solid black border only, completely blank white interior, no text, no numbers, no symbols, no color other than black and white',
 }
 
+TOMCLANCY_PALETTE = '#00ff41 phosphor green · #000000 black'
+
+TOMCLANCY_ICONS = {
+    # Transportation
+    'bus':              'bus side view',
+    'railway':          'locomotive train side view',
+    'airport':          'airplane side view',
+    'ferry':            'ferry boat side view',
+    'car':              'car top-down view',
+    'fuel':             'gas pump',
+    'parking':          'letter P',
+    'restaurant':       'crossed fork and knife',
+    'cafe':             'coffee cup with steam rising',
+    'fast_food':        'hamburger burger',
+    'bar':              'beer mug with foam',
+    'bakery':           'bread loaf',
+    # Nature
+    'park':             'deciduous tree',
+    'mountain':         'mountain peak',
+    'campsite':         'camping tent',
+    # Amenities
+    'hospital':         'medical cross',
+    'pharmacy':         'medical cross with circle',
+    'police':           'star badge',
+    'school':           'building with flag on roof, no text, no letters',
+    'bank':             'dollar sign',
+    'post':             'envelope',
+    'information':      'lowercase letter i in a circle',
+    # Culture
+    'museum':           'classical building with columns',
+    'cinema':           'film clapperboard',
+    'lodging':          'bed with pillow',
+    'place_of_worship': 'chapel silhouette with cross',
+    # Markers
+    'marker':           'teardrop-shaped map pin',
+    'circle':           'filled circle',
+    'star':             '5-point star',
+    'dot_9':            'single small filled circle, centered, nothing else',
+    'dot_10':           'single medium filled circle, centered, nothing else',
+    'dot_11':           'single larger filled circle, centered, nothing else',
+    # Road shields
+    'road_1':           'square badge with border, completely blank interior, no text, no color other than green and black',
+    'road_2':           'rectangular badge slightly wider than tall, border, blank interior, no text',
+    'road_3':           'rectangular badge wider than tall, border, blank interior, no text',
+    'road_4':           'rectangular badge much wider than tall, border, blank interior, no text',
+    'road_5':           'rectangular badge very wide, border, blank interior, no text',
+    'road_6':           'rectangular badge widest, border, blank interior, no text',
+}
+
 VIBES = {
     'mario': {
         'palette': MARIO_PALETTE,
         'icons':   MARIO_ICONS,
     },
+    'tomclancy': {
+        'palette': TOMCLANCY_PALETTE,
+        'icons':   TOMCLANCY_ICONS,
+    },
 }
 
 # ---------------------------------------------------------------------------
 
-def build_prompt(palette: str, icon_name: str, description: str) -> str:
+VIBE_STYLES = {
+    'mario': (
+        '1985 NES pixel art — chunky, hard pixel edges, '
+        'no anti-aliasing, no gradients, no partial transparency, black outline'
+    ),
+    'tomclancy': (
+        'military tactical map icon — clean vector silhouette, '
+        'phosphor green lines and fills on pure black background, '
+        'sharp geometric edges, minimal detail, no gradients, no anti-aliasing'
+    ),
+}
+
+
+def build_prompt(vibe: str, palette: str, icon_name: str, description: str) -> str:
+    style = VIBE_STYLES.get(vibe, VIBE_STYLES['mario'])
     return (
-        'Generate a single pixel art icon:\n'
+        'Generate a single map icon:\n'
         f'- Subject: {icon_name} — {description}\n'
         '- Size: 63×63px\n'
         '- Background: transparent\n'
-        '- Style: 1985 NES pixel art — chunky, hard pixel edges, '
-        'no anti-aliasing, no gradients, no partial transparency, black outline\n'
+        f'- Style: {style}\n'
         f'- Palette: {palette}\n'
         '- Output: single PNG, no labels, no borders, no extra whitespace'
     )
 
 
-def generate_icon(client, palette: str, icon_name: str, description: str, out_path: Path) -> bool:
-    prompt = build_prompt(palette, icon_name, description)
+def generate_icon(client, vibe: str, palette: str, icon_name: str, description: str, out_path: Path) -> bool:
+    prompt = build_prompt(vibe, palette, icon_name, description)
     try:
         response = client.models.generate_content(
             model=MODEL,
@@ -168,7 +234,7 @@ def main():
 
         for i, (name, desc) in enumerate(to_generate.items()):
             out_path = out_dir / f'{name}.png'
-            generate_icon(client, palette, name, desc, out_path)
+            generate_icon(client, args.vibe, palette, name, desc, out_path)
             if i < len(to_generate) - 1:
                 time.sleep(args.delay)
 

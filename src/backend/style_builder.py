@@ -64,8 +64,9 @@ _ROAD_KEYWORDS  = ('road', 'highway', 'motorway', 'trunk', 'street', 'path',
                    'bridge', 'tunnel', 'rail', 'transit', 'ferry')
 
 _VIBE_SPRITES: dict[str, str] = {
-    'mario': '/api/sprites/mario',
-    # tomclancy, mockva, deco, metro added as their sprites are built
+    'mario':    '/api/sprites/mario',
+    'tomclancy': '/api/sprites/tomclancy',
+    # mockva, deco, metro added as their sprites are built
 }
 
 _base_style: dict | None = None
@@ -172,8 +173,8 @@ def build_style(vibe: str) -> dict:
                 if halo:
                     paint['text-halo-color'] = halo[0]
                     paint['text-halo-width'] = halo[1]
+            layout = layer.setdefault('layout', {})
             if font:
-                layout = layer.setdefault('layout', {})
                 if 'text-font' in layout:
                     layout['text-font'] = [font]
                 # Shield badges: scale up the sprite, centre the text on it.
@@ -184,6 +185,16 @@ def build_style(vibe: str) -> dict:
                         layout['icon-size'] = 2
                     layout['text-anchor'] = 'center'
                     layout['text-offset'] = [0, 0.25]
+            # POI layers: our icons are 21×21px — the Liberty default text-offset
+            # of 0.6em was sized for smaller sprites and puts text inside our icons.
+            # Push text clear of the icon bottom/right edge.
+            if lid in ('poi_r1', 'poi_r7', 'poi_r20'):
+                layout['text-offset'] = [0, 1.2]
+            elif lid == 'poi_transit':
+                layout['text-offset'] = [1.1, 0]
+            # Road name labels: ensure centre justification.
+            if lid.startswith('highway-name'):
+                layout['text-justify'] = 'center'
 
     _style_cache[vibe] = style
     return style

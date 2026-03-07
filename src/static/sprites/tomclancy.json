@@ -1,0 +1,268 @@
+{
+  "bus": {
+    "x": 0,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "railway": {
+    "x": 21,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "airport": {
+    "x": 42,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "ferry": {
+    "x": 63,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "car": {
+    "x": 84,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "fuel": {
+    "x": 105,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "parking": {
+    "x": 126,
+    "y": 0,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "restaurant": {
+    "x": 0,
+    "y": 21,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "cafe": {
+    "x": 21,
+    "y": 21,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "fast_food": {
+    "x": 42,
+    "y": 21,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "bar": {
+    "x": 63,
+    "y": 21,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "bakery": {
+    "x": 84,
+    "y": 21,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "park": {
+    "x": 0,
+    "y": 42,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "mountain": {
+    "x": 21,
+    "y": 42,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "campsite": {
+    "x": 42,
+    "y": 42,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "hospital": {
+    "x": 0,
+    "y": 63,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "pharmacy": {
+    "x": 21,
+    "y": 63,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "police": {
+    "x": 42,
+    "y": 63,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "school": {
+    "x": 63,
+    "y": 63,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "bank": {
+    "x": 84,
+    "y": 63,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "post": {
+    "x": 105,
+    "y": 63,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "information": {
+    "x": 126,
+    "y": 63,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "museum": {
+    "x": 0,
+    "y": 84,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "cinema": {
+    "x": 21,
+    "y": 84,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "lodging": {
+    "x": 42,
+    "y": 84,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "place_of_worship": {
+    "x": 63,
+    "y": 84,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "marker": {
+    "x": 0,
+    "y": 105,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "circle": {
+    "x": 21,
+    "y": 105,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "star": {
+    "x": 42,
+    "y": 105,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "dot_9": {
+    "x": 63,
+    "y": 105,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "dot_10": {
+    "x": 84,
+    "y": 105,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "dot_11": {
+    "x": 105,
+    "y": 105,
+    "width": 21,
+    "height": 21,
+    "pixelRatio": 1
+  },
+  "road_1": {
+    "x": 0,
+    "y": 126,
+    "width": 14,
+    "height": 14,
+    "pixelRatio": 1
+  },
+  "road_2": {
+    "x": 14,
+    "y": 126,
+    "width": 20,
+    "height": 14,
+    "pixelRatio": 1
+  },
+  "road_3": {
+    "x": 34,
+    "y": 126,
+    "width": 25,
+    "height": 14,
+    "pixelRatio": 1
+  },
+  "road_4": {
+    "x": 59,
+    "y": 126,
+    "width": 31,
+    "height": 14,
+    "pixelRatio": 1
+  },
+  "road_5": {
+    "x": 90,
+    "y": 126,
+    "width": 36,
+    "height": 14,
+    "pixelRatio": 1
+  },
+  "road_6": {
+    "x": 126,
+    "y": 126,
+    "width": 40,
+    "height": 14,
+    "pixelRatio": 1
+  }
+}
