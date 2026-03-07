@@ -1,6 +1,7 @@
 """Serve pre-generated SDF glyph PBF files for per-vibe custom fonts."""
 
 import logging
+from functools import lru_cache
 from pathlib import Path
 
 from flask import Blueprint, Response, abort, send_from_directory
@@ -12,6 +13,7 @@ glyphs_bp = Blueprint('glyphs', __name__, url_prefix='/api/glyphs')
 _GLYPHS_DIR = Path(__file__).parent.parent / 'static' / 'glyphs'
 
 
+@lru_cache(maxsize=None)
 def _empty_glyph_pbf(fontstack_name: str, range_str: str) -> bytes:
     """Return a valid empty glyph range PBF (fontstack with no glyphs).
 

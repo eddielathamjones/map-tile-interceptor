@@ -22,10 +22,13 @@ _VIBES     = frozenset({
 })
 
 
-def _empty_tile() -> bytes:
+def _make_empty_tile() -> bytes:
     buf = io.BytesIO()
     Image.new('RGBA', (256, 256), (0, 0, 0, 0)).save(buf, format='PNG')
     return buf.getvalue()
+
+_EMPTY_TILE_PNG = _make_empty_tile()
+del _make_empty_tile
 
 
 @tiles_bp.route('/style/<vibe>')
@@ -56,7 +59,7 @@ def raster(vibe: str, z: int, x: int, y: int):
         upstream = resp.content
     except Exception:
         log.warning('upstream tile fetch failed z=%d x=%d y=%d', z, x, y)
-        return Response(_empty_tile(), mimetype='image/png')
+        return Response(_EMPTY_TILE_PNG, mimetype='image/png')
 
     try:
         png = transform(vibe, upstream, z, x, y)
