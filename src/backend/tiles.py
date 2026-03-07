@@ -1,9 +1,11 @@
+import io
 import logging
 import os
 from pathlib import Path
 
 import requests
 from flask import Blueprint, Response, abort, jsonify, send_file
+from PIL import Image
 
 from .style_builder import build_style
 from .transforms import transform
@@ -18,6 +20,12 @@ _VIBES     = frozenset({
     'default', 'vintage', 'toner', 'blueprint', 'dark', 'watercolor', 'highcontrast', 'noir',
     'mockva', 'mario', 'simcity', 'tomclancy', 'deco', 'metro',
 })
+
+
+def _empty_tile() -> bytes:
+    buf = io.BytesIO()
+    Image.new('RGBA', (256, 256), (0, 0, 0, 0)).save(buf, format='PNG')
+    return buf.getvalue()
 
 
 @tiles_bp.route('/style/<vibe>')
@@ -47,8 +55,8 @@ def raster(vibe: str, z: int, x: int, y: int):
         resp.raise_for_status()
         upstream = resp.content
     except Exception:
-        log.exception('upstream tile fetch failed z=%d x=%d y=%d', z, x, y)
-        abort(502)
+        log.warning('upstream tile fetch failed z=%d x=%d y=%d', z, x, y)
+        return Response(_empty_tile(), mimetype='image/png')
 
     try:
         png = transform(vibe, upstream, z, x, y)

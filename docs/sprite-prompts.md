@@ -32,7 +32,7 @@ Assembled sprite sheets go in `src/static/sprites/`.
 
 Transportation:
 - [x] `bus` — side view
-- [x] `railway` — locomotive
+- [x] `railway` — modern streetcar (side view, low-floor tram with flat front)
 - [x] `airport` — plane
 - [x] `ferry` — boat
 - [x] `car` — top-down

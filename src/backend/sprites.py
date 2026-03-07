@@ -8,10 +8,12 @@ _SPRITES_DIR = Path(__file__).parent.parent / 'static' / 'sprites'
 
 
 @sprites_bp.route('/<vibe>.png')
+@sprites_bp.route('/<vibe>@2x.png')
 def sprite_png(vibe: str) -> object:
     return send_from_directory(_SPRITES_DIR, f'{vibe}.png', mimetype='image/png')
 
 
 @sprites_bp.route('/<vibe>.json')
+@sprites_bp.route('/<vibe>@2x.json')
 def sprite_json(vibe: str) -> object:
     return send_from_directory(_SPRITES_DIR, f'{vibe}.json', mimetype='application/json')

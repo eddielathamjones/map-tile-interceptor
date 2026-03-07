@@ -119,6 +119,7 @@ def build_style(vibe: str) -> dict:
             tiles = src.get('tiles', [])
             if tiles and 'ne2sr' in tiles[0]:
                 src['tiles'] = [f'/api/tiles/raster/{vibe}/{{z}}/{{x}}/{{y}}.png']
+                src['maxzoom'] = 8  # ne2sr tiles don't exist beyond ~z8; MapLibre upscales
                 break
 
     # Override glyphs endpoint for vibes with custom fonts
