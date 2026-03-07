@@ -15,6 +15,7 @@ Before any of these styles can be fully realised, three infrastructure gaps need
 | Custom sprite library | [#1](https://github.com/eddielathamjones/map-tile-interceptor/issues/1) | Per-vibe icon sets using SDF sprites — required for mario, tomclancy, deco, metro, mockva |
 | Custom font / glyph hosting | [#2](https://github.com/eddielathamjones/map-tile-interceptor/issues/2) | Per-vibe typefaces via hosted PBF glyphs — required for all styles below |
 | Global CSS overlay | [#3](https://github.com/eddielathamjones/map-tile-interceptor/issues/3) | Compass rose, scale bar, decorative border — per-vibe styled HTML/SVG layer on top of the MapLibre canvas |
+| 3D building aesthetics | [#4](https://github.com/eddielathamjones/map-tile-interceptor/issues/4) | Extruded buildings in pitch mode render as unstyled gray boxes — needs a planning session to define per-vibe building color, wall shading, roof treatment, and whether to use fill-extrusion-color expressions or a different approach |
 
 The PIL transforms and vector color palettes can be implemented now. Fonts, sprites, and the overlay are a second pass.
 
