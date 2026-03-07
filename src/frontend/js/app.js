@@ -135,8 +135,8 @@ function buildPoiPanel() {
 const map = new maplibregl.Map({
   container: 'map',
   style: VIBES[currentVibe()].styleUrl,
-  center: [0, 20],
-  zoom: 1.8,
+  center: [-110.9747, 32.2226],
+  zoom: 11,
   minZoom: 1,
   maxZoom: 18,
   attributionControl: { compact: true },

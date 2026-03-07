@@ -128,11 +128,15 @@ def build_style(vibe: str) -> dict:
     sprite = _VIBE_SPRITES.get(vibe)
     if sprite:
         style['sprite'] = sprite
-        # Fix hardcoded icon names in Liberty that don't match our sprite names
+        # Fix icon names in Liberty that don't match our sprite names
         for layer in style.get('layers', []):
+            lid    = layer.get('id', '')
             layout = layer.get('layout', {})
-            if layer.get('id') == 'airport' and layout.get('icon-image') == 'airport_11':
+            if lid == 'airport' and layout.get('icon-image') == 'airport_11':
                 layout['icon-image'] = 'airport'
+            # US shield layers generate 'us-interstate_N' etc — remap to our road_N sprites
+            elif lid in ('highway-shield-us-interstate', 'road_shield_us'):
+                layout['icon-image'] = ['concat', 'road_', ['get', 'ref_length']]
 
     # Override vector layer colours and raster layer behaviour
     for layer in style.get('layers', []):
@@ -172,6 +176,14 @@ def build_style(vibe: str) -> dict:
                 layout = layer.setdefault('layout', {})
                 if 'text-font' in layout:
                     layout['text-font'] = [font]
+                # Shield badges: scale up the sprite, centre the text on it.
+                if 'shield' in lid:
+                    if 'text-size' in layout:
+                        layout['text-size'] = 9
+                    if 'icon-size' in layout:
+                        layout['icon-size'] = 2
+                    layout['text-anchor'] = 'center'
+                    layout['text-offset'] = [0, 0.25]
 
     _style_cache[vibe] = style
     return style
