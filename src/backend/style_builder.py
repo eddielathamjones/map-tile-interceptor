@@ -20,7 +20,7 @@ _VIBE_COLORS: dict[str, tuple[str, str, str, str, str]] = {
     'highcontrast': ('#000000', '#111111', '#0033cc', '#ffee00', '#ffffff'),
     'noir':         ('#080e0d', '#0e1a18', '#0c1e30', '#8a7844', '#e8dfc8'),
     'mockva':       ('#f0ece0', '#e4ddd0', '#1a1a1a', '#cc1a1a', '#1a1a1a'),
-    'mario':        ('#5c94fc', '#38a800', '#5c94fc', '#c8a850', '#ffffff'),
+    'mario':        ('#38a800', '#38a800', '#5c94fc', '#c8a850', '#ffffff'),
     'simcity':      ('#8a9a6a', '#7a8a5a', '#4a6a8a', '#a0a090', '#1a1a10'),
     'tomclancy':    ('#000a00', '#001500', '#000800', '#00cc33', '#00ff41'),
     'deco':         ('#1a1008', '#1e1a0e', '#0d1a2e', '#c9a84c', '#f5f0e8'),
@@ -119,7 +119,6 @@ def build_style(vibe: str) -> dict:
             tiles = src.get('tiles', [])
             if tiles and 'ne2sr' in tiles[0]:
                 src['tiles'] = [f'/api/tiles/raster/{vibe}/{{z}}/{{x}}/{{y}}.png']
-                src['maxzoom'] = 8  # ne2sr tiles don't exist beyond ~z8; MapLibre upscales
                 break
 
     # Override glyphs endpoint for vibes with custom fonts
