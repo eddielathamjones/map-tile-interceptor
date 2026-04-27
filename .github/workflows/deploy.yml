@@ -1,0 +1,24 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Pull to server
+    runs-on: self-hosted
+    steps:
+      - name: Pull latest changes
+        run: git -C ${{ vars.DEPLOY_PATH }} pull origin main
+
+      - name: Rebuild image
+        run: docker build -t map-tile-interceptor:local ${{ vars.DEPLOY_PATH }}
+
+      - name: Restart container
+        run: docker restart map-tile-interceptor
+
+      - name: Confirm
+        run: |
+          echo "Deployed at $(date)"
+          echo "HEAD: $(git -C ${{ vars.DEPLOY_PATH }} rev-parse --short HEAD)"
