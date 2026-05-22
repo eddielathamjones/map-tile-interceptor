@@ -117,26 +117,23 @@
     <div id="scale-label"></div>
   </div>
 
-  <button id="report-btn" class="report-float-btn" title="Report an issue or suggestion">⚑ Report</button>
-
   <!-- ── Report issue modal ──────────────────────────────────────── -->
-  <div id="report-modal" class="report-modal-overlay hidden">
-    <div class="report-modal-box">
-      <div class="report-modal-header">
+  <div id="report-modal" style="display:none; position:fixed; inset:0; z-index:9000; background:rgba(5,10,20,0.9); backdrop-filter:blur(10px); align-items:center; justify-content:center;">
+    <div style="background:var(--ui-bg,rgba(5,10,20,0.95)); border:1px solid var(--ui-border,rgba(255,255,255,0.12)); border-radius:12px; width:min(500px,92vw); max-height:88vh; overflow-y:auto; box-shadow:0 16px 64px rgba(0,0,0,0.8); font-family:var(--ui-font,'Courier New',monospace);">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:18px 22px 14px; border-bottom:1px solid var(--ui-border,rgba(255,255,255,0.12)); position:sticky; top:0; background:var(--ui-bg,rgba(5,10,20,0.95)); z-index:2;">
         <div>
-          <div class="report-modal-eyebrow">Report an issue</div>
-          <div class="report-modal-title">Tell me what's broken</div>
-          <div class="report-modal-sub">Posts to the GitHub repo. A nightly agent triages and proposes fixes.</div>
+          <div style="font-size:0.58rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--ui-color-dim,rgba(200,210,230,0.55)); margin-bottom:4px;">Report an issue</div>
+          <div style="font-size:1rem; font-weight:700; color:var(--ui-color-active,#dde4f0); line-height:1.2;">Tell me what's broken</div>
+          <div style="font-size:0.6rem; color:var(--ui-color-dim,rgba(200,210,230,0.55)); margin-top:3px;">Posts to the GitHub repo. A nightly agent triages and proposes fixes.</div>
         </div>
-        <button class="report-modal-close" id="report-close">✕</button>
+        <button id="report-close" style="background:transparent; border:none; color:var(--ui-color-dim,rgba(200,210,230,0.55)); font-size:13px; cursor:pointer; padding:4px; flex-shrink:0; line-height:1; font-family:inherit;">✕</button>
       </div>
-      <div class="report-modal-body">
-        <label for="report-text" class="report-modal-label">What went wrong, or what would make this better?</label>
-        <textarea id="report-text" class="report-textarea" rows="6"
-          placeholder="e.g. The noir vibe tile colours look washed out. Or: the vibe picker doesn't show after switching styles. Or: raster tiles aren't loading…"></textarea>
-        <div class="report-footer">
-          <span class="report-context-note">Context (URL, active vibe, viewport) is attached automatically.</span>
-          <button class="report-submit-btn" id="report-submit">Open GitHub →</button>
+      <div style="padding:18px 22px; display:flex; flex-direction:column; gap:8px;">
+        <label for="report-text" style="font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ui-color-dim,rgba(200,210,230,0.55));">What went wrong, or what would make this better?</label>
+        <textarea id="report-text" rows="6" style="width:100%; margin-top:4px; padding:9px 11px; background:rgba(255,255,255,0.04); color:var(--ui-color-active,#dde4f0); border:1px solid var(--ui-border,rgba(255,255,255,0.12)); border-radius:var(--ui-radius,6px); font-family:inherit; font-size:0.65rem; line-height:1.6; resize:vertical; min-height:100px; outline:none;" placeholder="e.g. The noir vibe tile colours look washed out. Or: the vibe picker doesn't show after switching styles. Or: raster tiles aren't loading…" onfocus="this.style.borderColor='var(--ui-color-active,#dde4f0)'" onblur="this.style.borderColor='var(--ui-border,rgba(255,255,255,0.12))'"></textarea>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:8px;">
+          <span style="font-size:0.55rem; color:var(--ui-color-dim,rgba(200,210,230,0.55)); line-height:1.5;">Context (URL, active vibe, viewport) is attached automatically.</span>
+          <button id="report-submit" style="padding:6px 16px; background:transparent; border:1px solid var(--ui-color-active,#dde4f0); border-radius:var(--ui-radius,6px); color:var(--ui-color-active,#dde4f0); font-family:inherit; font-size:0.62rem; letter-spacing:0.06em; cursor:pointer; white-space:nowrap; flex-shrink:0; transition:background 0.15s;">Send report →</button>
         </div>
       </div>
     </div>

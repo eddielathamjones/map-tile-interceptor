@@ -69,6 +69,15 @@ function buildVibePicker() {
     btn.addEventListener('click', () => switchVibe(key));
     picker.appendChild(btn);
   }
+  const sep = document.createElement('span');
+  sep.textContent = '|';
+  sep.style.cssText = 'color:var(--ui-border,rgba(255,255,255,0.12)); font-size:0.7rem; padding:0 2px; align-self:center;';
+  picker.appendChild(sep);
+  const reportBtn = document.createElement('button');
+  reportBtn.id = 'report-btn';
+  reportBtn.textContent = '⚑ report';
+  reportBtn.title = 'Report an issue or suggestion';
+  picker.appendChild(reportBtn);
 }
 
 // ── POI toggles ───────────────────────────────────────────────────────────────
@@ -252,20 +261,38 @@ document.getElementById('report-modal').addEventListener('click', e => {
 document.getElementById('report-submit').addEventListener('click', () => {
   const desc = document.getElementById('report-text').value.trim();
   if (!desc) { document.getElementById('report-text').focus(); return; }
-  const firstLine = desc.split('\n', 1)[0].trim();
-  const title = (firstLine.length > 80 ? firstLine.slice(0, 77) + '…' : firstLine) || 'Site feedback';
-  const body = [
-    desc, '',
-    '---',
-    '<sub>',
+  const btn = document.getElementById('report-submit');
+  const context = [
     `Reported from ${location.href}`,
     `· active vibe: ${currentVibe()}`,
     `· viewport: ${window.innerWidth}×${window.innerHeight}`,
-    `· user-agent: ${navigator.userAgent}`,
-    '</sub>',
   ].join('\n');
-  const params = new URLSearchParams({ title, body, labels: 'claude' });
-  window.open(`https://github.com/eddielathamjones/map-tile-interceptor/issues/new?${params}`, '_blank', 'noopener');
-  document.getElementById('report-modal').classList.add('hidden');
-  document.getElementById('report-text').value = '';
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+  fetch('/api/report', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ description: desc, context }),
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        btn.textContent = 'Sent ✓';
+        document.getElementById('report-text').value = '';
+        setTimeout(() => {
+          document.getElementById('report-modal').style.display = 'none';
+          btn.textContent = 'Send report →';
+          btn.disabled = false;
+        }, 1200);
+      } else {
+        btn.textContent = 'Send report →';
+        btn.disabled = false;
+        alert(data.error || 'Something went wrong.');
+      }
+    })
+    .catch(() => {
+      btn.textContent = 'Send report →';
+      btn.disabled = false;
+      alert('Network error — try again.');
+    });
 });
