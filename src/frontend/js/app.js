@@ -19,6 +19,27 @@ const VIBES = {
   metro:        { label: 'Metro',       styleUrl: '/api/tiles/style/metro'       },
 };
 
+// Google Fonts families per vibe (system fonts need no loading)
+const VIBE_FONTS_WEB = {
+  mario:        'Press Start 2P',
+  tomclancy:    'Share Tech Mono',
+  deco:         'Poiret One',
+  metro:        'IM Fell English',
+  mockva:       'Bebas Neue',
+  blueprint:    'Share Tech Mono',
+  highcontrast: 'Atkinson Hyperlegible',
+  toner:        'Inter',
+};
+
+function loadVibeFonts() {
+  const families = [...new Set(Object.values(VIBE_FONTS_WEB))];
+  const params = families.map(f => `family=${encodeURIComponent(f)}`).join('&');
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `https://fonts.googleapis.com/css2?${params}&display=swap`;
+  document.head.appendChild(link);
+}
+
 const STORAGE_KEY  = 'mti-vibe';
 const DEFAULT_VIBE = 'default';
 
@@ -30,6 +51,7 @@ function currentVibe() {
 function switchVibe(vibe) {
   if (!VIBES[vibe]) return;
   localStorage.setItem(STORAGE_KEY, vibe);
+  document.body.dataset.vibe = vibe;
   document.querySelectorAll('#vibe-picker button').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.vibe === vibe);
   });
@@ -150,7 +172,100 @@ map.on('style.load', () => {
   applyPoiFilter();
 });
 
+// ── Compass rose ───────────────────────────────────────────────────────────────
+
+function updateCompassBearing() {
+  document.getElementById('compass-svg').style.transform = `rotate(${-map.getBearing()}deg)`;
+}
+
+// ── Scale bar ──────────────────────────────────────────────────────────────────
+
+const FT = 0.3048;        // meters per foot
+const MI = 1609.344;      // meters per mile
+
+// Imperial snap distances in meters
+const NICE_DISTANCES_M = [
+  15.24,    // 50 ft
+  30.48,    // 100 ft
+  60.96,    // 200 ft
+  152.4,    // 500 ft
+  304.8,    // 1000 ft
+  804.67,   // 0.5 mi
+  1609.34,  // 1 mi
+  3218.69,  // 2 mi
+  8046.72,  // 5 mi
+  16093.44, // 10 mi
+  32186.88, // 20 mi
+  80467.2,  // 50 mi
+  160934.4, // 100 mi
+  321868.8, // 200 mi
+  804672,   // 500 mi
+];
+
+function formatImperial(meters) {
+  if (meters >= MI) {
+    const miles = meters / MI;
+    return (Number.isInteger(miles) ? miles : +miles.toFixed(1)) + ' mi';
+  }
+  return Math.round(meters / FT) + ' ft';
+}
+
+function updateScaleBar() {
+  const { lat } = map.getCenter();
+  const metersPerPx = (40075016.686 * Math.cos(lat * Math.PI / 180)) / (256 * Math.pow(2, map.getZoom()));
+  const niceDist = NICE_DISTANCES_M.findLast(d => d <= metersPerPx * 100) ?? NICE_DISTANCES_M[0];
+  document.getElementById('scale-line').style.width = `${niceDist / metersPerPx}px`;
+  const distText = formatImperial(niceDist);
+  document.getElementById('scale-label').textContent =
+    document.body.dataset.vibe === 'tomclancy' ? `DIST: ${distText}` : distText;
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 
+map.on('rotate', updateCompassBearing);
+map.on('style.load', updateCompassBearing);
+
+map.on('move', updateScaleBar);
+map.on('style.load', updateScaleBar);
+
+document.getElementById('compass').addEventListener('click', () => {
+  map.easeTo({ bearing: 0, pitch: 0, duration: 300 });
+});
+
+document.body.dataset.vibe = currentVibe();
+loadVibeFonts();
 buildVibePicker();
 buildPoiPanel();
+
+/* ─── Report modal ─────────────────────────────────────────────────── */
+document.getElementById('report-btn').addEventListener('click', () => {
+  document.getElementById('report-modal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('report-text').focus(), 60);
+});
+document.getElementById('report-close').addEventListener('click', () => {
+  document.getElementById('report-modal').classList.add('hidden');
+});
+document.getElementById('report-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('report-modal'))
+    document.getElementById('report-modal').classList.add('hidden');
+});
+document.getElementById('report-submit').addEventListener('click', () => {
+  const desc = document.getElementById('report-text').value.trim();
+  if (!desc) { document.getElementById('report-text').focus(); return; }
+  const firstLine = desc.split('\n', 1)[0].trim();
+  const title = (firstLine.length > 80 ? firstLine.slice(0, 77) + '…' : firstLine) || 'Site feedback';
+  const body = [
+    desc, '',
+    '---',
+    '<sub>',
+    `Reported from ${location.href}`,
+    `· active vibe: ${currentVibe()}`,
+    `· viewport: ${window.innerWidth}×${window.innerHeight}`,
+    `· user-agent: ${navigator.userAgent}`,
+    '</sub>',
+  ].join('\n');
+  const params = new URLSearchParams({ title, body, labels: 'claude' });
+  window.open(`https://github.com/eddielathamjones/map-tile-interceptor/issues/new?${params}`, '_blank', 'noopener');
+  document.getElementById('report-modal').classList.add('hidden');
+  document.getElementById('report-text').value = '';
+});

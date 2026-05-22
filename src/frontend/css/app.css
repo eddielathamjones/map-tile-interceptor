@@ -11,10 +11,251 @@ html, body {
   background: #050a14;
 }
 
+/* ── CSS custom property defaults (default/liberty fallback) ─── */
+
+body {
+  --ui-bg: rgba(5, 10, 20, 0.82);
+  --ui-border: rgba(255, 255, 255, 0.12);
+  --ui-radius: 6px;
+  --ui-font: 'Courier New', monospace;
+  --ui-font-size: 0.67rem;
+  --ui-color-dim: rgba(200, 210, 230, 0.55);
+  --ui-color-active: #dde4f0;
+  --ui-btn-active-bg: rgba(255, 255, 255, 0.07);
+  --ui-btn-active-border: rgba(255, 255, 255, 0.35);
+  --frame-border: none;
+  --frame-shadow: none;
+  --scale-line-height: 2px;
+}
+
+/* ── Per-vibe custom properties ──────────────────────────────── */
+
+body[data-vibe="noir"] {
+  --ui-bg: rgba(14, 10, 5, 0.92);
+  --ui-border: rgba(200, 180, 150, 0.20);
+  --ui-radius: 4px;
+  --ui-font: 'Courier New', monospace;
+  --ui-font-size: 0.67rem;
+  --ui-color-dim: rgba(200, 180, 150, 0.45);
+  --ui-color-active: #d4c8b0;
+  --ui-btn-active-bg: rgba(200, 180, 150, 0.08);
+  --ui-btn-active-border: rgba(200, 180, 150, 0.28);
+}
+
+body[data-vibe="mockva"] {
+  --ui-bg: rgba(245, 238, 228, 0.96);
+  --ui-border: #bb1010;
+  --ui-radius: 0px;
+  --ui-font: 'Bebas Neue', sans-serif;
+  --ui-font-size: 0.85rem;
+  --ui-color-dim: rgba(0, 0, 0, 0.50);
+  --ui-color-active: #111111;
+  --ui-btn-active-bg: rgba(187, 16, 16, 0.10);
+  --ui-btn-active-border: #bb1010;
+  --frame-border: 3px solid #bb1010;
+  --scale-line-height: 2px;
+}
+
+body[data-vibe="vintage"] {
+  --ui-bg: rgba(240, 228, 210, 0.90);
+  --ui-border: rgba(120, 80, 40, 0.40);
+  --ui-radius: 4px;
+  --ui-font: Georgia, 'Times New Roman', serif;
+  --ui-font-size: 0.67rem;
+  --ui-color-dim: rgba(80, 50, 20, 0.60);
+  --ui-color-active: #3d2010;
+  --ui-btn-active-bg: rgba(120, 80, 40, 0.15);
+  --ui-btn-active-border: rgba(120, 80, 40, 0.50);
+}
+
+body[data-vibe="toner"] {
+  --ui-bg: rgba(250, 250, 250, 0.92);
+  --ui-border: rgba(0, 0, 0, 0.20);
+  --ui-radius: 4px;
+  --ui-font: 'Inter', sans-serif;
+  --ui-font-size: 0.67rem;
+  --ui-color-dim: rgba(0, 0, 0, 0.45);
+  --ui-color-active: #111111;
+  --ui-btn-active-bg: rgba(0, 0, 0, 0.08);
+  --ui-btn-active-border: rgba(0, 0, 0, 0.30);
+}
+
+body[data-vibe="blueprint"] {
+  --ui-bg: rgba(10, 20, 60, 0.90);
+  --ui-border: rgba(80, 140, 220, 0.50);
+  --ui-radius: 0px;
+  --ui-font: 'Share Tech Mono', 'Courier New', monospace;
+  --ui-font-size: 0.67rem;
+  --ui-color-dim: rgba(80, 140, 220, 0.50);
+  --ui-color-active: #a0c8ff;
+  --ui-btn-active-bg: rgba(80, 140, 220, 0.15);
+  --ui-btn-active-border: rgba(80, 140, 220, 0.60);
+  --frame-border: 1px solid rgba(80, 140, 220, 0.70);
+  --frame-shadow: inset 0 0 20px rgba(80, 140, 220, 0.15);
+  --scale-line-height: 1px;
+}
+
+body[data-vibe="dark"] {
+  --ui-bg: rgba(12, 12, 15, 0.88);
+  --ui-border: rgba(180, 180, 200, 0.14);
+  --ui-radius: 6px;
+  --ui-font: 'Courier New', monospace;
+  --ui-font-size: 0.67rem;
+  --ui-color-dim: rgba(180, 180, 200, 0.45);
+  --ui-color-active: #d0d0e0;
+  --ui-btn-active-bg: rgba(180, 180, 200, 0.07);
+  --ui-btn-active-border: rgba(180, 180, 200, 0.30);
+}
+
+body[data-vibe="watercolor"] {
+  --ui-bg: rgba(245, 238, 225, 0.88);
+  --ui-border: rgba(140, 100, 80, 0.30);
+  --ui-radius: 6px;
+  --ui-font: Georgia, 'Times New Roman', serif;
+  --ui-font-size: 0.67rem;
+  --ui-color-dim: rgba(80, 50, 30, 0.55);
+  --ui-color-active: #3a2010;
+  --ui-btn-active-bg: rgba(140, 100, 80, 0.12);
+  --ui-btn-active-border: rgba(140, 100, 80, 0.40);
+}
+
+body[data-vibe="highcontrast"] {
+  --ui-bg: #000000;
+  --ui-border: #ffff00;
+  --ui-radius: 0px;
+  --ui-font: 'Atkinson Hyperlegible', sans-serif;
+  --ui-font-size: 0.72rem;
+  --ui-color-dim: rgba(255, 255, 0, 0.60);
+  --ui-color-active: #ffffff;
+  --ui-btn-active-bg: rgba(255, 255, 0, 0.15);
+  --ui-btn-active-border: #ffff00;
+  --frame-border: 2px solid #ffff00;
+  --scale-line-height: 3px;
+}
+
+body[data-vibe="mario"] {
+  --ui-bg: rgba(0, 110, 0, 0.95);
+  --ui-border: #ffd700;
+  --ui-radius: 0px;
+  --ui-font: 'Press Start 2P', monospace;
+  --ui-font-size: 0.55rem;
+  --ui-color-dim: rgba(255, 215, 0, 0.55);
+  --ui-color-active: #ffd700;
+  --ui-btn-active-bg: rgba(255, 215, 0, 0.15);
+  --ui-btn-active-border: #ffd700;
+  --frame-border: 4px solid #ffd700;
+  --frame-shadow: inset 0 0 0 2px rgba(0, 80, 0, 0.8);
+  --scale-line-height: 3px;
+}
+
+body[data-vibe="simcity"] {
+  --ui-bg: rgba(38, 48, 34, 0.90);
+  --ui-border: rgba(160, 160, 144, 0.38);
+  --ui-radius: 3px;
+  --ui-font: 'Courier New', monospace;
+  --ui-font-size: 0.67rem;
+  --ui-color-dim: rgba(160, 160, 144, 0.50);
+  --ui-color-active: #a0a090;
+  --ui-btn-active-bg: rgba(160, 160, 144, 0.10);
+  --ui-btn-active-border: rgba(160, 160, 144, 0.40);
+}
+
+body[data-vibe="tomclancy"] {
+  --ui-bg: rgba(4, 16, 4, 0.96);
+  --ui-border: rgba(0, 255, 65, 0.40);
+  --ui-radius: 0px;
+  --ui-font: 'Share Tech Mono', 'Courier New', monospace;
+  --ui-font-size: 0.67rem;
+  --ui-color-dim: rgba(0, 255, 65, 0.40);
+  --ui-color-active: #00ff41;
+  --ui-btn-active-bg: rgba(0, 255, 65, 0.08);
+  --ui-btn-active-border: rgba(0, 255, 65, 0.70);
+  --scale-line-height: 1px;
+}
+
+body[data-vibe="deco"] {
+  --ui-bg: rgba(20, 15, 8, 0.94);
+  --ui-border: rgba(200, 160, 80, 0.50);
+  --ui-radius: 2px;
+  --ui-font: 'Poiret One', sans-serif;
+  --ui-font-size: 0.72rem;
+  --ui-color-dim: rgba(200, 160, 80, 0.50);
+  --ui-color-active: #f5e6c0;
+  --ui-btn-active-bg: rgba(200, 160, 80, 0.10);
+  --ui-btn-active-border: rgba(200, 160, 80, 0.60);
+  --frame-border: 1px solid rgba(200, 160, 80, 0.50);
+  --frame-shadow: inset 0 0 16px rgba(200, 160, 80, 0.08);
+  --scale-line-height: 1px;
+}
+
+body[data-vibe="metro"] {
+  --ui-bg: rgba(248, 240, 225, 0.94);
+  --ui-border: rgba(180, 140, 80, 0.50);
+  --ui-radius: 4px;
+  --ui-font: 'IM Fell English', Georgia, serif;
+  --ui-font-size: 0.72rem;
+  --ui-color-dim: rgba(60, 40, 20, 0.55);
+  --ui-color-active: #2a1a08;
+  --ui-btn-active-bg: rgba(180, 140, 80, 0.15);
+  --ui-btn-active-border: rgba(180, 140, 80, 0.60);
+  --frame-border: 1px solid rgba(180, 140, 80, 0.50);
+  --scale-line-height: 2px;
+}
+
+/* ── Map container ───────────────────────────────────────────── */
+
 #map {
+  position: relative;
   width: 100%;
   height: 100%;
 }
+
+/* Decorative map border overlay (only shown when --frame-border is set) */
+#map::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: var(--frame-border, none);
+  box-shadow: var(--frame-shadow, none);
+  z-index: 10;
+}
+
+/* ── Tomclancy HUD corner brackets ───────────────────────────── */
+
+.hud-corner {
+  display: none;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+body[data-vibe="tomclancy"] .hud-corner { display: block; }
+
+.hud-tl { top: 8px;    left: 8px;  }
+.hud-tr { top: 8px;    right: 8px; }
+.hud-bl { bottom: 8px; left: 8px;  }
+.hud-br { bottom: 8px; right: 8px; }
+
+.hud-corner::before,
+.hud-corner::after {
+  content: '';
+  position: absolute;
+  background: #00ff41;
+}
+
+/* Horizontal segment */
+.hud-corner::before { height: 2px; width: 20px; }
+
+/* Vertical segment */
+.hud-corner::after  { width: 2px; height: 20px; }
+
+.hud-tl::before, .hud-tl::after { top: 0; left: 0; }
+.hud-tr::before, .hud-tr::after { top: 0; left: auto; right: 0; }
+.hud-bl::before, .hud-bl::after { top: auto; bottom: 0; left: 0; }
+.hud-br::before, .hud-br::after { top: auto; bottom: 0; left: auto; right: 0; }
 
 /* ── Vibe picker ─────────────────────────────────────────────── */
 
@@ -24,38 +265,42 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 3px;
-  background: rgba(5, 10, 20, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 6px;
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
   padding: 5px 7px;
   pointer-events: auto;
   user-select: none;
-  white-space: nowrap;
+  max-width: calc(100vw - 32px);
+  transition: background 0.3s, border-color 0.3s;
 }
 
 #vibe-picker button {
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 4px;
-  color: rgba(200, 210, 230, 0.55);
+  border-radius: var(--ui-radius);
+  color: var(--ui-color-dim);
   cursor: pointer;
-  font-family: 'Courier New', monospace;
-  font-size: 0.67rem;
+  font-family: var(--ui-font);
+  font-size: var(--ui-font-size);
   letter-spacing: 0.06em;
   padding: 3px 7px;
+  white-space: nowrap;
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 
 #vibe-picker button:hover {
-  color: #dde4f0;
-  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--ui-color-active);
+  border-color: var(--ui-border);
 }
 
 #vibe-picker button.active {
-  color: #dde4f0;
-  border-color: rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.07);
+  color: var(--ui-color-active);
+  border-color: var(--ui-btn-active-border);
+  background: var(--ui-btn-active-bg);
 }
 
 /* ── POI panel ───────────────────────────────────────────────── */
@@ -67,22 +312,23 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  background: rgba(5, 10, 20, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 6px;
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
   padding: 5px 7px;
   pointer-events: auto;
   user-select: none;
+  transition: background 0.3s, border-color 0.3s;
 }
 
 #poi-panel button {
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 4px;
-  color: rgba(200, 210, 230, 0.35);
+  border-radius: var(--ui-radius);
+  color: var(--ui-color-dim);
   cursor: pointer;
-  font-family: 'Courier New', monospace;
-  font-size: 0.67rem;
+  font-family: var(--ui-font);
+  font-size: var(--ui-font-size);
   letter-spacing: 0.06em;
   padding: 3px 7px;
   text-align: left;
@@ -90,12 +336,240 @@ html, body {
 }
 
 #poi-panel button:hover {
-  color: #dde4f0;
-  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--ui-color-active);
+  border-color: var(--ui-border);
 }
 
 #poi-panel button.active {
-  color: #dde4f0;
-  border-color: rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.07);
+  color: var(--ui-color-active);
+  border-color: var(--ui-btn-active-border);
+  background: var(--ui-btn-active-bg);
 }
+
+/* ── Compass rose ────────────────────────────────────────────── */
+
+#compass {
+  position: absolute;
+  bottom: 100px;
+  right: 16px;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  user-select: none;
+}
+
+#compass-svg {
+  display: block;
+  width: 60px;
+  height: 60px;
+  color: var(--ui-color-active);
+  pointer-events: none;
+  transition: transform 0.1s ease-out;
+}
+
+/* All compass variant groups hidden by default */
+.compass-default,
+.compass-mario,
+.compass-tomclancy,
+.compass-deco,
+.compass-metro,
+.compass-mockva,
+.compass-simcity { display: none; }
+
+/* Show compass-default for most vibes */
+body[data-vibe="default"]      .compass-default,
+body[data-vibe="dark"]         .compass-default,
+body[data-vibe="noir"]         .compass-default,
+body[data-vibe="vintage"]      .compass-default,
+body[data-vibe="toner"]        .compass-default,
+body[data-vibe="watercolor"]   .compass-default,
+body[data-vibe="highcontrast"] .compass-default,
+body[data-vibe="blueprint"]    .compass-default { display: block; }
+
+/* Tomclancy: dark box so phosphor reticle reads against bright green tiles */
+body[data-vibe="tomclancy"] #compass {
+  background: var(--ui-bg);
+  outline: 1px solid rgba(0, 255, 65, 0.60);
+  height: 76px;
+  padding-top: 16px;
+}
+body[data-vibe="tomclancy"] #compass-n {
+  top: 4px;
+}
+
+/* Mario: dark-green backdrop matches POI panel; N label inside compass box */
+body[data-vibe="mario"] #compass {
+  background: var(--ui-bg);
+  outline: 2px solid #ffd700;
+  height: 76px;
+  padding-top: 16px;
+}
+body[data-vibe="mario"] #compass-svg {
+  filter: none;
+}
+body[data-vibe="mario"] #compass-n {
+  top: 4px;
+}
+body[data-vibe="mario"] #scale-bar {
+  background: var(--ui-bg);
+  border: 1px solid #ffd700;
+}
+
+/* Show vibe-specific compass variants */
+body[data-vibe="mario"]     .compass-mario     { display: block; }
+body[data-vibe="tomclancy"] .compass-tomclancy { display: block; }
+body[data-vibe="deco"]      .compass-deco      { display: block; }
+body[data-vibe="metro"]     .compass-metro     { display: block; }
+body[data-vibe="mockva"]    .compass-mockva    { display: block; }
+body[data-vibe="simcity"]   .compass-simcity   { display: block; }
+
+#compass-n {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--ui-font);
+  font-size: 0.6rem;
+  font-weight: bold;
+  color: var(--ui-color-active);
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Scale bar ───────────────────────────────────────────────── */
+
+#scale-bar {
+  position: absolute;
+  bottom: 56px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  padding: 4px 6px;
+  background: var(--ui-bg);
+  border-radius: var(--ui-radius);
+  pointer-events: none;
+  user-select: none;
+}
+
+#scale-line {
+  height: var(--scale-line-height, 2px);
+  width: 80px;
+  background: var(--ui-color-active);
+  border-left: 1px solid var(--ui-color-active);
+  border-right: 1px solid var(--ui-color-active);
+  transition: width 0.2s ease-out;
+}
+
+#scale-label {
+  font-family: var(--ui-font);
+  font-size: 0.6rem;
+  color: var(--ui-color-active);
+  letter-spacing: 0.05em;
+}
+
+/* ── Report button (floating) ────────────────────────────── */
+.report-float-btn {
+  position: fixed;
+  bottom: 48px; right: 16px; z-index: 100;
+  padding: 5px 11px;
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  color: var(--ui-color-dim);
+  font-family: var(--ui-font);
+  font-size: var(--ui-font-size);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.report-float-btn:hover {
+  color: var(--ui-color-active);
+  border-color: var(--ui-color-active);
+}
+
+/* ── Report modal ────────────────────────────────────────── */
+.report-modal-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(5,10,20,0.85);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+}
+.report-modal-overlay.hidden { display: none; }
+.report-modal-box {
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: 12px;
+  width: min(500px, 92vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.7);
+}
+.report-modal-header {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 12px;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid var(--ui-border);
+  position: sticky; top: 0;
+  background: var(--ui-bg); z-index: 2;
+}
+.report-modal-eyebrow {
+  font-family: var(--ui-font);
+  font-size: 0.58rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ui-color-dim);
+  margin-bottom: 4px;
+}
+.report-modal-title {
+  font-family: var(--ui-font);
+  font-size: 1rem; font-weight: 700;
+  color: var(--ui-color-active); line-height: 1.2;
+}
+.report-modal-sub {
+  font-family: var(--ui-font);
+  font-size: 0.6rem; color: var(--ui-color-dim); margin-top: 3px;
+}
+.report-modal-close {
+  background: transparent; border: none;
+  color: var(--ui-color-dim); font-size: 13px;
+  cursor: pointer; padding: 4px; flex-shrink: 0; line-height: 1;
+  font-family: var(--ui-font);
+}
+.report-modal-close:hover { color: var(--ui-color-active); }
+.report-modal-body { padding: 18px 22px; display: flex; flex-direction: column; gap: 8px; }
+.report-modal-label {
+  font-family: var(--ui-font);
+  font-size: 0.58rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ui-color-dim);
+}
+.report-textarea {
+  width: 100%; margin-top: 6px; padding: 9px 11px;
+  background: rgba(255,255,255,0.04);
+  color: var(--ui-color-active);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  font-family: var(--ui-font); font-size: 0.65rem;
+  line-height: 1.6; resize: vertical; min-height: 100px;
+}
+.report-textarea:focus { outline: none; border-color: var(--ui-color-active); }
+.report-textarea::placeholder { color: var(--ui-color-dim); opacity: 0.6; }
+.report-footer {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 12px; margin-top: 12px;
+}
+.report-context-note {
+  font-family: var(--ui-font);
+  font-size: 0.55rem; color: var(--ui-color-dim); line-height: 1.5;
+}
+.report-submit-btn {
+  padding: 6px 16px;
+  background: transparent;
+  border: 1px solid var(--ui-color-active);
+  border-radius: var(--ui-radius);
+  color: var(--ui-color-active);
+  font-family: var(--ui-font); font-size: 0.62rem;
+  letter-spacing: 0.06em; cursor: pointer; white-space: nowrap;
+  flex-shrink: 0; transition: background 0.15s;
+}
+.report-submit-btn:hover { background: var(--ui-btn-active-bg); }
