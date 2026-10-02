@@ -19,6 +19,13 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
+# Per-vibe: remap all colored (non-black) pixels to this exact RGB after stripping.
+# Fixes Gemini generating dark forest green instead of the correct phosphor green.
+VIBE_ACCENT_COLOR: dict[str, tuple[int, int, int]] = {
+    'tomclancy': (0, 255, 65),   # #00ff41 phosphor green
+    'deco':      (201, 168, 76), # #c9a84c gold — normalize any gold-ish output
+}
+
 # Layout — order determines position in the sprite sheet.
 # Each sublist is a row of regular 21×21 icons.
 ICON_ROWS = [
@@ -83,6 +90,23 @@ def strip_background(img: Image.Image) -> Image.Image:
     return img
 
 
+def remap_accent_color(img: Image.Image, target_rgb: tuple[int, int, int]) -> Image.Image:
+    """Remap colored (non-black) pixels to target_rgb, preserving near-black pixels."""
+    img = img.convert('RGBA')
+    data = img.load()
+    tr, tg, tb = target_rgb
+    for y in range(img.height):
+        for x in range(img.width):
+            r, g, b, a = data[x, y]
+            if a == 0:
+                continue
+            luminance = 0.299 * r + 0.587 * g + 0.114 * b
+            if luminance < 60:
+                continue  # near-black: keep (outlines, badge interiors)
+            data[x, y] = (tr, tg, tb, a)
+    return img
+
+
 def load_icon(path: Path) -> Image.Image:
     img = Image.open(path).convert('RGBA')
     # If any corner is opaque, assume a baked background and strip it
@@ -95,9 +119,10 @@ def load_icon(path: Path) -> Image.Image:
 
 
 def build_sprites(vibe: str) -> None:
-    repo_root = Path(__file__).parent.parent
-    src_dir   = repo_root / 'assets' / 'sprites' / vibe
-    out_dir   = repo_root / 'src' / 'static' / 'sprites'
+    repo_root    = Path(__file__).parent.parent
+    src_dir      = repo_root / 'assets' / 'sprites' / vibe
+    out_dir      = repo_root / 'src' / 'static' / 'sprites'
+    accent_color = VIBE_ACCENT_COLOR.get(vibe)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     max_icon_width  = max(len(row) for row in ICON_ROWS) * ICON_SIZE
@@ -118,7 +143,10 @@ def build_sprites(vibe: str) -> None:
             if not path.exists():
                 missing.append(name)
                 continue
-            img = load_icon(path).resize((ICON_SIZE, ICON_SIZE), Image.NEAREST)
+            img = load_icon(path)
+            if accent_color:
+                img = remap_accent_color(img, accent_color)
+            img = img.resize((ICON_SIZE, ICON_SIZE), Image.NEAREST)
             canvas.paste(img, (x, y), img)
             manifest[name] = {
                 'x': x, 'y': y,
@@ -135,7 +163,10 @@ def build_sprites(vibe: str) -> None:
             missing.append(name)
             road_x += w
             continue
-        img = load_icon(path).resize((w, h), Image.NEAREST)
+        img = load_icon(path)
+        if accent_color:
+            img = remap_accent_color(img, accent_color)
+        img = img.resize((w, h), Image.NEAREST)
         canvas.paste(img, (road_x, road_y), img)
         manifest[name] = {
             'x': road_x, 'y': road_y,

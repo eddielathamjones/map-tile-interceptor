@@ -2,7 +2,7 @@
 
 Proposed new styles. Each entry covers: inspiration, PIL raster transform, vector color palette, font/sprite requirements, and overlay notes.
 
-Status: design phase — not yet implemented.
+Status: design phase — most styles implemented. Mario, TomClancy, Metro, Mockva, Deco have complete sprite sets and font hosting wired through `style_builder.py`. Remaining concepts (vintage, toner, blueprint, dark, watercolor, highcontrast, noir, simcity) use the base Liberty sprites and apply only colour/font overrides.
 
 ---
 

@@ -90,18 +90,30 @@ Road shields (draw as 63×63 square — packer resizes to final dims):
 
 ---
 
+## metro
+
+**Status:** complete ✓
+
+**Style:** Victorian engraving — fine cross-hatched illustration, dark brown #3a2e1a ink on warm ivory #f0ebe0, amber gold #c4a86a accents. Antique cartographic feel.
+
+**Road shields:** ornate gilded cartouches with cream interior, gold frames with scrollwork corners.
+
+---
+
 ## mockva
 
-**Status:** not started
+**Status:** complete ✓
+
+**Style:** Russian Constructivist (Rodchenko, El Lissitzky) — bold flat geometric forms, two colors only: #1a1a1a black and #cc1a1a red on #f0ece0 cream paper. No gradients, no shading. Sharp poster silhouettes.
+
+**Road shields:** solid red rectangles with thin black borders, blank cream interior for road number overlay.
 
 ---
 
 ## deco
 
-**Status:** not started
+**Status:** complete ✓
 
----
+**Style:** Art Deco (Chrysler Building, Erté, Bond title sequence) — symmetric geometric forms, gold #c9a84c fine linework on warm near-black #1a1008. Stepped ziggurat corners, radiating sunburst details, streamlined elegance.
 
-## metro
-
-**Status:** not started
+**Road shields:** stepped-corner cartouches with thick gold frames and empty cream interior for text overlay.

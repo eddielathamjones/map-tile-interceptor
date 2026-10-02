@@ -22,7 +22,7 @@ _VIBE_COLORS: dict[str, tuple[str, str, str, str, str]] = {
     'mockva':       ('#f0ece0', '#e4ddd0', '#1a1a1a', '#cc1a1a', '#1a1a1a'),
     'mario':        ('#38a800', '#38a800', '#5c94fc', '#c8a850', '#ffffff'),
     'simcity':      ('#8a9a6a', '#7a8a5a', '#4a6a8a', '#a0a090', '#1a1a10'),
-    'tomclancy':    ('#000a00', '#001500', '#000800', '#00cc33', '#00ff41'),
+    'tomclancy':    ('#000a00', '#001500', '#000800', '#00cc33', '#80ffaa'),
     'deco':         ('#1a1008', '#1e1a0e', '#0d1a2e', '#c9a84c', '#f5f0e8'),
     'metro':        ('#f0ebe0', '#e2d9c2', '#8ab4a8', '#c4a86a', '#3a2e1a'),
 }
@@ -37,7 +37,7 @@ _VIBE_HALOS: dict[str, tuple[str, float]] = {
     'highcontrast': ('#000000', 2.0),
     'noir':         ('#080e0d', 1.5),
     'mockva':       ('#f0ece0', 1.5),
-    'tomclancy':    ('#001a00', 1.5),
+    'tomclancy':    ('#000800', 4.0),
     'deco':         ('#1a1008', 1.5),
     'metro':        ('#f0ebe0', 1.0),
 }
@@ -63,10 +63,36 @@ _WATER_KEYWORDS = ('water', 'lake', 'ocean', 'sea', 'river', 'wetland', 'stream'
 _ROAD_KEYWORDS  = ('road', 'highway', 'motorway', 'trunk', 'street', 'path',
                    'bridge', 'tunnel', 'rail', 'transit', 'ferry')
 
+# Flat fill + 3D extrusion building colors per vibe
+_VIBE_BUILDINGS: dict[str, str] = {
+    'vintage':      '#9b8060',   # warm brown stone
+    'toner':        '#c0c0b8',   # cool gray
+    'blueprint':    '#12306e',   # dark blueprint blue
+    'dark':         '#1e2530',   # dark blue-gray
+    'watercolor':   '#c8a880',   # warm tan
+    'highcontrast': '#ffff00',   # high-contrast yellow
+    'noir':         '#1a2018',   # dark warm
+    'mockva':       '#1a1a1a',   # constructivist black
+    'mario':        '#d04000',   # NES brick red
+    'simcity':      '#c8a030',   # muted commercial yellow
+    'tomclancy':    '#003300',   # dark phosphor green
+    'deco':         '#2a2018',   # dark warm brown
+    'metro':        '#c8b898',   # warm stone
+}
+
+_VIBE_TEXT_SCALE: dict[str, float] = {
+    'tomclancy': 1.35,
+    'metro':     1.3,
+    'mockva':    1.2,   # Bebas Neue is condensed; bump for legibility
+    'deco':      1.25,  # Poiret One is delicate; bump for legibility
+}
+
 _VIBE_SPRITES: dict[str, str] = {
-    'mario':    '/api/sprites/mario',
+    'mario':     '/api/sprites/mario',
     'tomclancy': '/api/sprites/tomclancy',
-    # mockva, deco, metro added as their sprites are built
+    'metro':     '/api/sprites/metro',
+    'mockva':    '/api/sprites/mockva',
+    'deco':      '/api/sprites/deco',
 }
 
 _base_style: dict | None = None
@@ -110,8 +136,10 @@ def build_style(vibe: str) -> dict:
 
     style = copy.deepcopy(base)
     bg_col, land_col, water_col, road_col, label_col = _VIBE_COLORS[vibe]
-    halo = _VIBE_HALOS.get(vibe)
-    font = _VIBE_FONTS.get(vibe)
+    halo          = _VIBE_HALOS.get(vibe)
+    font          = _VIBE_FONTS.get(vibe)
+    building_col  = _VIBE_BUILDINGS.get(vibe)
+    text_scale    = _VIBE_TEXT_SCALE.get(vibe)
 
     # Rewrite raster underlay source → our proxy
     for src in style.get('sources', {}).values():
@@ -159,6 +187,13 @@ def build_style(vibe: str) -> dict:
                 paint['fill-color'] = water_col
             elif any(k in lid for k in _LAND_KEYWORDS):
                 paint['fill-color'] = land_col
+            elif lid == 'building' and building_col:
+                paint['fill-color'] = building_col
+                paint.pop('fill-outline-color', None)
+
+        elif ltype == 'fill-extrusion':
+            if lid == 'building-3d' and building_col:
+                paint['fill-extrusion-color'] = building_col
 
         elif ltype == 'line':
             if any(k in lid for k in _ROAD_KEYWORDS):
@@ -195,6 +230,16 @@ def build_style(vibe: str) -> dict:
             # Road name labels: ensure centre justification.
             if lid.startswith('highway-name'):
                 layout['text-justify'] = 'center'
+            # Scale up text size for vibes that request it.
+            if text_scale and 'text-size' in layout:
+                sz = layout['text-size']
+                if isinstance(sz, (int, float)):
+                    layout['text-size'] = round(sz * text_scale, 1)
+                elif isinstance(sz, list) and sz[0] == 'interpolate':
+                    # stops are at indices 4, 5, 6, 7... in pairs [zoom, size]
+                    for i in range(4, len(sz), 2):
+                        if isinstance(sz[i], (int, float)):
+                            sz[i] = round(sz[i] * text_scale, 1)
 
     _style_cache[vibe] = style
     return style
