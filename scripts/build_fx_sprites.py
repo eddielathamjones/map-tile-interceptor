@@ -162,13 +162,13 @@ def deco_chevron() -> Image.Image:
     return done(img)
 
 
-def noir_windows() -> Image.Image:
-    """Dark wall with a few lit windows; used on 3D buildings."""
+def noir_windows(wall: str, pane: str) -> Image.Image:
+    """Wall with a few lit windows; used on 3D buildings, lighter for taller ones."""
     rows = ['................', '.dd.dd.dd.dd.dd.', '.dd.dd.oo.dd.dd.', '................',
             '................', '.dd.dd.dd.dd.dd.', '.dd.dd.dd.dd.dd.', '................',
             '................', '.oo.dd.dd.dd.dd.', '.dd.dd.dd.dd.dd.', '................',
             '................', '.dd.dd.dd.dd.oo.', '.dd.dd.dd.dd.dd.', '................']
-    return pixel_art(rows, {'.': '#15181b', 'd': '#22262b', 'o': '#c9a352'}, scale=1)
+    return pixel_art(rows, {'.': wall, 'd': pane, 'o': '#e8c26a'}, scale=1)
 
 
 def pin(fill: str, edge: str, eye: str, shadow: str | None = None) -> Image.Image:
@@ -329,7 +329,9 @@ def build() -> None:
     sprites['bp-hatch'] = stripes('#173f7a', '#4f82c6', period=6, width=0.8)
     sprites['deco-fan'] = deco_fan()
     sprites['deco-chevron'] = deco_chevron()
-    sprites['noir-windows'] = noir_windows()
+    sprites['noir-windows-low'] = noir_windows('#1d2024', '#14161a')
+    sprites['noir-windows-mid'] = noir_windows('#2d3137', '#1c1f23')
+    sprites['noir-windows-high'] = noir_windows('#40454d', '#272b30')
     for prefix, disc, ring in (('mk', '#cc1a1a', '#111111'), ('deco', '#14100a', '#c9a84c'),
                                ('bp', '#1c4a8c', '#ffffff'), ('noir', '#0b0c0e', '#d8d2c2')):
         sprites[f'{prefix}-dot'] = flat_icon(MDI['information'][1], disc, ring, disc)

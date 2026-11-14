@@ -43,7 +43,9 @@ boundary                   { color: var(--smoke); dash: 4 3; }
 
 /* ── Buildings: dark blocks; in 3D, a few lit windows ── */
 #building          { color: #121416; outline: var(--ash); }
-building.extrusion { color: #1a1d20; pattern: "fx:noir-windows"; opacity: 0.96; }
+building.extrusion { color: #2a2e33; opacity: 1;
+                     pattern: json(["step", ["get", "render_height"], "fx:noir-windows-low",
+                                    45, "fx:noir-windows-mid", 130, "fx:noir-windows-high"]); }
 
 /* ── Lettering ── */
 label        { color: var(--bone); halo: var(--night) 1.6; }
