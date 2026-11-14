@@ -55,7 +55,7 @@ Specificity and source order work as in CSS.
 
 **`@vibe` block.** `label` and `order` drive the picker; `font` moves every label to a hosted glyph set; `sprite` swaps the whole icon sheet. Images named `fx:<name>` come from the shared pattern sheet drawn by `scripts/build_fx_sprites.py`.
 
-Files starting with `_` are partials for `@import`. The simpler vibes are five colours plus `@import "_five.mcss"`.
+Files starting with `_` are partials for `@import`. Survey and Survey Night share `_survey.mcss` and differ only in their `:root` tokens.
 
 ---
 
@@ -68,7 +68,11 @@ Files starting with `_` are partials for `@import`. The simpler vibes are five c
 | Nouveau | Mucha-poster Paris: terracotta blocks, peacock water with wave lines, gold boulevards, ink leading, Federo labels |
 | Mario | 8-bit overworld: tiled grass and water, brick buildings, coin-trail footpaths |
 | Tom Clancy | Phosphor tactical display: dark ground, road brightness by importance, glow on arterials, scanlines |
-| Noir, Mockva, Vintage, Toner, Blueprint, Dark, Watercolor, Hi-Contrast, SimCity, Deco | Five-colour vibes built on `_five.mcss` |
+| Mockva | Constructivist poster in three inks: black building mass, red streets, paper ground, slab labels; the tallest towers turn red |
+| Blueprint | Drafting sheet: ruled grid, hollow double-line roads, outlined footprints, hatched water, stencilled capitals |
+| Deco | Gold on black lacquer: fish-scale water, chevron parks, three weights of gold streets, towers that gild with height |
+| Noir | The city at 2 a.m.: grey side streets, sodium-lit avenues with a glow, lit windows on 3D buildings, typewriter captions |
+| Hi-Contrast | Accessibility style: black ground, white outlines, yellow roads, large haloed labels |
 
 The chrome around the map (picker, compass, scale bar, frame) is themed per vibe in `src/frontend/css/app.css`.
 
@@ -122,7 +126,7 @@ python scripts/prewarm_tiles.py --base-url http://localhost:5003 --max-zoom 4
 
 ```
 src/
-  vibes/              one .mcss stylesheet per vibe (+ _five.mcss partial)
+  vibes/              one .mcss stylesheet per vibe (+ _survey.mcss partial)
   backend/
     app.py            Flask app + blueprint registration
     mapcss.py         stylesheet parser and compiler

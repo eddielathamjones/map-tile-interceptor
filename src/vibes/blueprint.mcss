@@ -1,14 +1,53 @@
-@vibe { label: "Blueprint"; order: 14; font: "Share Tech Mono Regular"; }
+/* Blueprint — a drafting sheet. Nothing is filled; everything is a white
+   line on blue, over a ruled grid. */
+
+@vibe { label: "Blueprint"; order: 11; font: "Share Tech Mono Regular"; }
 
 :root {
-  --bg: #1a3a6c;
-  --land: #1e4080;
-  --water: #0a1f5c;
-  --road: #5588cc;
-  --building: #234a8c;
-  --label: #dce8ff;
-  --halo: #1a3a6c;
-  --halo-width: 1.5;
+  --sheet: #1c4a8c;
+  --line:  #ffffff;
+  --faint: #7fa6dc;
+  --dim:   #4f82c6;
 }
 
-@import "_five.mcss";
+background { color: var(--sheet); pattern: "fx:bp-grid"; }
+raster     { display: none; }
+
+/* ── Ground: outlines only ── */
+.pattern, landuse, landcover, aeroway.fill { display: none; }
+#park        { color: var(--sheet); opacity: 0.35; }
+#park::after { type: line; color: var(--faint); width: 1; dash: 1 3; }
+park.outline { display: none; }
+
+/* ── Water: hatched, with a firm edge ── */
+water        { pattern: "fx:bp-hatch"; }
+water::after { type: line; color: var(--line); width: zoom(4 0.6, 12 1.2, 16 1.8); }
+waterway     { color: var(--faint); }
+
+/* ── Roads: drawn as two parallel lines (the casing), hollow inside ── */
+road                 { cap: butt; join: round; }
+road.casing          { color: var(--line); }
+road:not(.casing)    { color: var(--sheet); opacity: 1; }
+road.minor.casing, road.service.casing { color: var(--faint); }
+road.path            { color: var(--faint); dash: 3 3; }
+road.path.casing     { display: none; }
+rail                 { color: var(--line); dash: 6 3; }
+rail.hatching        { display: none; }
+aeroway.line         { color: var(--faint); }
+boundary             { color: var(--line); dash: 10 3 2 3; }
+
+/* ── Buildings: footprints in line, glassy in 3D ── */
+#building          { color: var(--sheet); opacity: 0.5; outline: var(--faint); }
+#building::after   { type: line; color: var(--faint); width: zoom(14 0.5, 17 1.1); }
+building.extrusion { color: #2d62ad; opacity: 0.55; }
+
+/* ── Lettering: stencilled capitals ── */
+label        { color: var(--line); halo: var(--sheet) 1.8; transform: uppercase; spacing: 0.1; }
+label.road   { color: #cfe0f7; size: zoom(13 9, 16 11); }
+label.water  { color: var(--faint); }
+label.shield { color: #1c4a8c; halo: unset; }
+
+label.poi    { color: #cfe0f7; size: 9; text-offset: 0 1.2;
+               icon: json(["coalesce", ["image", ["concat", "fx:bp-", ["get", "class"]]], ["image", "fx:bp-dot"]]); }
+#poi_transit { text-offset: 1.2 0; }
+#airport     { icon: "fx:bp-airport"; }

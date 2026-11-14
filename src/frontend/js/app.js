@@ -17,8 +17,8 @@ async function loadVibes() {
 
 // Google Fonts used by the UI chrome of each vibe
 const UI_FONTS = [
-  'Press Start 2P', 'Share Tech Mono', 'Poiret One', 'IM Fell English', 'Bebas Neue',
-  'Atkinson Hyperlegible', 'Inter', 'Fredoka:wght@500;600', 'Barlow Condensed:wght@600', 'Federo',
+  'Press Start 2P', 'Share Tech Mono', 'Poiret One', 'Limelight', 'Special Elite', 'Bebas Neue',
+  'Atkinson Hyperlegible', 'Fredoka:wght@500;600', 'Barlow Condensed:wght@600', 'Federo',
 ];
 
 function loadVibeFonts() {

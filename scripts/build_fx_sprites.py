@@ -101,6 +101,76 @@ def flat_icon(codepoint: str, disc: str, ring: str, fg: str, ring_w: float = 1.2
     return done(img)
 
 
+def shape_icon(codepoint: str, shape: str, fill: str, edge: str, fg: str) -> Image.Image:
+    """Square (Mockva) or diamond (Deco) badge with a glyph."""
+    img, d, k = canvas(22, 22)
+    if shape == 'square':
+        d.rectangle([2 * k, 2 * k, 20 * k, 20 * k], fill=fill, outline=edge, width=int(1.5 * k))
+    else:
+        d.polygon([(11 * k, 0.5 * k), (21.5 * k, 11 * k), (11 * k, 21.5 * k), (0.5 * k, 11 * k)], fill=edge)
+        d.polygon([(11 * k, 2.3 * k), (19.7 * k, 11 * k), (11 * k, 19.7 * k), (2.3 * k, 11 * k)], fill=fill)
+    _glyph(d, k, 11, 11, codepoint, 11 if shape == 'diamond' else 13, fg)
+    return done(img)
+
+
+# ── Patterns for Mockva, Blueprint, Deco, Noir ───────────────────────────────
+
+def stripes(ground: str, line: str, period: int = 8, width: float = 1.2) -> Image.Image:
+    """Tileable 45° stripes."""
+    img, d, k = canvas(period, period, _rgba(ground))
+    n = period * k
+    for off in (-n, 0, n):
+        d.line([(off, n), (off + n, 0)], fill=line, width=int(width * k))
+    return done(img)
+
+
+def halftone(ground: str, dot: str, period: int = 6, r: float = 1.1) -> Image.Image:
+    img, d, k = canvas(period, period, _rgba(ground))
+    for cx, cy in ((period / 4, period / 4), (3 * period / 4, 3 * period / 4)):
+        d.ellipse([(cx - r) * k, (cy - r) * k, (cx + r) * k, (cy + r) * k], fill=dot)
+    return done(img)
+
+
+def bp_grid() -> Image.Image:
+    """Drafting grid: fine lines every 8px, a stronger one every 40."""
+    n = 40
+    img, d, k = canvas(n, n, _rgba('#1c4a8c'))
+    for i in range(0, n, 8):
+        color, w = ('#3f72b8', 1.0) if i == 0 else ('#2a5a9e', 0.6)
+        d.line([(i * k, 0), (i * k, n * k)], fill=color, width=max(1, int(w * k)))
+        d.line([(0, i * k), (n * k, i * k)], fill=color, width=max(1, int(w * k)))
+    return done(img)
+
+
+def deco_fan() -> Image.Image:
+    """Tileable scallop (fish-scale) pattern: gold arcs on deep navy."""
+    w, h = 24, 12
+    img, d, k = canvas(w, h, _rgba('#0b1626'))
+    for cx, cy in ((0, h), (w, h), (w / 2, h / 2), (w / 2, h * 1.5), (0, 0), (w, 0)):
+        for r, color in ((12, '#7a6530'), (8, '#3d3a34'), (4, '#3d3a34')):
+            d.arc([(cx - r) * k, (cy - r) * k, (cx + r) * k, (cy + r) * k], 180, 360,
+                  fill=color, width=max(1, int(0.8 * k)))
+    return done(img)
+
+
+def deco_chevron() -> Image.Image:
+    w, h = 16, 8
+    img, d, k = canvas(w, h, _rgba('#16210f'))
+    for dy in (-h, 0, h):
+        d.line([(0, (h + dy) * k), (w / 2 * k, dy * k), (w * k, (h + dy) * k)],
+               fill='#2c3d1c', width=int(1.0 * k))
+    return done(img)
+
+
+def noir_windows() -> Image.Image:
+    """Dark wall with a few lit windows; used on 3D buildings."""
+    rows = ['................', '.dd.dd.dd.dd.dd.', '.dd.dd.oo.dd.dd.', '................',
+            '................', '.dd.dd.dd.dd.dd.', '.dd.dd.dd.dd.dd.', '................',
+            '................', '.oo.dd.dd.dd.dd.', '.dd.dd.dd.dd.dd.', '................',
+            '................', '.dd.dd.dd.dd.oo.', '.dd.dd.dd.dd.dd.', '................']
+    return pixel_art(rows, {'.': '#15181b', 'd': '#22262b', 'o': '#c9a352'}, scale=1)
+
+
 def pin(fill: str, edge: str, eye: str, shadow: str | None = None) -> Image.Image:
     """The ELJ teardrop pin, tip at bottom centre."""
     w, h = 18, 26
@@ -245,10 +315,24 @@ def build() -> None:
         sprites[f'sv-{cls}'] = flat_icon(cp, '#F2EDE1', '#2350A0', '#2350A0')
         sprites[f'svn-{cls}'] = flat_icon(cp, '#13213D', '#869FCB', '#F2EDE1')
         sprites[f'nv-{cls}'] = flat_icon(cp, '#f6ecd2', '#3d2a20', '#8a4f3a')
+        sprites[f'mk-{cls}'] = shape_icon(cp, 'square', '#cc1a1a', '#111111', '#f0ece0')
+        sprites[f'deco-{cls}'] = shape_icon(cp, 'diamond', '#14100a', '#c9a84c', '#e8cf8a')
+        sprites[f'bp-{cls}'] = flat_icon(cp, '#1c4a8c', '#ffffff', '#ffffff', ring_w=0.9)
+        sprites[f'noir-{cls}'] = flat_icon(cp, '#0b0c0e', '#d8d2c2', '#d8d2c2', ring_w=0.9)
     sprites['fd-pin'] = pin('#D33A2C', INK, '#FFFFFF', shadow=INK)
     sprites['sv-pin'] = pin('#D33A2C', '#D33A2C', '#F2EDE1')
     sprites['sv-dot'] = flat_icon(MDI['information'][1], '#F2EDE1', '#2350A0', '#F2EDE1')
     sprites['svn-dot'] = flat_icon(MDI['information'][1], '#13213D', '#869FCB', '#13213D')
+    sprites['mk-stripes'] = stripes('#111111', '#3a3a3a')
+    sprites['mk-halftone'] = halftone('#e4dccb', '#b9b09c')
+    sprites['bp-grid'] = bp_grid()
+    sprites['bp-hatch'] = stripes('#173f7a', '#4f82c6', period=6, width=0.8)
+    sprites['deco-fan'] = deco_fan()
+    sprites['deco-chevron'] = deco_chevron()
+    sprites['noir-windows'] = noir_windows()
+    for prefix, disc, ring in (('mk', '#cc1a1a', '#111111'), ('deco', '#14100a', '#c9a84c'),
+                               ('bp', '#1c4a8c', '#ffffff'), ('noir', '#0b0c0e', '#d8d2c2')):
+        sprites[f'{prefix}-dot'] = flat_icon(MDI['information'][1], disc, ring, disc)
     sprites['sv-contours'] = contours('#2350A0', '#F2EDE1', 42)
     sprites['svn-contours'] = contours('#869FCB', '#0C172D', 38)
     for name, rows in MARIO_TILES.items():

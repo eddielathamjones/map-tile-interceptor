@@ -1,14 +1,55 @@
-@vibe { label: "Deco"; order: 19; font: "Poiret One Regular"; }
+/* Deco — gold leaf on black lacquer. Geometry, symmetry, and skyscrapers
+   that turn to gold as they rise. */
+
+@vibe { label: "Deco"; order: 12; font: "Poiret One Regular"; }
 
 :root {
-  --bg: #1a1008;
-  --land: #1e1a0e;
-  --water: #0d1a2e;
-  --road: #c9a84c;
-  --building: #2a2018;
-  --label: #f5f0e8;
-  --halo: #1a1008;
-  --halo-width: 1.5;
+  --lacquer: #14100a;
+  --gold:    #c9a84c;
+  --bright:  #e8cf8a;
+  --bronze:  #6b5a2e;
+  --cream:   #f5f0e8;
+  --navy:    #0b1626;
 }
 
-@import "_five.mcss";
+background { color: var(--lacquer); }
+raster     { maxzoom: unset; opacity: zoom(4 0.6, 7 0); }
+
+/* ── Ground ── */
+.pattern, landuse, landcover.wetland, landcover.sand, landcover.ice, aeroway.fill { display: none; }
+park, #landcover_grass, #landcover_wood { pattern: "fx:deco-chevron"; opacity: 1; }
+park.outline { color: var(--bronze); }
+
+/* ── Water: fish-scale fans, gold shoreline ── */
+water        { color: var(--navy); pattern: "fx:deco-fan"; }
+water::after { type: line; color: var(--gold); width: zoom(4 0.5, 12 1, 16 1.6); }
+waterway     { color: #1f3350; }
+
+/* ── Streets: three weights of gold ── */
+road.casing                { color: var(--lacquer); }
+road:not(.casing)          { color: var(--bronze); }
+road.secondary:not(.casing), road.link:not(.casing) { color: var(--gold); }
+road.trunk:not(.casing), road.motorway:not(.casing) { color: var(--bright); }
+road.path                  { color: var(--bronze); }
+rail                       { color: var(--bronze); }
+rail.hatching              { color: var(--lacquer); }
+aeroway.line               { color: var(--bronze); }
+boundary                   { color: var(--gold); dash: 6 2 1 2; }
+
+/* ── Buildings: the taller, the more gilded ── */
+#building          { color: #241c12; outline: var(--bronze); }
+building.extrusion { color: json(["interpolate", ["linear"], ["get", "render_height"],
+                                  0, "#2a2016", 70, "#4a3a1e", 200, "#a8873a", 380, "#e8cf8a"]);
+                     opacity: 0.95; }
+
+/* ── Lettering: marquee capitals for places, wide-set Poiret for streets ── */
+label        { color: var(--cream); halo: var(--lacquer) 1.8; transform: uppercase; spacing: 0.14; }
+label.place  { font: "Limelight Regular"; color: var(--bright); spacing: 0.08; }
+label.road   { size: zoom(13 11, 16 15); }
+label.water  { color: #8fa6c8; halo: var(--navy) 1.5; }
+label.shield { color: #14100a; halo: unset; }
+
+label.poi    { size: 12; text-offset: 0 1.1;
+               icon: json(["coalesce", ["image", ["concat", "fx:deco-", ["get", "class"]]], ["image", "fx:deco-dot"]]); }
+#poi_transit { text-offset: 1.1 0; }
+#airport     { icon: "fx:deco-airport"; }

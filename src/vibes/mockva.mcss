@@ -1,14 +1,56 @@
-@vibe { label: "Mockva"; order: 11; font: "Bebas Neue Regular"; }
+/* Mockva — a Constructivist poster. Three inks only: black, red, paper.
+   Buildings are black mass, streets are red structure, labels are slabs. */
+
+@vibe { label: "Mockva"; order: 10; font: "Bebas Neue Regular"; }
 
 :root {
-  --bg: #f0ece0;
-  --land: #e4ddd0;
-  --water: #1a1a1a;
-  --road: #cc1a1a;
-  --building: #1a1a1a;
-  --label: #1a1a1a;
-  --halo: #f0ece0;
-  --halo-width: 1.5;
+  --paper: #f0ece0;
+  --black: #111111;
+  --red:   #cc1a1a;
 }
 
-@import "_five.mcss";
+background { color: var(--paper); }
+raster     { maxzoom: unset; opacity: zoom(4 0.7, 7 0); }
+
+/* ── Ground ── */
+.pattern, landuse, landcover.wetland, landcover.ice, aeroway.fill, park.outline { display: none; }
+park, #landcover_grass, #landcover_wood { pattern: "fx:mk-halftone"; opacity: 1; }
+#landcover_sand { color: #e4dccb; }
+
+/* ── Water: black, with a faint diagonal ── */
+water    { color: var(--black); pattern: "fx:mk-stripes"; }
+waterway { color: var(--black); }
+
+/* ── Streets: red, no outlines; width is the hierarchy ── */
+road, rail       { cap: butt; join: miter; }
+road.casing      { display: none; }
+road:not(.casing) { color: var(--red); opacity: 1; }
+road.minor:not(.casing), road.service { width: zoom(exp 1.4, 12 0.4, 14 1.2, 18 8); }
+road.trunk:not(.casing), road.motorway:not(.casing)
+                 { width: zoom(exp 1.4, 5 1, 10 3.5, 14 9, 18 30); }
+road.motorway.casing, road.trunk.casing
+                 { display: visible; color: var(--black); }
+road.path        { color: var(--black); dash: 1 2; }
+rail             { color: var(--black); width: zoom(8 1, 14 2.5, 18 5); dash: unset; }
+rail.hatching    { color: var(--paper); dash: 2 2; }
+aeroway.line     { color: var(--black); }
+boundary         { color: var(--red); dash: 8 3; }
+
+/* ── Buildings: black mass; the tallest catch red ── */
+#building          { color: var(--black); outline: var(--black); }
+building.extrusion { color: json(["interpolate", ["linear"], ["get", "render_height"],
+                                  0, "#1c1c1c", 170, "#262626", 280, "#cc1a1a"]);
+                     opacity: 1; }
+
+/* ── Lettering: paper on a red slab for places, black for the rest ── */
+label        { color: var(--black); halo: var(--paper) 1.6; transform: uppercase; spacing: 0.06; }
+label.place  { color: var(--paper); halo: var(--red) 3; text-halo-blur: 0; spacing: 0.1; }
+label.city   { size: zoom(4 14, 8 20, 12 28); halo: var(--black) 3.5; }
+label.water  { color: var(--paper); halo: var(--black) 1.5; }
+label.road   { size: zoom(13 10, 16 14); }
+label.shield { color: var(--black); halo: unset; }
+
+label.poi    { text-offset: 0 1.1;
+               icon: json(["coalesce", ["image", ["concat", "fx:mk-", ["get", "class"]]], ["image", "fx:mk-dot"]]); }
+#poi_transit { text-offset: 1.1 0; }
+#airport     { icon: "fx:mk-airport"; }
