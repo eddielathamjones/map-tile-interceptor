@@ -1,14 +1,58 @@
-@vibe { label: "Noir"; order: 10; }
+/* Noir — the city at 2 a.m. Black and grey, wet avenues under sodium
+   lamps, a few windows still lit, captions off a typewriter. */
+
+@vibe { label: "Noir"; order: 13; font: "Special Elite Regular"; }
 
 :root {
-  --bg: #080e0d;
-  --land: #0e1a18;
-  --water: #0c1e30;
-  --road: #8a7844;
-  --building: #16211f;
-  --label: #e8dfc8;
-  --halo: #080e0d;
-  --halo-width: 1.5;
+  --night:  #0b0c0e;
+  --ash:    #26292d;
+  --smoke:  #4a4e54;
+  --bone:   #d8d2c2;
+  --sodium: #e0b050;
 }
 
-@import "_five.mcss";
+background { color: var(--night); }
+raster     { maxzoom: unset; opacity: zoom(4 0.6, 7 0); }
+
+/* ── Ground ── */
+.pattern, landuse, landcover.wetland, landcover.sand, landcover.ice, aeroway.fill { display: none; }
+park, #landcover_grass, #landcover_wood { color: #101411; opacity: 1; }
+park.outline { display: none; }
+
+/* ── Water: ink, with a thin pale edge ── */
+water        { color: #050607; }
+water::after { type: line; color: var(--smoke); width: zoom(4 0.4, 12 0.8, 16 1.2); }
+waterway     { color: #15181b; }
+
+/* ── Streets: grey side streets, lamplit avenues with a glow on the wet road ── */
+road.casing                { display: none; }
+road:not(.casing)          { color: var(--ash); }
+road.secondary:not(.casing), road.link:not(.casing) { color: var(--smoke); }
+road.trunk:not(.casing), road.motorway:not(.casing) { color: var(--sodium); }
+road.trunk:not(.casing)::before, road.motorway:not(.casing)::before
+                           { color: var(--sodium); opacity: 0.22; blur: 7;
+                             width: zoom(exp 1.4, 5 3, 10 9, 14 22, 18 50); }
+road.secondary:not(.casing)::before
+                           { color: var(--bone); opacity: 0.1; blur: 5;
+                             width: zoom(exp 1.4, 10 4, 14 14, 18 36); }
+road.path                  { color: var(--ash); dash: 1 2; }
+rail                       { color: var(--smoke); }
+rail.hatching              { display: none; }
+aeroway.line               { color: var(--ash); }
+boundary                   { color: var(--smoke); dash: 4 3; }
+
+/* ── Buildings: dark blocks; in 3D, a few lit windows ── */
+#building          { color: #121416; outline: var(--ash); }
+building.extrusion { color: #1a1d20; pattern: "fx:noir-windows"; opacity: 0.96; }
+
+/* ── Lettering ── */
+label        { color: var(--bone); halo: var(--night) 1.6; }
+label.place  { transform: uppercase; spacing: 0.12; }
+label.road   { color: #9a968a; size: zoom(13 9, 16 12); }
+label.water  { color: var(--smoke); }
+label.shield { color: #0b0c0e; halo: unset; }
+
+label.poi    { color: #9a968a; size: 10; text-offset: 0 1.2;
+               icon: json(["coalesce", ["image", ["concat", "fx:noir-", ["get", "class"]]], ["image", "fx:noir-dot"]]); }
+#poi_transit { text-offset: 1.2 0; }
+#airport     { icon: "fx:noir-airport"; }

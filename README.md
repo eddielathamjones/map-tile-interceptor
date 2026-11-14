@@ -55,7 +55,7 @@ Specificity and source order work as in CSS.
 
 **`@vibe` block.** `label` and `order` drive the picker; `font` moves every label to a hosted glyph set; `sprite` swaps the whole icon sheet. Images named `fx:<name>` come from the shared pattern sheet drawn by `scripts/build_fx_sprites.py`.
 
-Files starting with `_` are partials for `@import`. The simpler vibes are five colours plus `@import "_five.mcss"`.
+Files starting with `_` are partials for `@import`. Survey and Survey Night share `_survey.mcss` and differ only in their `:root` tokens.
 
 ---
 
@@ -63,11 +63,15 @@ Files starting with `_` are partials for `@import`. The simpler vibes are five c
 
 | Vibe | Description |
 |---|---|
+| Survey, Survey Night | The main register of the ELJ brand, light and dark, sharing `_survey.mcss`: paper or midnight ground with contour lines, cobalt water edge, mustard arterials, Barlow lettering, the pin on cities |
 | Field Day | The kids' register of the ELJ brand: paper ground, sticker buildings with ink outline and hard shadow, Fredoka labels |
 | Nouveau | Mucha-poster Paris: terracotta blocks, peacock water with wave lines, gold boulevards, ink leading, Federo labels |
 | Mario | 8-bit overworld: tiled grass and water, brick buildings, coin-trail footpaths |
 | Tom Clancy | Phosphor tactical display: dark ground, road brightness by importance, glow on arterials, scanlines |
-| Noir, Mockva, Vintage, Toner, Blueprint, Dark, Watercolor, Hi-Contrast, SimCity, Deco | Five-colour vibes built on `_five.mcss` |
+| Mockva | Constructivist poster in three inks: black building mass, red streets, paper ground, slab labels; the tallest towers turn red |
+| Blueprint | Drafting sheet: ruled grid, hollow double-line roads, outlined footprints, hatched water, stencilled capitals |
+| Deco | Gold on black lacquer: fish-scale water, chevron parks, three weights of gold streets, towers that gild with height |
+| Noir | The city at 2 a.m.: grey side streets, sodium-lit avenues with a glow, lit windows on 3D buildings, typewriter captions |
 
 The chrome around the map (picker, compass, scale bar, frame) is themed per vibe in `src/frontend/css/app.css`.
 
@@ -112,7 +116,8 @@ python scripts/prewarm_tiles.py --base-url http://localhost:5003 --max-zoom 4
 ## Adding a font or pattern
 
 - **Font:** `npx -p fontnik build-glyphs <font.ttf> <outdir>`, copy the `0-255`, `256-511`, `512-767` and `8192-8447` ranges to `src/static/glyphs/<Font Name>/`, then set `font: "<Font Name>"` in the vibe. (`scripts/generate_glyphs.sh` does the same with `build_pbf_glyphs`.)
-- **Pattern or icon:** add a drawing function to `scripts/build_fx_sprites.py`, run it, and reference the result as `fx:<name>`.
+- **POI icon:** add a `class: [mdi-name, codepoint]` entry to `assets/fonts/mdi-icons.json`, re-subset `mdi-subset.ttf` from `@mdi/font` to include it, and rerun `scripts/build_fx_sprites.py`. Every vibe's badge set (`fx:fd-*`, `fx:sv-*`, `fx:svn-*`, `fx:nv-*`) is redrawn.
+- **Pattern or other image:** add a drawing function to `scripts/build_fx_sprites.py`, run it, and reference the result as `fx:<name>`.
 
 ---
 
@@ -120,7 +125,7 @@ python scripts/prewarm_tiles.py --base-url http://localhost:5003 --max-zoom 4
 
 ```
 src/
-  vibes/              one .mcss stylesheet per vibe (+ _five.mcss partial)
+  vibes/              one .mcss stylesheet per vibe (+ _survey.mcss partial)
   backend/
     app.py            Flask app + blueprint registration
     mapcss.py         stylesheet parser and compiler

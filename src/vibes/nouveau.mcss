@@ -63,6 +63,11 @@ label.place  { transform: uppercase; spacing: 0.12; }
 label.water  { color: #f3ead0; halo: #2f6660 1.4; spacing: 0.1; }
 label.road   { size: zoom(13 9, 16 13); }
 
-label.poi    { icon: "fx:nouveau-dot"; text-offset: 0 0.9; }
-#poi_transit { icon: json(["match", ["get", "class"], "railway", "fx:nouveau-metro", "fx:nouveau-dot"]);
+label.poi    { icon: json(["coalesce", ["image", ["concat", "fx:nv-", ["get", "class"]]],
+                                       ["image", "fx:nouveau-dot"]]);
+               text-offset: 0 1.0; }
+#poi_transit { icon: json(["match", ["get", "class"], "railway", "fx:nouveau-metro",
+                           ["coalesce", ["image", ["concat", "fx:nv-", ["get", "class"]]],
+                                        ["image", "fx:nouveau-dot"]]]);
                text-offset: 1.0 0; }
+#airport     { icon: "fx:nv-airport"; }
