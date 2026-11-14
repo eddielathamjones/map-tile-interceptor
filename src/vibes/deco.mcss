@@ -39,7 +39,7 @@ boundary                   { color: var(--gold); dash: 6 2 1 2; }
 /* ── Buildings: the taller, the more gilded ── */
 #building          { color: #241c12; outline: var(--bronze); }
 building.extrusion { color: json(["interpolate", ["linear"], ["get", "render_height"],
-                                  0, "#2a2016", 70, "#4a3a1e", 200, "#a8873a", 380, "#e8cf8a"]);
+                                  0, "#241c12", 90, "#33281a", 180, "#544220", 300, "#c9a84c", 420, "#e8cf8a"]);
                      opacity: 0.95; }
 
 /* ── Lettering: marquee capitals for places, wide-set Poiret for streets ── */
