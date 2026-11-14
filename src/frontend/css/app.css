@@ -72,20 +72,6 @@ body[data-vibe="blueprint"] {
   --scale-line-height: 1px;
 }
 
-body[data-vibe="highcontrast"] {
-  --ui-bg: #000000;
-  --ui-border: #ffff00;
-  --ui-radius: 0px;
-  --ui-font: 'Atkinson Hyperlegible', sans-serif;
-  --ui-font-size: 0.72rem;
-  --ui-color-dim: rgba(255, 255, 0, 0.60);
-  --ui-color-active: #ffffff;
-  --ui-btn-active-bg: rgba(255, 255, 0, 0.15);
-  --ui-btn-active-border: #ffff00;
-  --frame-border: 2px solid #ffff00;
-  --scale-line-height: 3px;
-}
-
 body[data-vibe="mario"] {
   --ui-bg: rgba(0, 110, 0, 0.95);
   --ui-border: #ffd700;
@@ -365,7 +351,6 @@ body[data-vibe="tomclancy"] .hud-corner { display: block; }
 /* Show compass-default for most vibes */
 body[data-vibe="default"]      .compass-default,
 body[data-vibe="noir"]         .compass-default,
-body[data-vibe="highcontrast"] .compass-default,
 body[data-vibe="blueprint"]    .compass-default,
 body[data-vibe="survey"]       .compass-default,
 body[data-vibe="surveynight"]  .compass-default { display: block; }

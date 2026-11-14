@@ -72,7 +72,6 @@ Files starting with `_` are partials for `@import`. Survey and Survey Night shar
 | Blueprint | Drafting sheet: ruled grid, hollow double-line roads, outlined footprints, hatched water, stencilled capitals |
 | Deco | Gold on black lacquer: fish-scale water, chevron parks, three weights of gold streets, towers that gild with height |
 | Noir | The city at 2 a.m.: grey side streets, sodium-lit avenues with a glow, lit windows on 3D buildings, typewriter captions |
-| Hi-Contrast | Accessibility style: black ground, white outlines, yellow roads, large haloed labels |
 
 The chrome around the map (picker, compass, scale bar, frame) is themed per vibe in `src/frontend/css/app.css`.
 

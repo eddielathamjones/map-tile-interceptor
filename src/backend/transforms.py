@@ -28,9 +28,6 @@ def _pil_transform(vibe: str, img_bytes: bytes) -> bytes:
 
     if vibe == 'blueprint':
         img = _blueprint(img)
-    elif vibe == 'highcontrast':
-        img = ImageEnhance.Contrast(img).enhance(2.2)
-        img = ImageEnhance.Color(img).enhance(1.6)
     elif vibe == 'noir':
         img = ImageEnhance.Color(img).enhance(0.15)
         img = _channel_tint(img, 0.55, 0.65, 0.72)
