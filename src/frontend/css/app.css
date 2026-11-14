@@ -205,6 +205,30 @@ body[data-vibe="nouveau"] {
   --scale-line-height: 2px;
 }
 
+/* Survey: the ELJ main register, light and dark. Flat cards, hairline borders. */
+body[data-vibe="survey"] {
+  --ui-bg: #FFFFFF;
+  --ui-border: #E6DFCD;
+  --ui-radius: 6px;
+  --ui-font: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --ui-font-size: 0.82rem;
+  --ui-color-dim: #595C62;
+  --ui-color-active: #2350A0;
+  --ui-btn-active-bg: #F2EDE1;
+  --ui-btn-active-border: #2350A0;
+}
+body[data-vibe="surveynight"] {
+  --ui-bg: #13213D;
+  --ui-border: #22304D;
+  --ui-radius: 6px;
+  --ui-font: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --ui-font-size: 0.82rem;
+  --ui-color-dim: #AEB6C6;
+  --ui-color-active: #F2EDE1;
+  --ui-btn-active-bg: #0C172D;
+  --ui-btn-active-border: #E8B13A;
+}
+
 /* Field Day: the ELJ kids' register. Sticker cards: white, ink outline, hard ink shadow. */
 body[data-vibe="fieldday"] {
   --ui-bg: #FFFFFF;
@@ -406,7 +430,9 @@ body[data-vibe="vintage"]      .compass-default,
 body[data-vibe="toner"]        .compass-default,
 body[data-vibe="watercolor"]   .compass-default,
 body[data-vibe="highcontrast"] .compass-default,
-body[data-vibe="blueprint"]    .compass-default { display: block; }
+body[data-vibe="blueprint"]    .compass-default,
+body[data-vibe="survey"]       .compass-default,
+body[data-vibe="surveynight"]  .compass-default { display: block; }
 
 /* Tomclancy: dark box so phosphor reticle reads against bright green tiles */
 body[data-vibe="tomclancy"] #compass {
@@ -646,3 +672,9 @@ body[data-vibe="tomclancy"] #map::before {
     linear-gradient(90deg, rgba(0, 255, 65, 0.07) 1px, transparent 1px) 0 0 / 120px 120px,
     radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
 }
+
+/* Survey: condensed caps, like the brand's headings */
+body[data-vibe^="survey"] #vibe-picker button,
+body[data-vibe^="survey"] #poi-panel button,
+body[data-vibe^="survey"] #scale-label { font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+body[data-vibe^="survey"] #scale-bar { border-width: 1px; }

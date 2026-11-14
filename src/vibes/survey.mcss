@@ -1,0 +1,27 @@
+@vibe { label: "Survey"; order: 0; font: "Barlow Medium"; }
+
+:root {
+  --ground:        #F2EDE1;   /* paper */
+  --card:          #FFFFFF;
+  --primary:       #2350A0;   /* cobalt */
+  --text:          #1D1F23;   /* ink */
+  --text-dim:      #595C62;
+  --accent:        #E8B13A;   /* mustard */
+  --accent-edge:   #8A5A00;
+  --water:         #A7B4CA;
+  --water-edge:    #2350A0;
+  --water-text:    #2350A0;
+  --green:         #C9D6AE;
+  --green-edge:    #6F9A5E;
+  --wood:          #A9BF84;
+  --sand:          #F0CF7A;
+  --road:          #FFFFFF;
+  --road-edge:     #B9B09A;
+  --rail:          #595C62;
+  --building:      #E6DFCD;
+  --building-edge: #B9B09A;
+  --contours:      "fx:sv-contours";
+  --icons:         fx:sv-;
+}
+
+@import "_survey.mcss";

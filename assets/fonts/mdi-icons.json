@@ -1,0 +1,274 @@
+{
+ "restaurant": [
+  "silverware-fork-knife",
+  "F0A70"
+ ],
+ "cafe": [
+  "coffee",
+  "F0176"
+ ],
+ "fast_food": [
+  "hamburger",
+  "F0685"
+ ],
+ "bar": [
+  "glass-cocktail",
+  "F0356"
+ ],
+ "beer": [
+  "glass-mug-variant",
+  "F1116"
+ ],
+ "bakery": [
+  "bread-slice",
+  "F0CEE"
+ ],
+ "ice_cream": [
+  "ice-cream",
+  "F082A"
+ ],
+ "grocery": [
+  "cart",
+  "F0110"
+ ],
+ "shop": [
+  "shopping",
+  "F049A"
+ ],
+ "clothing_store": [
+  "tshirt-crew",
+  "F0A7B"
+ ],
+ "alcohol_shop": [
+  "bottle-wine",
+  "F0854"
+ ],
+ "florist": [
+  "flower-tulip",
+  "F09F1"
+ ],
+ "furniture": [
+  "sofa",
+  "F04B9"
+ ],
+ "laundry": [
+  "washing-machine",
+  "F072A"
+ ],
+ "hairdresser": [
+  "content-cut",
+  "F0190"
+ ],
+ "park": [
+  "tree",
+  "F0531"
+ ],
+ "garden": [
+  "flower",
+  "F024A"
+ ],
+ "playground": [
+  "seesaw",
+  "F15A4"
+ ],
+ "pitch": [
+  "soccer",
+  "F04B8"
+ ],
+ "stadium": [
+  "stadium",
+  "F0FF9"
+ ],
+ "swimming": [
+  "swim",
+  "F04E3"
+ ],
+ "swimming_pool": [
+  "swim",
+  "F04E3"
+ ],
+ "sports_centre": [
+  "dumbbell",
+  "F01E6"
+ ],
+ "golf": [
+  "golf",
+  "F0823"
+ ],
+ "zoo": [
+  "paw",
+  "F03E9"
+ ],
+ "aquarium": [
+  "fish",
+  "F023A"
+ ],
+ "dog_park": [
+  "dog",
+  "F0A43"
+ ],
+ "campsite": [
+  "tent",
+  "F0508"
+ ],
+ "picnic_site": [
+  "table-picnic",
+  "F1743"
+ ],
+ "hospital": [
+  "hospital-box",
+  "F02E0"
+ ],
+ "doctors": [
+  "stethoscope",
+  "F04D9"
+ ],
+ "dentist": [
+  "tooth",
+  "F08C3"
+ ],
+ "pharmacy": [
+  "pill",
+  "F0402"
+ ],
+ "police": [
+  "shield-star",
+  "F113B"
+ ],
+ "fire_station": [
+  "fire-truck",
+  "F08AB"
+ ],
+ "school": [
+  "school",
+  "F0474"
+ ],
+ "college": [
+  "school",
+  "F0474"
+ ],
+ "library": [
+  "book-open-variant",
+  "F14F7"
+ ],
+ "museum": [
+  "bank",
+  "F0070"
+ ],
+ "art_gallery": [
+  "palette",
+  "F03D8"
+ ],
+ "cinema": [
+  "movie",
+  "F0381"
+ ],
+ "theatre": [
+  "drama-masks",
+  "F0D02"
+ ],
+ "music": [
+  "music",
+  "F075A"
+ ],
+ "attraction": [
+  "star",
+  "F04CE"
+ ],
+ "castle": [
+  "castle",
+  "F011A"
+ ],
+ "monument": [
+  "pillar",
+  "F0702"
+ ],
+ "cemetery": [
+  "grave-stone",
+  "F0BA2"
+ ],
+ "lodging": [
+  "bed",
+  "F02E3"
+ ],
+ "place_of_worship": [
+  "church",
+  "F0144"
+ ],
+ "town_hall": [
+  "town-hall",
+  "F1875"
+ ],
+ "bank": [
+  "cash",
+  "F0114"
+ ],
+ "atm": [
+  "cash",
+  "F0114"
+ ],
+ "post": [
+  "email",
+  "F01EE"
+ ],
+ "office": [
+  "briefcase",
+  "F00D6"
+ ],
+ "information": [
+  "information-variant",
+  "F064E"
+ ],
+ "toilets": [
+  "human-male-female",
+  "F02E8"
+ ],
+ "fuel": [
+  "gas-station",
+  "F0298"
+ ],
+ "parking": [
+  "parking",
+  "F03E3"
+ ],
+ "bus": [
+  "bus",
+  "F00E7"
+ ],
+ "railway": [
+  "train",
+  "F052C"
+ ],
+ "airport": [
+  "airplane",
+  "F001D"
+ ],
+ "ferry_terminal": [
+  "ferry",
+  "F0213"
+ ],
+ "harbor": [
+  "anchor",
+  "F0031"
+ ],
+ "bicycle": [
+  "bicycle",
+  "F109C"
+ ],
+ "bicycle_rental": [
+  "bicycle",
+  "F109C"
+ ],
+ "bicycle_parking": [
+  "bicycle",
+  "F109C"
+ ],
+ "entrance": [
+  "door",
+  "F081A"
+ ],
+ "shelter": [
+  "home-roof",
+  "F112B"
+ ]
+}

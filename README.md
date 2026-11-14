@@ -63,6 +63,7 @@ Files starting with `_` are partials for `@import`. The simpler vibes are five c
 
 | Vibe | Description |
 |---|---|
+| Survey, Survey Night | The main register of the ELJ brand, light and dark, sharing `_survey.mcss`: paper or midnight ground with contour lines, cobalt water edge, mustard arterials, Barlow lettering, the pin on cities |
 | Field Day | The kids' register of the ELJ brand: paper ground, sticker buildings with ink outline and hard shadow, Fredoka labels |
 | Nouveau | Mucha-poster Paris: terracotta blocks, peacock water with wave lines, gold boulevards, ink leading, Federo labels |
 | Mario | 8-bit overworld: tiled grass and water, brick buildings, coin-trail footpaths |
@@ -112,7 +113,8 @@ python scripts/prewarm_tiles.py --base-url http://localhost:5003 --max-zoom 4
 ## Adding a font or pattern
 
 - **Font:** `npx -p fontnik build-glyphs <font.ttf> <outdir>`, copy the `0-255`, `256-511`, `512-767` and `8192-8447` ranges to `src/static/glyphs/<Font Name>/`, then set `font: "<Font Name>"` in the vibe. (`scripts/generate_glyphs.sh` does the same with `build_pbf_glyphs`.)
-- **Pattern or icon:** add a drawing function to `scripts/build_fx_sprites.py`, run it, and reference the result as `fx:<name>`.
+- **POI icon:** add a `class: [mdi-name, codepoint]` entry to `assets/fonts/mdi-icons.json`, re-subset `mdi-subset.ttf` from `@mdi/font` to include it, and rerun `scripts/build_fx_sprites.py`. Every vibe's badge set (`fx:fd-*`, `fx:sv-*`, `fx:svn-*`, `fx:nv-*`) is redrawn.
+- **Pattern or other image:** add a drawing function to `scripts/build_fx_sprites.py`, run it, and reference the result as `fx:<name>`.
 
 ---
 

@@ -77,14 +77,15 @@ label.city        { size: zoom(4 13, 8 18, 12 26); }
 label.road        { size: zoom(13 10, 16 14); }
 label.shield      { halo: unset; color: var(--ink); }
 
-/* POIs: sticker dots coloured by kind, big ones only until you zoom in */
-label.poi         { icon: json(["match", ["get", "class"],
-                      ["restaurant", "cafe", "fast_food", "bar", "bakery", "ice_cream"], "fx:fd-dot-mustard",
-                      ["park", "garden", "campsite", "zoo", "playground", "pitch", "golf"], "fx:fd-dot-green",
-                      ["school", "college", "library", "museum", "art_gallery", "cinema", "theatre"], "fx:fd-dot-cobalt",
-                      ["hospital", "pharmacy", "police", "fire_station"], "fx:fd-dot-red",
-                      "fx:fd-dot-white"]);
-                    icon-scale: 1; text-offset: 0 0.9; size: 12; }
+/* POIs: sticker badges coloured by kind, big ones only until you zoom in */
+label.poi         { icon: json(["coalesce", ["image", ["concat", "fx:fd-", ["get", "class"]]],
+                                            ["image", "fx:fd-dot-white"]]);
+                    icon-scale: 1; text-offset: 0 1.3; size: 12; }
 #poi_r20          { minzoom: 16.5; }
 #poi_r7           { minzoom: 15.5; }
-#poi_transit      { icon: "fx:fd-dot-ink"; text-offset: 0.9 0; }
+#poi_transit      { text-offset: 1.2 0; }
+#airport          { icon: "fx:fd-airport"; }
+
+/* the brand pin marks the cities */
+#label_city, #label_city_capital
+                  { icon: json(["step", ["zoom"], "fx:fd-pin", 9, ""]); icon-anchor: bottom; }
