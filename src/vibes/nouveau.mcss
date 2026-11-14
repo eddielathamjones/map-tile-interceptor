@@ -1,0 +1,68 @@
+/* Art Nouveau — a Mucha-poster Paris. Cream paper, terracotta blocks,
+   peacock water, absinthe gardens, gold boulevards, and a dark ink line
+   around everything like the leading of a stained-glass window. */
+
+@vibe { label: "Nouveau"; order: 2; font: "Federo Regular"; }
+
+:root {
+  --paper:      #efe2c2;
+  --ink:        #3d2a20;
+  --sienna:     #8a4f3a;
+  --terracotta: #d99c7c;
+  --peacock:    #4f8f88;
+  --absinthe:   #a9b56a;
+  --olive:      #5e6b2e;
+  --gold:       #e0ac3e;
+  --straw:      #f0d488;
+  --cream:      #fbf3dc;
+}
+
+background { color: var(--paper); }
+raster     { maxzoom: unset; opacity: zoom(4 0.5, 7 0); }
+
+/* ── Ground ── */
+.pattern, landcover.wetland { display: none; }
+landuse              { color: #e3cfa0; }
+#landuse_residential { color: #ead7ac; }
+#landuse_cemetery    { color: #b7b98a; }
+aeroway.fill         { color: #e0d2b0; }
+aeroway.line         { color: var(--cream); }
+#landcover_grass     { color: #b9c078; opacity: 1; }
+#landcover_wood      { color: #8a9a52; opacity: 1; }
+#landcover_sand      { color: #e6cf96; }
+#landcover_ice       { color: #f4efe0; }
+
+#park                { pattern: "fx:nouveau-leaves"; opacity: 1; }
+#park::after         { type: line; color: var(--olive); width: zoom(10 0.6, 14 1.4, 18 2.2); }
+park.outline         { display: none; }
+
+/* ── Water: whiplash wave lines, inked bank ── */
+water        { color: var(--peacock); pattern: "fx:nouveau-waves"; }
+water::after { type: line; color: var(--ink); width: zoom(4 0.5, 10 1, 15 2); }
+waterway     { color: var(--peacock); }
+
+/* ── Streets: cream and gold glass, ink leading ── */
+road.casing                 { color: var(--ink); }
+road:not(.casing)           { color: var(--cream); }
+road.secondary:not(.casing), road.link:not(.casing) { color: var(--straw); }
+road.trunk:not(.casing), road.motorway:not(.casing) { color: var(--gold); }
+road.path                   { color: var(--sienna); }
+road.path.casing            { color: var(--paper); }
+rail                        { color: var(--ink); }
+boundary                    { color: var(--sienna); }
+
+/* ── Buildings ── */
+#building          { color: var(--terracotta); outline: var(--sienna); }
+building.extrusion { color: json(["interpolate", ["linear"], ["get", "render_height"],
+                                  0, "#e0a888", 40, "#c9785c"]);
+                     opacity: 0.92; }
+
+/* ── Lettering ── */
+label        { color: var(--ink); halo: var(--paper) 1.4; }
+label.place  { transform: uppercase; spacing: 0.12; }
+label.water  { color: #f3ead0; halo: #2f6660 1.4; spacing: 0.1; }
+label.road   { size: zoom(13 9, 16 13); }
+
+label.poi    { icon: "fx:nouveau-dot"; text-offset: 0 0.9; }
+#poi_transit { icon: json(["match", ["get", "class"], "railway", "fx:nouveau-metro", "fx:nouveau-dot"]);
+               text-offset: 1.0 0; }

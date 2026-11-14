@@ -1,0 +1,14 @@
+@vibe { label: "SimCity"; order: 18; font: "Share Tech Mono Regular"; }
+
+:root {
+  --bg: #8a9a6a;
+  --land: #7a8a5a;
+  --water: #4a6a8a;
+  --road: #a0a090;
+  --building: #c8a030;
+  --label: #1a1a10;
+  --halo: #8a9a6a;
+  --halo-width: 1.0;
+}
+
+@import "_five.mcss";

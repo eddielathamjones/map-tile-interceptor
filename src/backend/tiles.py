@@ -7,7 +7,7 @@ import requests
 from flask import Blueprint, Response, abort, jsonify, send_file
 from PIL import Image
 
-from .style_builder import build_style
+from .style_builder import build_style, list_vibes, vibe_exists
 from .transforms import transform
 
 log = logging.getLogger(__name__)
@@ -16,10 +16,6 @@ tiles_bp = Blueprint('tiles', __name__, url_prefix='/api/tiles')
 
 _CACHE_DIR = Path(os.environ.get('TILE_CACHE_DIR', '/tmp/tile_cache'))
 _UPSTREAM  = 'https://tiles.openfreemap.org/natural_earth/ne2sr/{z}/{x}/{y}.png'
-_VIBES     = frozenset({
-    'default', 'vintage', 'toner', 'blueprint', 'dark', 'watercolor', 'highcontrast', 'noir',
-    'mockva', 'mario', 'simcity', 'tomclancy', 'deco', 'metro',
-})
 
 
 def _make_empty_tile() -> bytes:
@@ -31,9 +27,14 @@ _EMPTY_TILE_PNG = _make_empty_tile()
 del _make_empty_tile
 
 
+@tiles_bp.route('/vibes')
+def vibes():
+    return jsonify(list_vibes())
+
+
 @tiles_bp.route('/style/<vibe>')
 def style(vibe: str):
-    if vibe not in _VIBES:
+    if not vibe_exists(vibe):
         abort(404)
     try:
         return jsonify(build_style(vibe))
@@ -44,7 +45,7 @@ def style(vibe: str):
 
 @tiles_bp.route('/raster/<vibe>/<int:z>/<int:x>/<int:y>.png')
 def raster(vibe: str, z: int, x: int, y: int):
-    if vibe not in _VIBES:
+    if not vibe_exists(vibe):
         abort(404)
 
     cache_path = _CACHE_DIR / 'raster' / vibe / str(z) / str(x) / f'{y}.png'

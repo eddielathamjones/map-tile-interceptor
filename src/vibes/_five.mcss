@@ -1,0 +1,20 @@
+/* Five-colour template for the simple vibes.
+   Set --bg --land --water --road --label (and optionally --building, --halo,
+   --halo-width, --raster-opacity) in :root, then @import this file. */
+
+background        { color: var(--bg); }
+raster            { maxzoom: unset; opacity: zoom(5 var(--raster-opacity, 0.85), 9 0.25); }
+
+park, landuse, landcover, aeroway.fill { color: var(--land); }
+.pattern, landcover.wetland            { display: none; }
+water             { color: var(--water); }
+waterway          { color: var(--water); }
+building          { color: var(--building, var(--land)); outline: var(--building, var(--land)); }
+building.extrusion { opacity: 0.85; }
+
+road, rail, aeroway.line { color: var(--road); }
+road.casing       { opacity: 0.35; }
+boundary          { color: var(--label); opacity: 0.5; }
+
+label             { color: var(--label); halo: var(--halo, var(--bg)) var(--halo-width, 1.5); }
+label.poi         { text-offset: 0 1.2; }

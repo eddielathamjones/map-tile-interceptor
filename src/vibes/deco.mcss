@@ -1,0 +1,14 @@
+@vibe { label: "Deco"; order: 19; font: "Poiret One Regular"; }
+
+:root {
+  --bg: #1a1008;
+  --land: #1e1a0e;
+  --water: #0d1a2e;
+  --road: #c9a84c;
+  --building: #2a2018;
+  --label: #f5f0e8;
+  --halo: #1a1008;
+  --halo-width: 1.5;
+}
+
+@import "_five.mcss";

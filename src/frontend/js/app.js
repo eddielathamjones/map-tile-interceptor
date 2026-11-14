@@ -2,38 +2,27 @@
 
 // ── Vibe switcher ─────────────────────────────────────────────────────────────
 
-const VIBES = {
-  default:      { label: 'Default',     styleUrl: 'https://tiles.openfreemap.org/styles/liberty' },
-  noir:         { label: 'Noir',        styleUrl: '/api/tiles/style/noir' },
-  mockva:       { label: 'Mockva',      styleUrl: '/api/tiles/style/mockva' },
-  vintage:      { label: 'Vintage',     styleUrl: '/api/tiles/style/vintage'     },
-  toner:        { label: 'Toner',       styleUrl: '/api/tiles/style/toner'       },
-  blueprint:    { label: 'Blueprint',   styleUrl: '/api/tiles/style/blueprint'   },
-  dark:         { label: 'Dark',        styleUrl: '/api/tiles/style/dark'        },
-  watercolor:   { label: 'Watercolor',  styleUrl: '/api/tiles/style/watercolor'  },
-  highcontrast: { label: 'Hi-Contrast', styleUrl: '/api/tiles/style/highcontrast' },
-  mario:        { label: 'Mario',       styleUrl: '/api/tiles/style/mario'       },
-  simcity:      { label: 'SimCity',     styleUrl: '/api/tiles/style/simcity'     },
-  tomclancy:    { label: 'Tom Clancy',  styleUrl: '/api/tiles/style/tomclancy'   },
-  deco:         { label: 'Deco',        styleUrl: '/api/tiles/style/deco'        },
-  metro:        { label: 'Metro',       styleUrl: '/api/tiles/style/metro'       },
-};
+// Filled from /api/tiles/vibes: one entry per stylesheet in src/vibes/.
+const VIBES = {};
 
-// Google Fonts families per vibe (system fonts need no loading)
-const VIBE_FONTS_WEB = {
-  mario:        'Press Start 2P',
-  tomclancy:    'Share Tech Mono',
-  deco:         'Poiret One',
-  metro:        'IM Fell English',
-  mockva:       'Bebas Neue',
-  blueprint:    'Share Tech Mono',
-  highcontrast: 'Atkinson Hyperlegible',
-  toner:        'Inter',
-};
+async function loadVibes() {
+  const list = await fetch('/api/tiles/vibes').then(r => r.json());
+  for (const { id, label } of list) {
+    VIBES[id] = {
+      label,
+      styleUrl: id === 'default' ? 'https://tiles.openfreemap.org/styles/liberty' : `/api/tiles/style/${id}`,
+    };
+  }
+}
+
+// Google Fonts used by the UI chrome of each vibe
+const UI_FONTS = [
+  'Press Start 2P', 'Share Tech Mono', 'Poiret One', 'IM Fell English', 'Bebas Neue',
+  'Atkinson Hyperlegible', 'Inter', 'Fredoka:wght@500;600', 'Barlow Condensed:wght@600', 'Federo',
+];
 
 function loadVibeFonts() {
-  const families = [...new Set(Object.values(VIBE_FONTS_WEB))];
-  const params = families.map(f => `family=${encodeURIComponent(f)}`).join('&');
+  const params = UI_FONTS.map(f => `family=${f.replace(/ /g, '+')}`).join('&');
   const link = document.createElement('link');
   link.rel = 'stylesheet';
   link.href = `https://fonts.googleapis.com/css2?${params}&display=swap`;
@@ -163,23 +152,31 @@ function buildPoiPanel() {
 
 // ── Map init ──────────────────────────────────────────────────────────────────
 
-const map = new maplibregl.Map({
-  container: 'map',
-  style: VIBES[currentVibe()].styleUrl,
-  center: [-110.9747, 32.2226],
-  zoom: 11,
-  minZoom: 1,
-  maxZoom: 18,
-  attributionControl: { compact: true },
-});
+let map;
 
-map.on('style.load', () => {
-  origFilters = {};
-  RANK_LAYERS.forEach(id => {
-    if (map.getLayer(id)) origFilters[id] = map.getFilter(id);
+function initMap() {
+  map = new maplibregl.Map({
+    container: 'map',
+    style: VIBES[currentVibe()].styleUrl,
+    center: [-110.9747, 32.2226],
+    zoom: 11,
+    minZoom: 1,
+    maxZoom: 18,
+    attributionControl: { compact: true },
   });
-  applyPoiFilter();
-});
+
+  map.on('style.load', () => {
+    origFilters = {};
+    RANK_LAYERS.forEach(id => {
+      if (map.getLayer(id)) origFilters[id] = map.getFilter(id);
+    });
+    applyPoiFilter();
+    updateCompassBearing();
+    updateScaleBar();
+  });
+  map.on('rotate', updateCompassBearing);
+  map.on('move', updateScaleBar);
+}
 
 // ── Compass rose ───────────────────────────────────────────────────────────────
 
@@ -231,32 +228,32 @@ function updateScaleBar() {
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
-map.on('rotate', updateCompassBearing);
-map.on('style.load', updateCompassBearing);
-
-map.on('move', updateScaleBar);
-map.on('style.load', updateScaleBar);
-
 document.getElementById('compass').addEventListener('click', () => {
   map.easeTo({ bearing: 0, pitch: 0, duration: 300 });
 });
 
-document.body.dataset.vibe = currentVibe();
 loadVibeFonts();
-buildVibePicker();
 buildPoiPanel();
+loadVibes().then(() => {
+  document.body.dataset.vibe = currentVibe();
+  buildVibePicker();
+  initMap();
+  initReport();
+});
 
 /* ─── Report modal ─────────────────────────────────────────────────── */
+function initReport() {
+const modal = document.getElementById('report-modal');
 document.getElementById('report-btn').addEventListener('click', () => {
-  document.getElementById('report-modal').classList.remove('hidden');
+  modal.style.display = 'flex';
   setTimeout(() => document.getElementById('report-text').focus(), 60);
 });
 document.getElementById('report-close').addEventListener('click', () => {
-  document.getElementById('report-modal').classList.add('hidden');
+  modal.style.display = 'none';
 });
 document.getElementById('report-modal').addEventListener('click', e => {
   if (e.target === document.getElementById('report-modal'))
-    document.getElementById('report-modal').classList.add('hidden');
+    modal.style.display = 'none';
 });
 document.getElementById('report-submit').addEventListener('click', () => {
   const desc = document.getElementById('report-text').value.trim();
@@ -280,7 +277,7 @@ document.getElementById('report-submit').addEventListener('click', () => {
         btn.textContent = 'Sent ✓';
         document.getElementById('report-text').value = '';
         setTimeout(() => {
-          document.getElementById('report-modal').style.display = 'none';
+          modal.style.display = 'none';
           btn.textContent = 'Send report →';
           btn.disabled = false;
         }, 1200);
@@ -296,3 +293,4 @@ document.getElementById('report-submit').addEventListener('click', () => {
       alert('Network error — try again.');
     });
 });
+}

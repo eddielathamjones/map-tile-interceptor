@@ -1,85 +1,28 @@
-"""Fetch the Liberty base style once; build per-vibe derivatives lazily."""
+"""Build per-vibe MapLibre styles: Liberty base + one map stylesheet per vibe.
 
-import copy
+Each vibe is `src/vibes/<name>.mcss` (see mapcss.py for the dialect). Files
+whose name starts with `_` are shared partials for @import, not vibes.
+"""
+
+import json
 import logging
 import threading
+from pathlib import Path
 
 import requests
+
+from . import mapcss
 
 log = logging.getLogger(__name__)
 
 _LIBERTY_URL = 'https://tiles.openfreemap.org/styles/liberty'
-
-# (background, land, water, roads, labels)
-_VIBE_COLORS: dict[str, tuple[str, str, str, str, str]] = {
-    'vintage':      ('#f0e8d0', '#e8ddc0', '#c8d8d0', '#9b7b52', '#3a2a18'),
-    'toner':        ('#ffffff', '#f5f5f5', '#c8c8c8', '#404040', '#000000'),
-    'blueprint':    ('#1a3a6c', '#1e4080', '#0a1f5c', '#5588cc', '#dce8ff'),
-    'dark':         ('#0d1117', '#161b22', '#0d1b2a', '#30363d', '#8b949e'),
-    'watercolor':   ('#f5ede0', '#e8dbc8', '#b8ccd8', '#c09060', '#4a3020'),
-    'highcontrast': ('#000000', '#111111', '#0033cc', '#ffee00', '#ffffff'),
-    'noir':         ('#080e0d', '#0e1a18', '#0c1e30', '#8a7844', '#e8dfc8'),
-    'mockva':       ('#f0ece0', '#e4ddd0', '#1a1a1a', '#cc1a1a', '#1a1a1a'),
-    'mario':        ('#38a800', '#38a800', '#5c94fc', '#c8a850', '#ffffff'),
-    'simcity':      ('#8a9a6a', '#7a8a5a', '#4a6a8a', '#a0a090', '#1a1a10'),
-    'tomclancy':    ('#000a00', '#001500', '#000800', '#00cc33', '#00ff41'),
-    'deco':         ('#1a1008', '#1e1a0e', '#0d1a2e', '#c9a84c', '#f5f0e8'),
-    'metro':        ('#f0ebe0', '#e2d9c2', '#8ab4a8', '#c4a86a', '#3a2e1a'),
-}
-
-# (halo_color, halo_width) — applied to all symbol layers for the vibe
-_VIBE_HALOS: dict[str, tuple[str, float]] = {
-    'vintage':      ('#f0e8d0', 1.0),
-    'toner':        ('#ffffff', 1.5),
-    'blueprint':    ('#1a3a6c', 1.5),
-    'dark':         ('#0d1117', 1.5),
-    'watercolor':   ('#f5ede0', 1.0),
-    'highcontrast': ('#000000', 2.0),
-    'noir':         ('#080e0d', 1.5),
-    'mockva':       ('#f0ece0', 1.5),
-    'tomclancy':    ('#001a00', 1.5),
-    'deco':         ('#1a1008', 1.5),
-    'metro':        ('#f0ebe0', 1.0),
-}
-
-_VIBE_FONTS: dict[str, str] = {
-    'mockva':       'Bebas Neue Regular',
-    'mario':        'Press Start 2P Regular',
-    'simcity':      'Share Tech Mono Regular',
-    'tomclancy':    'Share Tech Mono Regular',   # OCR A Extended not available as TTF; Share Tech Mono is the fallback
-    'deco':         'Poiret One Regular',
-    'metro':        'IM Fell English Italic',
-    'vintage':      'IM Fell English Regular',
-    'blueprint':    'Share Tech Mono Regular',
-    'watercolor':   'Caveat Regular',
-    'toner':        'Inter Regular',
-    'dark':         'Space Grotesk Regular',
-    'highcontrast': 'Atkinson Hyperlegible Regular',
-}
-
-_LAND_KEYWORDS  = ('land', 'park', 'grass', 'green', 'wood', 'forest',
-                   'vegetation', 'farmland', 'scrub', 'rock', 'sand', 'earth')
-_WATER_KEYWORDS = ('water', 'lake', 'ocean', 'sea', 'river', 'wetland', 'stream')
-_ROAD_KEYWORDS  = ('road', 'highway', 'motorway', 'trunk', 'street', 'path',
-                   'bridge', 'tunnel', 'rail', 'transit', 'ferry')
-
-_VIBE_SPRITES: dict[str, str] = {
-    'mario':    '/api/sprites/mario',
-    'tomclancy': '/api/sprites/tomclancy',
-    # mockva, deco, metro added as their sprites are built
-}
+_VIBES_DIR = Path(__file__).parent.parent / 'vibes'
+_SNAPSHOT = Path(__file__).parent.parent / 'static' / 'liberty.json'
 
 _base_style: dict | None = None
 _lock = threading.Lock()
-_style_cache: dict[str, dict] = {}
-
-
-def _fetch_base() -> None:
-    global _base_style
-    resp = requests.get(_LIBERTY_URL, timeout=15)
-    resp.raise_for_status()
-    _base_style = resp.json()
-    log.info('Liberty style fetched (%d layers)', len(_base_style.get('layers', [])))
+# vibe -> (stylesheet mtimes, built style); rebuilt when any source file changes
+_style_cache: dict[str, tuple[tuple, dict]] = {}
 
 
 def _get_base() -> dict:
@@ -87,114 +30,86 @@ def _get_base() -> dict:
     if _base_style is None:
         with _lock:
             if _base_style is None:
-                _fetch_base()
-    return _base_style  # type: ignore[return-value]
+                try:
+                    resp = requests.get(_LIBERTY_URL, timeout=15)
+                    resp.raise_for_status()
+                    _base_style = resp.json()
+                except Exception:
+                    log.warning('Liberty fetch failed; using bundled snapshot', exc_info=True)
+                    _base_style = json.loads(_SNAPSHOT.read_text(encoding='utf-8'))
+                log.info('Liberty style loaded (%d layers)', len(_base_style.get('layers', [])))
+    return _base_style
+
+
+def _sheet_path(vibe: str) -> Path:
+    return _VIBES_DIR / f'{vibe}.mcss'
+
+
+def list_vibes() -> list[dict]:
+    """All vibes, in picker order: [{id, label}], with 'default' first."""
+    vibes = []
+    for path in _VIBES_DIR.glob('*.mcss'):
+        if path.name.startswith('_'):
+            continue
+        meta = mapcss.parse(path).meta
+        vibes.append((float(meta.get('order', 100)), path.stem, meta.get('label', path.stem.title())))
+    vibes.sort()
+    return [{'id': 'default', 'label': 'Default'}] + [{'id': v, 'label': label} for _, v, label in vibes]
+
+
+def vibe_exists(vibe: str) -> bool:
+    return vibe == 'default' or (vibe.isidentifier() and _sheet_path(vibe).is_file())
+
+
+def _uses_fx(node) -> bool:
+    if isinstance(node, str):
+        return node.startswith('fx:')
+    if isinstance(node, dict):
+        return any(_uses_fx(v) for v in node.values())
+    if isinstance(node, list):
+        return any(_uses_fx(v) for v in node)
+    return False
 
 
 def build_style(vibe: str) -> dict:
-    """Return a MapLibre style dict for the given vibe.
-
-    For 'default' the base style is returned as-is.
-    For all other vibes: raster source tiles URL is rewritten to our proxy,
-    and vector layer paint colours are overridden per vibe.
-    Built styles are cached — the layer walk only runs once per vibe.
-    """
-    if vibe in _style_cache:
-        return _style_cache[vibe]
-
+    """Return the MapLibre style dict for a vibe ('default' is Liberty as-is)."""
     base = _get_base()
-
     if vibe == 'default':
-        _style_cache[vibe] = base
         return base
 
-    style = copy.deepcopy(base)
-    bg_col, land_col, water_col, road_col, label_col = _VIBE_COLORS[vibe]
-    halo = _VIBE_HALOS.get(vibe)
-    font = _VIBE_FONTS.get(vibe)
+    sheet = mapcss.parse(_sheet_path(vibe))
+    stamp = tuple(p.stat().st_mtime_ns for p in sheet.files)
+    cached = _style_cache.get(vibe)
+    if cached and cached[0] == stamp:
+        return cached[1]
 
-    # Rewrite raster underlay source → our proxy
+    style = mapcss.apply_sheet(base, sheet)
+
+    # Raster underlay goes through our proxy so transforms.py can restyle it.
     for src in style.get('sources', {}).values():
-        if src.get('type') == 'raster':
-            tiles = src.get('tiles', [])
-            if tiles and 'ne2sr' in tiles[0]:
-                src['tiles'] = [f'/api/tiles/raster/{vibe}/{{z}}/{{x}}/{{y}}.png']
-                break
+        if src.get('type') == 'raster' and 'ne2sr' in (src.get('tiles') or [''])[0]:
+            src['tiles'] = [f'/api/tiles/raster/{vibe}/{{z}}/{{x}}/{{y}}.png']
 
-    # Override glyphs endpoint for vibes with custom fonts
-    if font:
+    # Every label was moved to the vibe font, so glyphs must come from us.
+    if sheet.meta.get('font'):
         style['glyphs'] = '/api/glyphs/{fontstack}/{range}.pbf'
 
-    # Override sprite sheet for vibes with custom sprites
-    sprite = _VIBE_SPRITES.get(vibe)
+    # `sprite:` swaps the whole icon sheet for one of ours.
+    sprite = sheet.meta.get('sprite')
     if sprite:
-        style['sprite'] = sprite
-        # Fix icon names in Liberty that don't match our sprite names
-        for layer in style.get('layers', []):
-            lid    = layer.get('id', '')
+        style['sprite'] = f'/api/sprites/{sprite}'
+        for layer in style['layers']:
             layout = layer.get('layout', {})
-            if lid == 'airport' and layout.get('icon-image') == 'airport_11':
+            if layer['id'] == 'airport' and layout.get('icon-image') == 'airport_11':
                 layout['icon-image'] = 'airport'
-            # US shield layers generate 'us-interstate_N' etc — remap to our road_N sprites
-            elif lid in ('highway-shield-us-interstate', 'road_shield_us'):
+            # Liberty builds 'us-interstate_N' etc; our sheets only have road_N.
+            elif layer['id'] in ('highway-shield-us-interstate', 'road_shield_us'):
                 layout['icon-image'] = ['concat', 'road_', ['get', 'ref_length']]
 
-    # Override vector layer colours and raster layer behaviour
-    for layer in style.get('layers', []):
-        ltype = layer.get('type', '')
-        lid   = layer.get('id', '').lower()
-        paint = layer.setdefault('paint', {})
+    # Patterns and extra icons referenced as `fx:name` live in a second sheet.
+    if _uses_fx(style['layers']):
+        style['sprite'] = [{'id': 'default', 'url': style['sprite']},
+                           {'id': 'fx', 'url': '/api/sprites/fx'}]
 
-        if ltype == 'raster':
-            # Liberty fades the raster out by z6 and kills it at z7 — keep it
-            # visible at all zoom levels for custom vibes.
-            layer.pop('maxzoom', None)
-            paint['raster-opacity'] = 0.85
-
-        elif ltype == 'background':
-            paint['background-color'] = bg_col
-
-        elif ltype == 'fill':
-            if any(k in lid for k in _WATER_KEYWORDS):
-                paint['fill-color'] = water_col
-            elif any(k in lid for k in _LAND_KEYWORDS):
-                paint['fill-color'] = land_col
-
-        elif ltype == 'line':
-            if any(k in lid for k in _ROAD_KEYWORDS):
-                paint['line-color'] = road_col
-
-        elif ltype == 'symbol':
-            # Shields: skip colour overrides (sprite background provides context)
-            # but still override text-font — we've redirected the glyphs URL to
-            # our server, so any layer left on Noto Sans will 404 and stall rendering.
-            if 'shield' not in lid:
-                paint['text-color'] = label_col
-                if halo:
-                    paint['text-halo-color'] = halo[0]
-                    paint['text-halo-width'] = halo[1]
-            layout = layer.setdefault('layout', {})
-            if font:
-                if 'text-font' in layout:
-                    layout['text-font'] = [font]
-                # Shield badges: scale up the sprite, centre the text on it.
-                if 'shield' in lid:
-                    if 'text-size' in layout:
-                        layout['text-size'] = 9
-                    if 'icon-size' in layout:
-                        layout['icon-size'] = 2
-                    layout['text-anchor'] = 'center'
-                    layout['text-offset'] = [0, 0.25]
-            # POI layers: our icons are 21×21px — the Liberty default text-offset
-            # of 0.6em was sized for smaller sprites and puts text inside our icons.
-            # Push text clear of the icon bottom/right edge.
-            if lid in ('poi_r1', 'poi_r7', 'poi_r20'):
-                layout['text-offset'] = [0, 1.2]
-            elif lid == 'poi_transit':
-                layout['text-offset'] = [1.1, 0]
-            # Road name labels: ensure centre justification.
-            if lid.startswith('highway-name'):
-                layout['text-justify'] = 'center'
-
-    _style_cache[vibe] = style
+    _style_cache[vibe] = (stamp, style)
     return style
