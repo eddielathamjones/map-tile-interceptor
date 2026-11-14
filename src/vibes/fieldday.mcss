@@ -1,0 +1,90 @@
+/* Field Day — the kids' register of the ELJ brand ("mid-century atlas").
+   Everything is a sticker: flat fill, round ink outline, hard ink shadow. */
+
+@vibe { label: "Field Day"; order: 1; font: "Fredoka SemiBold"; }
+
+:root {
+  --paper:   #F2EDE1;
+  --ink:     #1D1F23;
+  --cobalt:  #2350A0;
+  --water:   #617FB4;
+  --mustard: #E8B13A;
+  --butter:  #F0CF7A;
+  --terrain: #6F9A5E;
+  --sage:    #A9BF84;
+  --pin:     #D33A2C;
+  --white:   #FFFFFF;
+}
+
+background { color: var(--paper); }
+raster     { display: none; }
+
+/* ── Ground ── */
+landuse, aeroway, boundary, .pattern, landcover.wetland, landcover.ice { display: none; }
+#landuse_school, #landuse_hospital { display: visible; color: var(--butter); }
+#landuse_pitch, #landuse_cemetery  { display: visible; color: var(--sage); }
+park, #landcover_grass { color: var(--sage); opacity: 1; }
+park.outline           { display: none; }
+#landcover_wood        { color: var(--terrain); opacity: 1; }
+#landcover_sand        { color: var(--butter); }
+#park::after           { type: line; color: var(--ink); width: zoom(8 0.8, 12 2, 16 3); }
+
+/* ── Water ── */
+water        { color: var(--water); }
+water::after { type: line; color: var(--ink); width: zoom(4 1, 10 2.5, 16 4); }
+waterway     { color: var(--water); width: zoom(8 1, 14 4, 18 10); }
+waterway.tunnel { display: none; }
+
+/* ── Roads: white ribbons with a fat ink edge ── */
+road         { cap: round; join: round; }
+road.tunnel, road.service, .arrow { display: none; }
+
+road.casing  { color: var(--ink); gap: 0; opacity: 1; dash: unset;
+               width: zoom(exp 1.4, 12.5 0, 13.5 4, 18 22); }
+road.casing.secondary, road.casing.link
+             { width: zoom(exp 1.4, 9 0, 11 3.5, 13 7.5, 18 28); }
+road.casing.trunk, road.casing.motorway
+             { width: zoom(exp 1.4, 5 1.5, 8 3.5, 13 11, 18 34); }
+
+road:not(.casing) { color: var(--white); opacity: 1;
+                    width: zoom(exp 1.4, 11 0.6, 13.5 1.8, 18 16); }
+road.secondary:not(.casing), road.link:not(.casing)
+                  { width: zoom(exp 1.4, 9 0.8, 11 1.6, 13 4.5, 18 22); }
+road.trunk:not(.casing)    { color: var(--butter);  width: zoom(exp 1.4, 5 0.6, 8 1.6, 13 7, 18 28); }
+road.motorway:not(.casing) { color: var(--mustard); width: zoom(exp 1.4, 5 0.6, 8 1.6, 13 7, 18 28); }
+road.motorway.link:not(.casing) { width: zoom(exp 1.4, 9 0.8, 13 4.5, 18 22); }
+
+/* footpaths: a dotted red trail, only up close */
+road.path         { color: var(--pin); dash: 0.1 2.6; minzoom: 16;
+                    width: zoom(16 1.5, 18 3.5); }
+road.path.casing  { display: none; }
+
+rail              { color: var(--ink); dash: 3 2; width: zoom(10 1, 14 2.5, 18 5); }
+rail.hatching, rail.tunnel { display: none; }
+
+/* ── Buildings: white stickers with the 4px-4px-0 ink shadow ── */
+building.extrusion { display: none; }
+#building          { color: var(--white); outline: var(--ink); opacity: 1;
+                     minzoom: 14; maxzoom: unset; }
+#building::before  { color: var(--ink); translate: 3 3; }
+#building::after   { type: line; color: var(--ink); width: zoom(14 0.6, 16 1.6, 18 2.5); }
+
+/* ── Labels ── */
+label             { color: var(--ink); halo: var(--paper) 2; }
+label.water       { color: var(--white); halo: var(--cobalt) 1.6; }
+label.place       { text-letter-spacing: 0.02; }
+label.city        { size: zoom(4 13, 8 18, 12 26); }
+label.road        { size: zoom(13 10, 16 14); }
+label.shield      { halo: unset; color: var(--ink); }
+
+/* POIs: sticker dots coloured by kind, big ones only until you zoom in */
+label.poi         { icon: json(["match", ["get", "class"],
+                      ["restaurant", "cafe", "fast_food", "bar", "bakery", "ice_cream"], "fx:fd-dot-mustard",
+                      ["park", "garden", "campsite", "zoo", "playground", "pitch", "golf"], "fx:fd-dot-green",
+                      ["school", "college", "library", "museum", "art_gallery", "cinema", "theatre"], "fx:fd-dot-cobalt",
+                      ["hospital", "pharmacy", "police", "fire_station"], "fx:fd-dot-red",
+                      "fx:fd-dot-white"]);
+                    icon-scale: 1; text-offset: 0 0.9; size: 12; }
+#poi_r20          { minzoom: 16.5; }
+#poi_r7           { minzoom: 15.5; }
+#poi_transit      { icon: "fx:fd-dot-ink"; text-offset: 0.9 0; }

@@ -188,18 +188,37 @@ body[data-vibe="deco"] {
   --scale-line-height: 1px;
 }
 
-body[data-vibe="metro"] {
-  --ui-bg: rgba(248, 240, 225, 0.94);
-  --ui-border: rgba(180, 140, 80, 0.50);
-  --ui-radius: 4px;
-  --ui-font: 'IM Fell English', Georgia, serif;
-  --ui-font-size: 0.72rem;
-  --ui-color-dim: rgba(60, 40, 20, 0.55);
-  --ui-color-active: #2a1a08;
-  --ui-btn-active-bg: rgba(180, 140, 80, 0.15);
-  --ui-btn-active-border: rgba(180, 140, 80, 0.60);
-  --frame-border: 1px solid rgba(180, 140, 80, 0.50);
+body[data-vibe="nouveau"] {
+  --ui-bg: #f6ecd2;
+  --ui-border: #3d2a20;
+  --ui-border-width: 1.5px;
+  --ui-radius: 14px 3px 14px 3px;
+  --ui-font: 'Federo', Georgia, serif;
+  --ui-font-size: 0.78rem;
+  --ui-color-dim: rgba(61, 42, 32, 0.62);
+  --ui-color-active: #3d2a20;
+  --ui-btn-active-bg: #e0ac3e;
+  --ui-btn-active-border: #3d2a20;
+  --ui-shadow: 0 0 0 3px #f6ecd2, 0 0 0 4.5px #e0ac3e;
+  --frame-border: 5px solid #3d2a20;
+  --frame-shadow: inset 0 0 0 3px #e0ac3e, inset 0 0 0 4.5px #3d2a20;
   --scale-line-height: 2px;
+}
+
+/* Field Day: the ELJ kids' register. Sticker cards: white, ink outline, hard ink shadow. */
+body[data-vibe="fieldday"] {
+  --ui-bg: #FFFFFF;
+  --ui-border: #1D1F23;
+  --ui-border-width: 3px;
+  --ui-radius: 16px;
+  --ui-font: 'Fredoka', 'Trebuchet MS', sans-serif;
+  --ui-font-size: 0.85rem;
+  --ui-color-dim: #3A3D42;
+  --ui-color-active: #1D1F23;
+  --ui-btn-active-bg: #F0CF7A;
+  --ui-btn-active-border: #1D1F23;
+  --ui-shadow: 4px 4px 0 #1D1F23;
+  --scale-line-height: 4px;
 }
 
 /* ── Map container ───────────────────────────────────────────── */
@@ -260,6 +279,7 @@ body[data-vibe="tomclancy"] .hud-corner { display: block; }
 /* ── Vibe picker ─────────────────────────────────────────────── */
 
 #vibe-picker {
+  box-shadow: var(--ui-shadow, none);
   position: absolute;
   top: 16px;
   left: 50%;
@@ -306,6 +326,7 @@ body[data-vibe="tomclancy"] .hud-corner { display: block; }
 /* ── POI panel ───────────────────────────────────────────────── */
 
 #poi-panel {
+  box-shadow: var(--ui-shadow, none);
   position: absolute;
   bottom: 30px;
   left: 16px;
@@ -372,7 +393,8 @@ body[data-vibe="tomclancy"] .hud-corner { display: block; }
 .compass-mario,
 .compass-tomclancy,
 .compass-deco,
-.compass-metro,
+.compass-nouveau,
+.compass-fieldday,
 .compass-mockva,
 .compass-simcity { display: none; }
 
@@ -411,6 +433,7 @@ body[data-vibe="mario"] #compass-n {
   top: 4px;
 }
 body[data-vibe="mario"] #scale-bar {
+  box-shadow: var(--ui-shadow, none);
   background: var(--ui-bg);
   border: 1px solid #ffd700;
 }
@@ -419,7 +442,8 @@ body[data-vibe="mario"] #scale-bar {
 body[data-vibe="mario"]     .compass-mario     { display: block; }
 body[data-vibe="tomclancy"] .compass-tomclancy { display: block; }
 body[data-vibe="deco"]      .compass-deco      { display: block; }
-body[data-vibe="metro"]     .compass-metro     { display: block; }
+body[data-vibe="nouveau"]   .compass-nouveau   { display: block; }
+body[data-vibe="fieldday"]  .compass-fieldday  { display: block; }
 body[data-vibe="mockva"]    .compass-mockva    { display: block; }
 body[data-vibe="simcity"]   .compass-simcity   { display: block; }
 
@@ -573,3 +597,52 @@ body[data-vibe="simcity"]   .compass-simcity   { display: block; }
   flex-shrink: 0; transition: background 0.15s;
 }
 .report-submit-btn:hover { background: var(--ui-btn-active-bg); }
+
+/* ── Chrome that needs more than variables ───────────────────── */
+
+#vibe-picker, #poi-panel { border-width: var(--ui-border-width, 1px); }
+#scale-bar { border: var(--ui-border-width, 0px) solid var(--ui-border); }
+
+/* Field Day: buttons are pills, the active one is a mustard sticker */
+body[data-vibe="fieldday"] #vibe-picker { padding: 8px 10px; gap: 5px; }
+body[data-vibe="fieldday"] #vibe-picker button,
+body[data-vibe="fieldday"] #poi-panel button {
+  border-width: 2px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0;
+  padding: 3px 10px;
+}
+body[data-vibe="fieldday"] #vibe-picker button.active,
+body[data-vibe="fieldday"] #poi-panel button.active { box-shadow: 2px 2px 0 #1D1F23; }
+body[data-vibe="fieldday"] #scale-label,
+body[data-vibe="fieldday"] #compass-n {
+  font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+body[data-vibe="fieldday"] #compass-n { top: -20px; }
+body[data-vibe="fieldday"] #scale-bar { padding: 6px 10px; }
+body[data-vibe="fieldday"] #scale-line { border-radius: 2px; }
+
+/* Nouveau: asymmetric "whiplash" corners, gold double rule */
+body[data-vibe="nouveau"] #vibe-picker button,
+body[data-vibe="nouveau"] #poi-panel button { border-radius: 9px 2px 9px 2px; letter-spacing: 0.04em; }
+body[data-vibe="nouveau"] #compass-n { display: none; }
+body[data-vibe="nouveau"] #scale-bar { border-width: 1.5px; }
+
+/* Tom Clancy: CRT scanlines and a faint range grid over the map */
+body[data-vibe="tomclancy"] #map::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px),
+    linear-gradient(rgba(0, 255, 65, 0.07) 1px, transparent 1px) 0 0 / 120px 120px,
+    linear-gradient(90deg, rgba(0, 255, 65, 0.07) 1px, transparent 1px) 0 0 / 120px 120px,
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}

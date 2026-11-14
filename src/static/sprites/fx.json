@@ -1,0 +1,121 @@
+{
+  "fd-dot-mustard": {
+    "x": 0,
+    "y": 0,
+    "width": 36,
+    "height": 36,
+    "pixelRatio": 2
+  },
+  "fd-dot-green": {
+    "x": 38,
+    "y": 0,
+    "width": 36,
+    "height": 36,
+    "pixelRatio": 2
+  },
+  "fd-dot-cobalt": {
+    "x": 76,
+    "y": 0,
+    "width": 36,
+    "height": 36,
+    "pixelRatio": 2
+  },
+  "fd-dot-red": {
+    "x": 114,
+    "y": 0,
+    "width": 36,
+    "height": 36,
+    "pixelRatio": 2
+  },
+  "fd-dot-white": {
+    "x": 152,
+    "y": 0,
+    "width": 36,
+    "height": 36,
+    "pixelRatio": 2
+  },
+  "fd-dot-ink": {
+    "x": 190,
+    "y": 0,
+    "width": 36,
+    "height": 36,
+    "pixelRatio": 2
+  },
+  "nouveau-waves": {
+    "x": 0,
+    "y": 38,
+    "width": 72,
+    "height": 28,
+    "pixelRatio": 2
+  },
+  "nouveau-leaves": {
+    "x": 74,
+    "y": 38,
+    "width": 56,
+    "height": 56,
+    "pixelRatio": 2
+  },
+  "nouveau-metro": {
+    "x": 132,
+    "y": 38,
+    "width": 44,
+    "height": 44,
+    "pixelRatio": 2
+  },
+  "nouveau-dot": {
+    "x": 178,
+    "y": 38,
+    "width": 28,
+    "height": 28,
+    "pixelRatio": 2
+  },
+  "tc-scan": {
+    "x": 208,
+    "y": 38,
+    "width": 16,
+    "height": 16,
+    "pixelRatio": 2
+  },
+  "tc-dot": {
+    "x": 226,
+    "y": 38,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 2
+  },
+  "mario-grass": {
+    "x": 0,
+    "y": 96,
+    "width": 32,
+    "height": 32,
+    "pixelRatio": 2
+  },
+  "mario-water": {
+    "x": 34,
+    "y": 96,
+    "width": 32,
+    "height": 32,
+    "pixelRatio": 2
+  },
+  "mario-brick": {
+    "x": 68,
+    "y": 96,
+    "width": 32,
+    "height": 32,
+    "pixelRatio": 2
+  },
+  "mario-sand": {
+    "x": 102,
+    "y": 96,
+    "width": 32,
+    "height": 32,
+    "pixelRatio": 2
+  },
+  "mario-trees": {
+    "x": 136,
+    "y": 96,
+    "width": 32,
+    "height": 32,
+    "pixelRatio": 2
+  }
+}

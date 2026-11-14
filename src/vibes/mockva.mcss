@@ -1,0 +1,14 @@
+@vibe { label: "Mockva"; order: 11; font: "Bebas Neue Regular"; }
+
+:root {
+  --bg: #f0ece0;
+  --land: #e4ddd0;
+  --water: #1a1a1a;
+  --road: #cc1a1a;
+  --building: #1a1a1a;
+  --label: #1a1a1a;
+  --halo: #f0ece0;
+  --halo-width: 1.5;
+}
+
+@import "_five.mcss";

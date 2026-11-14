@@ -73,17 +73,25 @@
         <circle cx="0" cy="0" r="4" stroke="none"/>
       </g>
 
-      <!-- Metro: organic 4-point arrow with circle dots at cardinal ends -->
-      <g class="compass-metro" fill="#c4a86a">
-        <polygon points="0,-44 -7,-6 0,-14 7,-6"/>
-        <circle cx="0" cy="-44" r="2.5"/>
-        <polygon points="0,44 -7,6 0,14 7,6" opacity="0.4"/>
-        <circle cx="0" cy="44" r="2" opacity="0.4"/>
-        <polygon points="44,0 6,-7 14,0 6,7" opacity="0.5"/>
-        <circle cx="44" cy="0" r="2" opacity="0.5"/>
-        <polygon points="-44,0 -6,-7 -14,0 -6,7" opacity="0.5"/>
-        <circle cx="-44" cy="0" r="2" opacity="0.5"/>
-        <circle cx="0" cy="0" r="3.5"/>
+      <!-- Field Day: sticker disc, red north needle -->
+      <g class="compass-fieldday" stroke="#1D1F23" stroke-width="4" stroke-linejoin="round">
+        <circle cx="4" cy="4" r="40" fill="#1D1F23" stroke="none"/>
+        <circle cx="0" cy="0" r="40" fill="#FFFFFF"/>
+        <polygon points="0,-30 -11,0 11,0" fill="#D33A2C"/>
+        <polygon points="0,30 -11,0 11,0" fill="#F2EDE1"/>
+        <circle cx="0" cy="0" r="4" fill="#E8B13A" stroke-width="3"/>
+      </g>
+
+      <!-- Nouveau: whiplash-curve rose, leaf-shaped points -->
+      <g class="compass-nouveau" stroke="#3d2a20" stroke-width="1.6" stroke-linejoin="round">
+        <circle cx="0" cy="0" r="41" fill="#f6ecd2"/>
+        <circle cx="0" cy="0" r="36" fill="none" stroke="#e0ac3e" stroke-width="2"/>
+        <path d="M0,-34 C10,-18 9,-8 0,0 C-9,-8 -10,-18 0,-34Z" fill="#c9785c"/>
+        <path d="M0,34 C10,18 9,8 0,0 C-9,8 -10,18 0,34Z" fill="#a9b56a"/>
+        <path d="M34,0 C18,10 8,9 0,0 C8,-9 18,-10 34,0Z" fill="#4f8f88"/>
+        <path d="M-34,0 C-18,10 -8,9 0,0 C-8,-9 -18,-10 -34,0Z" fill="#4f8f88"/>
+        <path d="M-22,-22 C-12,-20 -6,-12 0,0 M22,-22 C12,-20 6,-12 0,0 M-22,22 C-12,20 -6,12 0,0 M22,22 C12,20 6,12 0,0" fill="none" stroke-width="1.2"/>
+        <circle cx="0" cy="0" r="4" fill="#e0ac3e"/>
       </g>
 
       <!-- Mockva: bold 8-point star, red N point -->

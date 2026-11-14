@@ -81,7 +81,7 @@ def _pil_transform(vibe: str, img_bytes: bytes) -> bytes:
         img = _channel_tint(img, 1.05, 1.0, 0.78)
         img = ImageEnhance.Contrast(img).enhance(1.3)
         img = ImageEnhance.Sharpness(img).enhance(1.4)
-    elif vibe == 'metro':
+    elif vibe == 'nouveau':
         img = _channel_tint(img, 1.04, 1.0, 0.82)
         img = ImageEnhance.Color(img).enhance(0.75)
         img = ImageEnhance.Contrast(img).enhance(0.85)
