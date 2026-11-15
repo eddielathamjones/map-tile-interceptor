@@ -16,9 +16,37 @@
     <div class="hud-corner hud-br"></div>
   </div>
 
-  <div id="vibe-picker"></div>
-  <div id="poi-panel"></div>
+  <div id="menu">
+    <button id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="menu-panel">
+      <span class="burger"><span></span><span></span><span></span></span>
+      <span id="menu-current"></span>
+    </button>
+    <div id="menu-panel" hidden>
+      <section>
+        <h2>Vibe</h2>
+        <div id="vibe-picker"></div>
+      </section>
+      <section>
+        <h2>Show</h2>
+        <div id="poi-panel"></div>
+      </section>
+      <section>
+        <h2>Export</h2>
+        <input id="export-title" type="text" placeholder="Title" aria-label="Map title" />
+        <div class="menu-row">
+          <button id="export-png">Save image</button>
+          <button id="export-print">Print</button>
+        </div>
+      </section>
+      <section class="menu-foot">
+        <button id="report-btn" title="Report an issue or suggestion">Report an issue</button>
+      </section>
+    </div>
+  </div>
 
+  <div id="print-sheet" aria-hidden="true"><img id="print-img" alt="" /></div>
+
+  <div id="furniture">
   <div id="compass" aria-label="Compass">
     <svg id="compass-svg" viewBox="-50 -50 100 100" xmlns="http://www.w3.org/2000/svg">
 
@@ -113,6 +141,7 @@
   <div id="scale-bar">
     <div id="scale-line"></div>
     <div id="scale-label"></div>
+  </div>
   </div>
 
   <!-- ── Report issue modal ──────────────────────────────────────── -->

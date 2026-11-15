@@ -43,6 +43,7 @@ function switchVibe(vibe) {
   document.querySelectorAll('#vibe-picker button').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.vibe === vibe);
   });
+  document.getElementById('menu-current').textContent = VIBES[vibe].label;
   map.setStyle(VIBES[vibe].styleUrl);
 }
 
@@ -57,15 +58,23 @@ function buildVibePicker() {
     btn.addEventListener('click', () => switchVibe(key));
     picker.appendChild(btn);
   }
-  const sep = document.createElement('span');
-  sep.textContent = '|';
-  sep.style.cssText = 'color:var(--ui-border,rgba(255,255,255,0.12)); font-size:0.7rem; padding:0 2px; align-self:center;';
-  picker.appendChild(sep);
-  const reportBtn = document.createElement('button');
-  reportBtn.id = 'report-btn';
-  reportBtn.textContent = '⚑ report';
-  reportBtn.title = 'Report an issue or suggestion';
-  picker.appendChild(reportBtn);
+  document.getElementById('menu-current').textContent = VIBES[active].label;
+}
+
+// ── Menu ──────────────────────────────────────────────────────────────────────
+
+function setMenuOpen(open) {
+  document.getElementById('menu-panel').hidden = !open;
+  document.getElementById('menu-btn').setAttribute('aria-expanded', String(open));
+}
+
+function initMenu() {
+  const menu = document.getElementById('menu');
+  document.getElementById('menu-btn').addEventListener('click', () => {
+    setMenuOpen(document.getElementById('menu-panel').hidden);
+  });
+  document.addEventListener('click', e => { if (!menu.contains(e.target)) setMenuOpen(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenuOpen(false); });
 }
 
 // ── POI toggles ───────────────────────────────────────────────────────────────
@@ -162,6 +171,7 @@ function initMap() {
     minZoom: 1,
     maxZoom: 18,
     attributionControl: { compact: true },
+    preserveDrawingBuffer: true,   // lets export read the canvas
   });
 
   map.on('style.load', () => {
@@ -190,21 +200,8 @@ const MI = 1609.344;      // meters per mile
 
 // Imperial snap distances in meters
 const NICE_DISTANCES_M = [
-  15.24,    // 50 ft
-  30.48,    // 100 ft
-  60.96,    // 200 ft
-  152.4,    // 500 ft
-  304.8,    // 1000 ft
-  804.67,   // 0.5 mi
-  1609.34,  // 1 mi
-  3218.69,  // 2 mi
-  8046.72,  // 5 mi
-  16093.44, // 10 mi
-  32186.88, // 20 mi
-  80467.2,  // 50 mi
-  160934.4, // 100 mi
-  321868.8, // 200 mi
-  804672,   // 500 mi
+  ...[50, 100, 200, 500, 1000].map(ft => ft * FT),
+  ...[0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500].map(mi => mi * MI),
 ];
 
 function formatImperial(meters) {
@@ -236,14 +233,17 @@ buildPoiPanel();
 loadVibes().then(() => {
   document.body.dataset.vibe = currentVibe();
   buildVibePicker();
+  initMenu();
   initMap();
   initReport();
+  initExport();
 });
 
 /* ─── Report modal ─────────────────────────────────────────────────── */
 function initReport() {
 const modal = document.getElementById('report-modal');
 document.getElementById('report-btn').addEventListener('click', () => {
+  setMenuOpen(false);
   modal.style.display = 'flex';
   setTimeout(() => document.getElementById('report-text').focus(), 60);
 });
@@ -292,4 +292,202 @@ document.getElementById('report-submit').addEventListener('click', () => {
       alert('Network error — try again.');
     });
 });
+}
+
+/* ─── Export: a finished sheet (margin, neat line, title band) ─────── */
+
+// Place label layers, most to least title-worthy.
+const TITLE_LAYERS = ['label_city_capital', 'label_city', 'label_town', 'label_village', 'label_other', 'label_state', 'label_country_1', 'label_country_2', 'label_country_3'];
+
+// Name of the most prominent place label nearest the centre of the view.
+function guessTitle() {
+  const { width, height } = map.getCanvas().getBoundingClientRect();
+  const cx = width / 2, cy = height / 2;
+  for (const id of TITLE_LAYERS) {
+    if (!map.getLayer(id)) continue;
+    const feats = map.queryRenderedFeatures({ layers: [id] });
+    let best = null, bestD = Infinity;
+    for (const f of feats) {
+      const name = f.properties['name:en'] || f.properties['name:latin'] || f.properties.name;
+      if (!name || f.geometry.type !== 'Point') continue;
+      const p = map.project(f.geometry.coordinates);
+      const d = (p.x - cx) ** 2 + (p.y - cy) ** 2;
+      if (d < bestD) { bestD = d; best = name; }
+    }
+    if (best) return best;
+  }
+  return '';
+}
+
+function formatCoord(v, pos, neg) {
+  return `${Math.abs(v).toFixed(4)}° ${v >= 0 ? pos : neg}`;
+}
+
+// Opaque version of a CSS colour (UI backgrounds are often translucent).
+function opaque(color) {
+  const m = color.match(/rgba?\(([^)]+)\)/);
+  if (!m) return color;
+  const [r, g, b] = m[1].split(',').map(s => parseFloat(s));
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+// The visible compass variant as a standalone image.
+async function compassImage() {
+  const svg = document.getElementById('compass-svg');
+  const clone = svg.cloneNode(true);
+  clone.removeAttribute('id');
+  clone.style.transform = '';
+  const hidden = [...svg.children].map(g => getComputedStyle(g).display === 'none');
+  [...clone.children].forEach((g, i) => { if (hidden[i]) g.remove(); });
+  clone.setAttribute('color', getComputedStyle(svg).color);
+  clone.setAttribute('width', '200');
+  clone.setAttribute('height', '200');
+  const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)], { type: 'image/svg+xml' }));
+  try {
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    return img;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+// Render the map at `ratio` and wait until every tile is drawn.
+function renderAt(ratio) {
+  return new Promise(resolve => {
+    map.setPixelRatio(ratio);
+    map.once('idle', resolve);
+    map.triggerRepaint();
+  });
+}
+
+async function composeSheet() {
+  const ratio = Math.max(2, window.devicePixelRatio || 1);
+  const prevRatio = map.getPixelRatio();
+  await renderAt(ratio);
+  await document.fonts.ready;
+
+  const cs = getComputedStyle(document.body);
+  const v = name => cs.getPropertyValue(name).trim();
+  const paper = opaque(v('--ui-bg'));
+  const ink = v('--ui-color-active');
+  const dim = v('--ui-color-dim');
+  const font = v('--ui-font');
+
+  const src = map.getCanvas();
+  const W = src.width / ratio, H = src.height / ratio;   // CSS px
+  const m = Math.round(Math.min(W, H) * 0.045);          // margin
+  const band = 108;                                       // title band
+  const out = document.createElement('canvas');
+  out.width = (W + 2 * m) * ratio;
+  out.height = (H + 2 * m + band) * ratio;
+  const ctx = out.getContext('2d');
+  ctx.scale(ratio, ratio);
+
+  // Paper and map
+  ctx.fillStyle = paper;
+  ctx.fillRect(0, 0, W + 2 * m, H + 2 * m + band);
+  ctx.drawImage(src, m, m, W, H);
+  await renderAt(prevRatio);
+
+  // Neat line round the map and a hairline border round the sheet
+  ctx.strokeStyle = ink;
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(m, m, W, H);
+  ctx.lineWidth = 0.75;
+  ctx.strokeRect(m / 2, m / 2, W + m, H + m + band);
+
+  // Title block, left
+  const title = document.getElementById('export-title').value.trim() || guessTitle() || 'Untitled';
+  const { lat, lng } = map.getCenter();
+  const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const sub = [`${formatCoord(lat, 'N', 'S')}  ${formatCoord(lng, 'E', 'W')}`, VIBES[currentVibe()].label, date].join('   ·   ');
+  const baseY = m + H + band / 2;
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = ink;
+  ctx.font = `34px ${font}`;
+  ctx.letterSpacing = '0.08em';
+  ctx.fillText(title.toUpperCase(), m, baseY + 4);
+  ctx.fillStyle = dim;
+  ctx.font = `12px ${font}`;
+  ctx.letterSpacing = '0.12em';
+  ctx.fillText(sub.toUpperCase(), m, baseY + 26);
+
+  // Compass, right
+  const cSize = 64;
+  const cx = m + W - cSize / 2, cy = baseY - 4;
+  const compass = await compassImage();
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(-map.getBearing() * Math.PI / 180);
+  ctx.drawImage(compass, -cSize / 2, -cSize / 2, cSize, cSize);
+  ctx.restore();
+
+  // Scale bar, left of the compass (same distances as the on-screen bar)
+  const line = document.getElementById('scale-line');
+  const sw = line.getBoundingClientRect().width;
+  const sx = cx - cSize / 2 - 24 - sw;
+  ctx.fillStyle = ink;
+  ctx.fillRect(sx, cy, sw, 2);
+  ctx.fillRect(sx, cy - 5, 1.5, 7);
+  ctx.fillRect(sx + sw - 1.5, cy - 5, 1.5, 7);
+  ctx.font = `11px ${font}`;
+  ctx.letterSpacing = '0.08em';
+  ctx.textAlign = 'center';
+  ctx.fillText(document.getElementById('scale-label').textContent, sx + sw / 2, cy + 18);
+  if (map.getPitch() > 1) {
+    ctx.fillStyle = dim;
+    ctx.fillText('scale at centre', sx + sw / 2, cy - 10);
+  }
+
+  // Attribution, bottom right
+  ctx.textAlign = 'right';
+  ctx.fillStyle = dim;
+  ctx.font = `9px ${font}`;
+  ctx.letterSpacing = '0.06em';
+  ctx.fillText('Map data © OpenStreetMap contributors · OpenMapTiles · OpenFreeMap · Relief: Natural Earth', m + W, m + H + band - 10);
+
+  return out;
+}
+
+function sheetFilename() {
+  const title = (document.getElementById('export-title').value.trim() || guessTitle() || 'map')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return `${title}-${currentVibe()}.png`;
+}
+
+async function withBusy(btn, fn) {
+  const label = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Rendering…';
+  try { await fn(); } finally { btn.disabled = false; btn.textContent = label; }
+}
+
+function initExport() {
+  const titleInput = document.getElementById('export-title');
+  document.getElementById('menu-btn').addEventListener('click', () => {
+    if (!titleInput.value) titleInput.placeholder = guessTitle() || 'Title';
+  });
+
+  const pngBtn = document.getElementById('export-png');
+  pngBtn.addEventListener('click', () => withBusy(pngBtn, async () => {
+    const sheet = await composeSheet();
+    const blob = await new Promise(r => sheet.toBlob(r, 'image/png'));
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = sheetFilename();
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }));
+
+  const printBtn = document.getElementById('export-print');
+  printBtn.addEventListener('click', () => withBusy(printBtn, async () => {
+    const sheet = await composeSheet();
+    const img = document.getElementById('print-img');
+    img.src = sheet.toDataURL('image/png');
+    await img.decode();
+    setMenuOpen(false);
+    window.print();
+  }));
 }

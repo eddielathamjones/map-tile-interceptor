@@ -227,29 +227,95 @@ body[data-vibe="tomclancy"] .hud-corner { display: block; }
 .hud-bl::before, .hud-bl::after { top: auto; bottom: 0; left: 0; }
 .hud-br::before, .hud-br::after { top: auto; bottom: 0; left: auto; right: 0; }
 
-/* ── Vibe picker ─────────────────────────────────────────────── */
+/* ── Menu: hamburger, current vibe, dropdown panel ───────────── */
 
-#vibe-picker {
-  box-shadow: var(--ui-shadow, none);
+#menu {
   position: absolute;
   top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 16px;
+  z-index: 20;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 3px;
-  background: var(--ui-bg);
-  border: 1px solid var(--ui-border);
-  border-radius: var(--ui-radius);
-  padding: 5px 7px;
-  pointer-events: auto;
+  align-items: center;
   user-select: none;
-  max-width: calc(100vw - 32px);
-  transition: background 0.3s, border-color 0.3s;
 }
 
-#vibe-picker button {
+#menu-btn {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px 0 11px;
+  background: var(--ui-bg);
+  border: var(--ui-border-width, 1px) solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  box-shadow: var(--ui-shadow, none);
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s;
+}
+.burger {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.burger span {
+  display: block;
+  width: 16px;
+  height: 1.5px;
+  background: var(--ui-color-active);
+  transition: transform 0.2s, opacity 0.2s;
+}
+#menu-btn[aria-expanded="true"] .burger span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+#menu-btn[aria-expanded="true"] .burger span:nth-child(2) { opacity: 0; }
+#menu-btn[aria-expanded="true"] .burger span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+/* The active vibe's name, set quietly inside the button */
+#menu-current {
+  font-family: var(--ui-font);
+  font-size: var(--ui-font-size);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ui-color-dim);
+  white-space: nowrap;
+}
+#menu-btn:hover #menu-current { color: var(--ui-color-active); }
+
+#menu-panel {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  width: 264px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  background: var(--ui-bg);
+  border: var(--ui-border-width, 1px) solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  box-shadow: var(--ui-shadow, 0 8px 32px rgba(0, 0, 0, 0.35));
+  padding: 6px 12px 10px;
+}
+#menu-panel[hidden] { display: none; }
+
+#menu-panel section { padding: 8px 0; }
+#menu-panel section + section { border-top: 1px solid var(--ui-border); }
+
+#menu-panel h2 {
+  font-family: var(--ui-font);
+  font-size: 0.6rem;
+  font-weight: normal;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ui-color-dim);
+  margin: 0 0 6px 2px;
+}
+
+#vibe-picker,
+#poi-panel,
+.menu-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+#menu-panel button {
   background: transparent;
   border: 1px solid transparent;
   border-radius: var(--ui-radius);
@@ -262,68 +328,53 @@ body[data-vibe="tomclancy"] .hud-corner { display: block; }
   white-space: nowrap;
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-
-#vibe-picker button:hover {
+#menu-panel button:hover:not(:disabled) {
   color: var(--ui-color-active);
   border-color: var(--ui-border);
 }
-
-#vibe-picker button.active {
+#menu-panel button.active {
   color: var(--ui-color-active);
   border-color: var(--ui-btn-active-border);
   background: var(--ui-btn-active-bg);
 }
+#menu-panel button:disabled { opacity: 0.6; cursor: progress; }
 
-/* ── POI panel ───────────────────────────────────────────────── */
-
-#poi-panel {
-  box-shadow: var(--ui-shadow, none);
-  position: absolute;
-  bottom: 30px;
-  left: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  background: var(--ui-bg);
+/* Export: title field and two outlined buttons */
+#export-title {
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 5px 8px;
+  background: transparent;
+  color: var(--ui-color-active);
   border: 1px solid var(--ui-border);
   border-radius: var(--ui-radius);
-  padding: 5px 7px;
-  pointer-events: auto;
-  user-select: none;
-  transition: background 0.3s, border-color 0.3s;
-}
-
-#poi-panel button {
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: var(--ui-radius);
-  color: var(--ui-color-dim);
-  cursor: pointer;
   font-family: var(--ui-font);
   font-size: var(--ui-font-size);
   letter-spacing: 0.06em;
-  padding: 3px 7px;
-  text-align: left;
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  outline: none;
 }
+#export-title:focus { border-color: var(--ui-color-active); }
+#export-title::placeholder { color: var(--ui-color-dim); }
+.menu-row button { flex: 1; border-color: var(--ui-border) !important; }
 
-#poi-panel button:hover {
-  color: var(--ui-color-active);
-  border-color: var(--ui-border);
-}
+.menu-foot { padding-bottom: 0 !important; }
+#report-btn { padding-left: 2px !important; }
 
-#poi-panel button.active {
-  color: var(--ui-color-active);
-  border-color: var(--ui-btn-active-border);
-  background: var(--ui-btn-active-bg);
+/* ── Map furniture: compass and scale bar in one row, bottom right ── */
+
+#furniture {
+  position: absolute;
+  bottom: 34px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 /* ── Compass rose ────────────────────────────────────────────── */
 
 #compass {
-  position: absolute;
-  bottom: 100px;
-  right: 16px;
+  position: relative;
   width: 60px;
   height: 60px;
   cursor: pointer;
@@ -410,9 +461,6 @@ body[data-vibe="mockva"]    .compass-mockva    { display: block; }
 /* ── Scale bar ───────────────────────────────────────────────── */
 
 #scale-bar {
-  position: absolute;
-  bottom: 56px;
-  right: 16px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -546,21 +594,21 @@ body[data-vibe="mockva"]    .compass-mockva    { display: block; }
 
 /* ── Chrome that needs more than variables ───────────────────── */
 
-#vibe-picker, #poi-panel { border-width: var(--ui-border-width, 1px); }
 #scale-bar { border: var(--ui-border-width, 0px) solid var(--ui-border); }
 
 /* Field Day: buttons are pills, the active one is a mustard sticker */
-body[data-vibe="fieldday"] #vibe-picker { padding: 8px 10px; gap: 5px; }
-body[data-vibe="fieldday"] #vibe-picker button,
-body[data-vibe="fieldday"] #poi-panel button {
+body[data-vibe="fieldday"] #vibe-picker,
+body[data-vibe="fieldday"] #poi-panel,
+body[data-vibe="fieldday"] .menu-row { gap: 5px; }
+body[data-vibe="fieldday"] #menu-panel button {
   border-width: 2px;
   border-radius: 999px;
   font-weight: 600;
   letter-spacing: 0;
   padding: 3px 10px;
 }
-body[data-vibe="fieldday"] #vibe-picker button.active,
-body[data-vibe="fieldday"] #poi-panel button.active { box-shadow: 2px 2px 0 #1D1F23; }
+body[data-vibe="fieldday"] #menu-panel button.active { box-shadow: 2px 2px 0 #1D1F23; }
+body[data-vibe="fieldday"] .burger span { height: 3px; border-radius: 2px; width: 18px; }
 body[data-vibe="fieldday"] #scale-label,
 body[data-vibe="fieldday"] #compass-n {
   font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
@@ -574,8 +622,7 @@ body[data-vibe="fieldday"] #scale-bar { padding: 6px 10px; }
 body[data-vibe="fieldday"] #scale-line { border-radius: 2px; }
 
 /* Nouveau: asymmetric "whiplash" corners, gold double rule */
-body[data-vibe="nouveau"] #vibe-picker button,
-body[data-vibe="nouveau"] #poi-panel button { border-radius: 9px 2px 9px 2px; letter-spacing: 0.04em; }
+body[data-vibe="nouveau"] #menu-panel button { border-radius: 9px 2px 9px 2px; letter-spacing: 0.04em; }
 body[data-vibe="nouveau"] #compass-n { display: none; }
 body[data-vibe="nouveau"] #scale-bar { border-width: 1.5px; }
 
@@ -594,7 +641,18 @@ body[data-vibe="tomclancy"] #map::before {
 }
 
 /* Survey: condensed caps, like the brand's headings */
-body[data-vibe^="survey"] #vibe-picker button,
-body[data-vibe^="survey"] #poi-panel button,
+body[data-vibe^="survey"] #menu-panel button,
 body[data-vibe^="survey"] #scale-label { font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
 body[data-vibe^="survey"] #scale-bar { border-width: 1px; }
+
+/* ── Print: only the composed sheet, fitted to the page ──────── */
+
+#print-sheet { display: none; }
+
+@media print {
+  @page { size: landscape; margin: 10mm; }
+  html, body { overflow: visible; height: auto; background: #fff; }
+  body > *:not(#print-sheet) { display: none !important; }
+  #print-sheet { display: block; }
+  #print-img { display: block; width: 100%; height: auto; max-height: 190mm; object-fit: contain; margin: 0 auto; }
+}

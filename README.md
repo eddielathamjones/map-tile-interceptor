@@ -73,7 +73,9 @@ Files starting with `_` are partials for `@import`. Survey and Survey Night shar
 | Deco | Gold on black lacquer: fish-scale water, chevron parks, three weights of gold streets, towers that gild with height |
 | Noir | The city at 2 a.m.: grey side streets, sodium-lit avenues with a glow, lit windows on 3D buildings, typewriter captions |
 
-The chrome around the map (picker, compass, scale bar, frame) is themed per vibe in `src/frontend/css/app.css`.
+The chrome around the map (menu, compass, scale bar, frame) is themed per vibe in `src/frontend/css/app.css`. The menu (top left) holds the vibe picker, POI toggles, export and issue reporting.
+
+**Export.** *Save image* and *Print* compose a finished sheet in the vibe's own colours and type: the map at 2x resolution inside a neat line, and a title band with the place name (taken from the nearest prominent place label, or typed in), coordinates, vibe and date, compass, scale bar and attribution.
 
 ---
 
