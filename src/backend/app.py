@@ -48,7 +48,9 @@ def report_issue():
     if not token:
         return jsonify(error='Reporting is not configured on this server.'), 503
 
-    ip = request.headers.get('X-Forwarded-For', request.remote_addr).split(',')[0].strip()
+    # Behind the Cloudflare tunnel, CF-Connecting-IP is set by Cloudflare and
+    # can't be forged by the client (X-Forwarded-For can).
+    ip = request.headers.get('CF-Connecting-IP') or request.remote_addr
     now = time.time()
     if now - _report_rate.get(ip, 0) < 300:
         return jsonify(error='You already submitted a report recently. Try again in a few minutes.'), 429
@@ -74,7 +76,7 @@ def report_issue():
         '</sub>',
     ])
 
-    payload = json.dumps({'title': title, 'body': body, 'labels': ['claude']}).encode()
+    payload = json.dumps({'title': title, 'body': body, 'labels': ['report']}).encode()
     req = urllib.request.Request(
         'https://api.github.com/repos/eddielathamjones/map-tile-interceptor/issues',
         data=payload,
