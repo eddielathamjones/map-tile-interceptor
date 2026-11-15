@@ -12,11 +12,8 @@ jobs:
       - name: Pull latest changes
         run: git -C ${{ vars.DEPLOY_PATH }} pull origin main
 
-      - name: Rebuild image
-        run: docker build -t map-tile-interceptor:local ${{ vars.DEPLOY_PATH }}
-
-      - name: Restart container
-        run: docker restart map-tile-interceptor
+      - name: Rebuild and recreate container
+        run: docker compose -f /home/eddie/docker/gis/docker-compose.yml up -d --build map-tile-interceptor
 
       - name: Confirm
         run: |
