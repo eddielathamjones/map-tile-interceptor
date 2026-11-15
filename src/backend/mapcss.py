@@ -23,7 +23,8 @@ Selectors
     #id       exact layer id
     :not(.class)
     ::before  ::after   a generated layer under / over the matched one, sharing
-              its source, filter and zoom range (`type:` picks fill or line)
+              its source, filter and zoom range (`type:` picks fill, line or
+              fill-extrusion)
 
 Properties
     Short names resolve per layer type: color, opacity, width, outline,
@@ -258,7 +259,11 @@ def parse_value(value: str):
         expr: list = ['interpolate', curve, ['zoom']]
         for stop in stops:
             z, _, v = stop.partition(' ')
-            expr += [_num(z), parse_value(v)]
+            out = parse_value(v)
+            # a number list (translate, offset) is an array value, not an expression
+            if isinstance(out, list) and out and not isinstance(out[0], str):
+                out = ['literal', out]
+            expr += [_num(z), out]
         return expr
     toks = value.split()
     if len(toks) > 1 and all(_NUM_RE.match(t) for t in toks):
@@ -398,8 +403,8 @@ def apply_sheet(style: dict, sheet: Sheet) -> dict:
                 continue
             decls = _cascade(matches)
             gtype = decls.get('type', layer['type'])
-            if gtype not in ('fill', 'line'):
-                raise MapCSSError(f'{lid}::{where}: type must be fill or line')
+            if gtype not in ('fill', 'line', 'fill-extrusion'):
+                raise MapCSSError(f'{lid}::{where}: type must be fill, line or fill-extrusion')
             gen = {'id': f'{lid}::{where}', 'type': gtype,
                    **{k: copy.deepcopy(layer[k]) for k in ('source', 'source-layer', 'filter', 'minzoom', 'maxzoom')
                       if k in layer}}

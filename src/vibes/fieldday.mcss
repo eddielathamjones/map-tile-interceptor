@@ -2,6 +2,7 @@
    Everything is a sticker: flat fill, round ink outline, hard ink shadow. */
 
 @vibe { label: "Field Day"; order: 1; font: "Fredoka SemiBold"; }
+@import "_shared.mcss";
 
 :root {
   --paper:   #F2EDE1;
@@ -23,15 +24,20 @@ raster     { display: none; }
 landuse, aeroway, boundary, .pattern, landcover.wetland, landcover.ice { display: none; }
 #landuse_school, #landuse_hospital { display: visible; color: var(--butter); }
 #landuse_pitch, #landuse_cemetery  { display: visible; color: var(--sage); }
+/* chalk lane lines on sports pitches */
+#landuse_pitch::after { type: line; color: var(--white); dash: 3 2; width: zoom(14 1, 18 3); }
 park, #landcover_grass { color: var(--sage); opacity: 1; }
 park.outline           { display: none; }
 #landcover_wood        { color: var(--terrain); opacity: 1; }
 #landcover_sand        { color: var(--butter); }
-#park::after           { type: line; color: var(--ink); width: zoom(8 0.8, 12 2, 16 3); }
+#park                  { opacity: zoom(5 0.5, 9 1); }
+#park::after           { type: line; color: var(--ink); minzoom: 8; width: zoom(8 0.8, 12 2, 16 3); }
 
 /* ── Water ── */
 water        { color: var(--water); }
-water::after { type: line; color: var(--ink); width: zoom(4 1, 10 2.5, 16 4); }
+/* drawn under the water fill at double width: the land-side half shows on
+   shorelines, while seams between water polygons (river meets bay) stay hidden */
+water::before { type: line; color: var(--ink); width: zoom(4 2, 10 5, 16 8); }
 waterway     { color: var(--water); width: zoom(8 1, 14 4, 18 10); }
 waterway.tunnel { display: none; }
 
@@ -51,7 +57,11 @@ road:not(.casing) { color: var(--white); opacity: 1;
 road.secondary:not(.casing), road.link:not(.casing)
                   { width: zoom(exp 1.4, 9 0.8, 11 1.6, 13 4.5, 18 22); }
 road.trunk:not(.casing)    { color: var(--butter);  width: zoom(exp 1.4, 5 0.6, 8 1.6, 13 7, 18 28); }
-road.motorway:not(.casing) { color: var(--mustard); width: zoom(exp 1.4, 5 0.6, 8 1.6, 13 7, 18 28); }
+/* motorways are a toy race track: red with a white dashed centre line */
+road.motorway:not(.casing) { color: var(--pin); width: zoom(exp 1.4, 5 0.6, 8 1.6, 13 7, 18 28); }
+road.motorway:not(.casing):not(.link)::after
+                           { type: line; color: var(--white); dash: 2 2;
+                             width: zoom(exp 1.4, 6 0.3, 10 0.8, 14 1.6, 18 4); }
 road.motorway.link:not(.casing) { width: zoom(exp 1.4, 9 0.8, 13 4.5, 18 22); }
 
 /* footpaths: a dotted red trail, only up close */
@@ -62,20 +72,35 @@ road.path.casing  { display: none; }
 rail              { color: var(--ink); dash: 3 2; width: zoom(10 1, 14 2.5, 18 5); }
 rail.hatching, rail.tunnel { display: none; }
 
-/* ── Buildings: white stickers with the 4px-4px-0 ink shadow ── */
-building.extrusion { display: none; }
-#building          { color: var(--white); outline: var(--ink); opacity: 1;
-                     minzoom: 14; maxzoom: unset; }
-#building::before  { color: var(--ink); translate: 3 3; }
-#building::after   { type: line; color: var(--ink); width: zoom(14 0.6, 16 1.6, 18 2.5); }
+/* ── Buildings: a sheet of pastel stickers ──
+   Full-strength ink outlines and shadows on every small footprint turned
+   dense blocks solid black up close. Stickers now come in four pastels, the
+   shadow is a lighter offset that grows with zoom, and the ink line is thin. */
+:root { --stickers: json(["match", ["%", ["to-number", ["id"], 0], 4],
+                          0, "#FFFFFF", 1, "#FBEBC4", 2, "#DCE6F6", "#E4ECD4"]); }
+#building          { color: var(--stickers); outline: var(--ink); opacity: 1; minzoom: 14; }
+#building::before  { color: var(--ink); opacity: 0.45; translate: zoom(14 1 1, 16 2 2, 18 3 3); }
+#building::after   { type: line; color: var(--ink); width: zoom(14 0.25, 16 0.7, 18 1.4); }
+
+/* 3D is a pop-up book: low cardstock buildings in the same pastels */
+building.extrusion { display: visible; color: var(--stickers); opacity: 1;
+                     fill-extrusion-height: json(["*", ["get", "render_height"], 0.35]);
+                     fill-extrusion-base: json(["*", ["get", "render_min_height"], 0.35]); }
 
 /* ── Labels ── */
 label             { color: var(--ink); halo: var(--paper) 2; }
 label.water       { color: var(--white); halo: var(--cobalt) 1.6; }
 label.place       { text-letter-spacing: 0.02; }
-label.city        { size: zoom(4 13, 8 18, 12 26); }
+/* big place names on white sticker plates */
+label.city        { size: zoom(4 13, 8 18, 12 26); halo: unset;
+                    icon: "fx:fd-plate"; icon-text-fit: both; icon-text-fit-padding: 4 10 6 8;
+                    icon-anchor: center; text-anchor: center; text-offset: 0 0; icon-scale: 1; }
+/* hand-stuck: places and badges sit a degree or two off straight */
+label.place, label.poi
+                  { text-rotate: json(["-", ["%", ["to-number", ["id"], 0], 5], 2]);
+                    icon-rotate: json(["-", ["%", ["to-number", ["id"], 0], 5], 2]); }
 label.road        { size: zoom(13 10, 16 14); }
-label.shield      { halo: unset; color: var(--ink); }
+label.shield      { icon: json(["concat", "fx:fd-shield-", ["get", "ref_length"]]); icon-scale: 1; color: var(--ink); halo: unset; }
 
 /* POIs: sticker badges coloured by kind, big ones only until you zoom in */
 label.poi         { icon: json(["coalesce", ["image", ["concat", "fx:fd-", ["get", "class"]]],
@@ -84,8 +109,10 @@ label.poi         { icon: json(["coalesce", ["image", ["concat", "fx:fd-", ["get
 #poi_r20          { minzoom: 16.5; }
 #poi_r7           { minzoom: 15.5; }
 #poi_transit      { text-offset: 1.2 0; }
+/* the top-ranked parks, stadiums and sights win a prize ribbon */
+#poi_r1           { icon: json(["match", ["get", "class"],
+                                ["park", "stadium", "attraction", "museum", "zoo", "pitch", "playground"], "fx:fd-ribbon",
+                                ["coalesce", ["image", ["concat", "fx:fd-", ["get", "class"]]], ["image", "fx:fd-dot-white"]]]); }
 #airport          { icon: "fx:fd-airport"; }
 
-/* the brand pin marks the cities */
-#label_city, #label_city_capital
-                  { icon: json(["step", ["zoom"], "fx:fd-pin", 9, ""]); icon-anchor: bottom; }
+

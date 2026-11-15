@@ -3,6 +3,7 @@
    around everything like the leading of a stained-glass window. */
 
 @vibe { label: "Nouveau"; order: 2; font: "Federo Regular"; }
+@import "_shared.mcss";
 
 :root {
   --paper:      #efe2c2;
@@ -18,7 +19,8 @@
 }
 
 background { color: var(--paper); }
-raster     { maxzoom: unset; opacity: zoom(4 0.5, 7 0); }
+/* relief carries the region view; parks fade in so Arizona is not a green flood */
+raster     { maxzoom: unset; opacity: zoom(4 0.55, 8 0.35, 10 0); }
 
 /* ── Ground ── */
 .pattern, landcover.wetland { display: none; }
@@ -32,14 +34,17 @@ aeroway.line         { color: var(--cream); }
 #landcover_sand      { color: #e6cf96; }
 #landcover_ice       { color: #f4efe0; }
 
-#park                { pattern: "fx:nouveau-leaves"; opacity: 1; }
+#park                { pattern: "fx:nouveau-leaves"; opacity: zoom(5 0.45, 9 1); }
 #park::after         { type: line; color: var(--olive); width: zoom(10 0.6, 14 1.4, 18 2.2); }
 park.outline         { display: none; }
 
 /* ── Water: whiplash wave lines, inked bank ── */
 water        { color: var(--peacock); pattern: "fx:nouveau-waves"; }
-water::after { type: line; color: var(--ink); width: zoom(4 0.5, 10 1, 15 2); }
-waterway     { color: var(--peacock); }
+/* drawn under the water fill at double width: the land-side half shows on
+   shorelines, while seams between water polygons (river meets bay) stay hidden */
+water::before { type: line; color: var(--ink); width: zoom(4 1, 10 2, 15 4); }
+/* rivers drawn as a sinuous stem, like the whiplash lines in a Mucha border */
+waterway     { color: var(--peacock); pattern: "fx:nv-stem"; width: zoom(6 2, 10 4, 14 8, 18 14); }
 
 /* ── Streets: cream and gold glass, ink leading ── */
 road.casing                 { color: var(--ink); }
@@ -51,17 +56,27 @@ road.path.casing            { color: var(--paper); }
 rail                        { color: var(--ink); }
 boundary                    { color: var(--sienna); }
 
-/* ── Buildings ── */
-#building          { color: var(--terracotta); outline: var(--sienna); }
-building.extrusion { color: json(["interpolate", ["linear"], ["get", "render_height"],
-                                  0, "#e0a888", 40, "#c9785c"]);
-                     opacity: 0.92; }
+/* ── Buildings: glass, not brick ──
+   Dense blocks (Manhattan is mostly roof) turned solid terracotta and buried
+   the paper and the leading. Footprints are now a pale, translucent wash with
+   a fine ink line, so the city reads as a stained-glass window. */
+#building          { color: #eab89a; opacity: 0.55; outline: var(--sienna); }
+#building::after   { type: line; color: var(--ink); minzoom: 15; opacity: 0.55;
+                     width: zoom(15 0.3, 17 0.9, 18 1.3); }
+/* 3D: a mosaic of light tesserae, terracotta, rose, ochre and sienna */
+building.extrusion { color: json(["match", ["%", ["to-number", ["id"], 0], 4],
+                                  0, "#efc3a5", 1, "#ebb9a4", 2, "#edcc93", "#dcaa8c"]);
+                     opacity: 1; }
 
 /* ── Lettering ── */
 label        { color: var(--ink); halo: var(--paper) 1.4; }
-label.place  { transform: uppercase; spacing: 0.12; }
+label.place  { font: "Glass Antiqua Regular"; spacing: 0.04; }
+/* Mucha's halo: a gilded disc behind every major place name */
+#label_city, #label_city_capital
+             { icon: "fx:nv-nimbus"; icon-scale: zoom(4 0.42, 8 0.55, 12 0.75); }
 label.water  { color: #f3ead0; halo: #2f6660 1.4; spacing: 0.1; }
 label.road   { size: zoom(13 9, 16 13); }
+label.shield { icon: json(["concat", "fx:nv-shield-", ["get", "ref_length"]]); icon-scale: 1; color: var(--ink); halo: unset; }
 
 label.poi    { icon: json(["coalesce", ["image", ["concat", "fx:nv-", ["get", "class"]]],
                                        ["image", "fx:nouveau-dot"]]);

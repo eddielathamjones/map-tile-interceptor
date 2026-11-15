@@ -1,63 +1,31 @@
-/* Mario — an 8-bit overworld. Tiled grass, brick buildings, coin trails. */
+/* Mario: an 8-bit overworld. Tiled grass, coin trails, pixel roads.
+   Rules live in _mario.mcss; this file picks the tiles and colours. */
 
 @vibe { label: "Mario"; order: 3; font: "Press Start 2P Regular"; sprite: mario; }
+@import "_shared.mcss";
+@import "_mario.mcss";
 
 :root {
-  --sky:    #5c94fc;
-  --grass:  #38a800;
-  --lime:   #80d010;
-  --tan:    #fcd8a8;
-  --orange: #fca044;
-  --brick:  #c84c0c;
-  --coin:   #fcd800;
-  --black:  #000000;
-  --white:  #ffffff;
+  --ground:      #38a800;
+  --ground-tile: "fx:mario-grass";
+  --park:        #80d010;
+  --court:       #d8a060;
+  --court-tile:  "fx:mario-court";
+  --wood-tile:   "fx:mario-trees";
+  --sand-tile:   "fx:mario-sand";
+  --water:       #5c94fc;
+  --water-tile:  "fx:mario-water";
+  --water-halo:  #2038ec;
+  --road:        #fcd8a8;
+  --road-tile:   "fx:mario-road";
+  --highway:     #c84c0c;
+  /* buildings: plaster by default; the menu's Effects section also offers
+     hard block, castle stone and brick (see MARIO_BLOCKS in fx.js) */
+  --building:      #f8d0a0;
+  --building-tile: "fx:mario-plaster";
+  --building-edge: #c08040;
+  --black:       #000000;
+  --white:       #ffffff;
 }
 
-background { color: var(--grass); pattern: "fx:mario-grass"; }
-raster     { maxzoom: unset; opacity: zoom(4 0.85, 7 0); }
-
-/* ── Ground ── */
-.pattern, landuse, landcover.wetland, aeroway.fill, boundary { display: none; }
-park, #landcover_grass { color: var(--lime); opacity: 1; }
-park.outline           { color: var(--black); }
-#landcover_wood        { pattern: "fx:mario-trees"; opacity: 1; }
-#landcover_sand        { pattern: "fx:mario-sand"; }
-#landcover_ice         { color: var(--white); }
-
-/* ── Water ── */
-water        { color: var(--sky); pattern: "fx:mario-water"; }
-water::after { type: line; color: var(--black); width: zoom(6 1, 12 2, 16 3); join: miter; cap: butt; }
-waterway     { color: var(--sky); }
-
-/* ── Roads: tan paths, hard black edges ── */
-road, rail   { cap: butt; join: miter; }
-road.casing  { color: var(--black); }
-road:not(.casing)          { color: var(--tan); }
-road.trunk:not(.casing), road.motorway:not(.casing) { color: var(--orange); }
-road.path                  { color: var(--coin); dash: 0.01 2.4; cap: round; width: zoom(14 2, 18 5); }
-road.path.casing           { display: none; }
-rail                       { color: var(--black); }
-rail.hatching              { color: var(--white); }
-aeroway.line               { color: var(--tan); }
-
-/* ── Buildings: brick blocks ── */
-#building          { pattern: "fx:mario-brick"; }
-#building::after   { type: line; color: var(--black); minzoom: 15; width: zoom(15 1, 17 2); join: miter; cap: butt; }
-building.extrusion { color: var(--brick); pattern: "fx:mario-brick"; }
-
-/* ── Labels: white with a black drop edge ── */
-label        { color: var(--white); halo: var(--black) 1.6; transform: uppercase; }
-label.place  { size: zoom(4 9, 10 13, 14 16); }
-label.road   { size: 8; }
-label.poi    { size: 8; text-offset: 0 1.7; }
-#poi_transit { text-offset: 1.4 0; }
-label.water  { color: var(--white); halo: #2038ec 1.6; }
-label.shield { color: var(--black); halo: unset; size: 9; icon-scale: 2;
-               text-anchor: center; text-offset: 0 0.25; }
-
-/* The custom icon sheet is small: fall back to a dot for anything it lacks. */
-.arrow       { display: none; }
-label.poi    { icon: json(["coalesce", ["image", ["get", "class"]], ["image", "dot_10"]]); }
-#label_village, #label_town, #label_city, #label_city_capital
-             { icon: json(["step", ["zoom"], "dot_9", 9, ""]); }
+raster { maxzoom: unset; opacity: zoom(4 0.7, 8 0.35, 10 0); }

@@ -2,6 +2,7 @@
    line on blue, over a ruled grid. */
 
 @vibe { label: "Blueprint"; order: 11; font: "Share Tech Mono Regular"; }
+@import "_shared.mcss";
 
 :root {
   --sheet: #1c4a8c;
@@ -15,13 +16,16 @@ raster     { display: none; }
 
 /* ── Ground: outlines only ── */
 .pattern, landuse, landcover, aeroway.fill { display: none; }
-#park        { color: var(--sheet); opacity: 0.35; }
+/* parks crosshatched at a different angle from water: drafting separates materials by hatch */
+#park        { pattern: "fx:bp-crosshatch"; opacity: 1; }
 #park::after { type: line; color: var(--faint); width: 1; dash: 1 3; }
 park.outline { display: none; }
 
 /* ── Water: hatched, with a firm edge ── */
 water        { pattern: "fx:bp-hatch"; }
-water::after { type: line; color: var(--line); width: zoom(4 0.6, 12 1.2, 16 1.8); }
+/* drawn under the water fill at double width: the land-side half shows on
+   shorelines, while seams between water polygons (river meets bay) stay hidden */
+water::before { type: line; color: var(--line); width: zoom(4 1.2, 12 2.4, 16 3.6); }
 waterway     { color: var(--faint); }
 
 /* ── Roads: drawn as two parallel lines (the casing), hollow inside ── */
@@ -32,6 +36,9 @@ road:not(.casing)    { color: var(--sheet); opacity: 1; }
 road.minor.casing, road.service.casing { display: none; }
 road.minor:not(.casing) { color: var(--faint); width: zoom(exp 1.4, 12 0.4, 14 0.8, 18 3); }
 road.service            { color: var(--dim);   width: zoom(exp 1.4, 14 0.4, 18 2); }
+/* motorways get a dash-dot centre line inside the hollow, as on civil plans */
+road.motorway:not(.casing):not(.link)::after
+                     { type: line; color: var(--faint); dash: 12 4 2 4; width: zoom(8 0.4, 14 0.8, 18 1.4); }
 road.path            { color: var(--dim); dash: 3 3; width: zoom(15 0.6, 18 1.5); }
 road.path.casing     { display: none; }
 rail                 { color: var(--line); dash: 6 3; }
@@ -40,17 +47,22 @@ aeroway.line         { color: var(--faint); }
 boundary             { color: var(--line); dash: 10 3 2 3; }
 
 /* ── Buildings: footprints in line, glassy in 3D ── */
-#building          { color: var(--sheet); opacity: 0.5; outline: var(--dim); minzoom: 14; }
-#building::after   { type: line; color: var(--faint); width: zoom(14.5 0.3, 17 1.1); }
+/* footprints are line only, so the grid shows through */
+#building          { color: var(--sheet); opacity: 0; minzoom: 14; }
+#building::after   { type: line; color: var(--line); opacity: 0.75; width: zoom(14 0.3, 16 0.7, 18 1.3); }
 building.extrusion { color: #3a6fb8; opacity: 0.3; }
 
 /* ── Lettering: stencilled capitals ── */
 label        { color: var(--line); halo: var(--sheet) 1.8; transform: uppercase; spacing: 0.1; }
 label.road   { color: #cfe0f7; size: zoom(13 9, 16 11); }
+/* major roads are labelled like dimension lines */
+#highway-name-major
+             { text: json(["concat", "|— ", ["coalesce", ["get", "name:latin"], ["get", "name"]], " —|"]); }
 label.water  { color: var(--faint); }
-label.shield { color: #1c4a8c; halo: unset; }
+label.shield { icon: json(["concat", "fx:bp-shield-", ["get", "ref_length"]]); icon-scale: 1; color: var(--line); halo: unset; }
 
-label.poi    { color: #cfe0f7; size: 9; text-offset: 0 1.2;
+/* one redline colour, for hospitals only, like a revision mark */
+label.poi    { color: json(["match", ["get", "class"], "hospital", "#ff6b5f", "#cfe0f7"]); size: 9; text-offset: 0 1.2;
                icon: json(["coalesce", ["image", ["concat", "fx:bp-", ["get", "class"]]], ["image", "fx:bp-dot"]]); }
 #poi_transit { text-offset: 1.2 0; }
 #airport     { icon: "fx:bp-airport"; }

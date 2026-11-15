@@ -2,6 +2,7 @@
    only bright thing on screen, brightness = importance. */
 
 @vibe { label: "Tom Clancy"; order: 4; font: "Share Tech Mono Regular"; sprite: tomclancy; }
+@import "_shared.mcss";
 
 :root {
   --void:   #010a03;
@@ -13,11 +14,14 @@
 }
 
 background { color: var(--void); }
-raster     { maxzoom: unset; opacity: zoom(2 0.55, 6 0); }
+/* hold the relief through the region view, like a DEM product */
+raster     { maxzoom: unset; opacity: zoom(2 0.5, 8 0.35, 11 0); }
 
 /* ── Ground: barely there ── */
 .pattern, landuse, landcover.wetland, landcover.sand, landcover.ice { display: none; }
 park, #landcover_grass { color: #03200b; opacity: 1; }
+/* below z9 public lands are outline only, not polygon soup */
+park.fill              { opacity: zoom(7 0, 9 1); }
 park.outline           { color: var(--p2); dash: 2 3; }
 #landcover_wood        { color: #042a0e; opacity: 1; }
 aeroway.fill           { color: var(--p1); }
@@ -25,7 +29,9 @@ aeroway.line           { color: var(--p3); }
 
 /* ── Water: hatched void with a bright shoreline ── */
 water        { color: var(--void); pattern: "fx:tc-scan"; }
-water::after { type: line; color: var(--p4); width: zoom(4 0.5, 12 1, 16 1.5); }
+/* drawn under the water fill at double width: the land-side half shows on
+   shorelines, while seams between water polygons (river meets bay) stay hidden */
+water::before { type: line; color: var(--p4); width: zoom(4 1, 12 2, 16 3); }
 waterway     { color: var(--p3); }
 
 /* ── Roads: brightness ladder, glow on the arterials ── */
@@ -51,15 +57,20 @@ building.extrusion { color: json(["interpolate", ["linear"], ["get", "render_hei
 
 /* ── Labels ── */
 label        { color: var(--p5); halo: var(--void) 1.5; transform: uppercase; spacing: 0.08; }
-label.road   { color: #29c552; size: zoom(13 9, 16 11); }
+/* phosphor text is full brightness with a black knockout; the ladder is for lines */
+label.road   { color: var(--p5); halo: var(--void) 2.5; size: zoom(13 10, 16 12); }
 label.water  { color: var(--p3); }
-label.poi    { color: #29c552; text-offset: 0 1.2; size: 9; }
+/* one alert hue: health and emergency services in amber */
+label.poi    { color: json(["match", ["get", "class"],
+                            ["hospital", "doctors", "dentist", "pharmacy", "police", "fire_station"], "#ffb000",
+                            "#29c552"]);
+               text-offset: 0 1.2; size: 10; }
 #poi_transit { text-offset: 1.1 0; }
-label.shield { color: var(--p5); halo: unset; size: 9; icon-scale: 2;
-               text-anchor: center; text-offset: 0 0.25; }
+label.shield { icon: json(["concat", "fx:tc-shield-", ["get", "ref_length"]]); icon-scale: 1; color: var(--p5); halo: unset; size: 9; text-anchor: center; text-offset: 0 0; }
 
-/* The custom icon sheet is small: fall back to a dot for anything it lacks. */
+/* POIs are contact markers, not pictograms: chevron for transport, diamond
+   for food, square for culture, circle for nature, amber cross for health */
 .arrow       { display: none; }
-label.poi    { icon: json(["coalesce", ["image", ["get", "class"]], ["image", "dot_10"]]); }
+label.poi    { icon: json(["coalesce", ["image", ["concat", "fx:tc-", ["get", "class"]]], ["image", "fx:tc-mark"]]); }
 #label_village, #label_town, #label_city, #label_city_capital
              { icon: json(["step", ["zoom"], "dot_9", 9, ""]); }

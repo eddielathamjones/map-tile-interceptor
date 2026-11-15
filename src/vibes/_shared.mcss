@@ -1,0 +1,36 @@
+/* Shared fixes every vibe imports first. They correct Liberty defaults that
+   no single vibe should have to remember; a vibe's own rules still win when
+   they set the same property with an equal or stronger selector. */
+
+/* Transit stops are labelled with full intersection names ("West 42nd
+   Street & 6th Avenue") and bury the street names downtown. */
+#poi_transit { minzoom: 16; }
+
+/* Named ponds, fountains and basins used the size and tracking meant for
+   seas and bays, so they printed as huge stacked labels. Lakes stay small;
+   oceans, seas, bays and straits keep their presence. */
+#water_name_point_label {
+  size: json(["interpolate", ["linear"], ["zoom"],
+              0,  ["match", ["get", "class"], ["ocean", "sea"], 10, 9],
+              8,  ["match", ["get", "class"], ["ocean", "sea", "bay", "strait"], 14, 10],
+              14, ["match", ["get", "class"], ["ocean", "sea", "bay", "strait"], 16, 11]]);
+  spacing: 0.04;
+  text-max-width: 8;
+}
+
+/* Liberty gives every park fill a bright green edge (fill-outline-color),
+   which leaked into vibes that never asked for green. Unset, the edge
+   follows the vibe's own fill. */
+park { outline: unset; }
+
+/* State and county lines run down the Hudson and across the Bay; at city
+   zoom they read as stray lines over water. */
+#boundary_3 { maxzoom: 11; }
+
+/* Tunnelled rail (PATH, subways) draws straight across rivers. */
+rail.tunnel { display: none; }
+
+/* Liberty stops drawing flat footprints at z14 and lets the 3D layer take
+   over, so even the top-down view was a solid wall of roofs. Footprints now
+   draw at every zoom; the app fades 3D buildings in only as the map tilts. */
+#building { maxzoom: unset; }

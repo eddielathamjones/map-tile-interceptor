@@ -103,7 +103,9 @@ def build_style(vibe: str) -> dict:
             if layer['id'] == 'airport' and layout.get('icon-image') == 'airport_11':
                 layout['icon-image'] = 'airport'
             # Liberty builds 'us-interstate_N' etc; our sheets only have road_N.
-            elif layer['id'] in ('highway-shield-us-interstate', 'road_shield_us'):
+            # Leave it alone if the stylesheet already chose its own shield.
+            elif (layer['id'] in ('highway-shield-us-interstate', 'road_shield_us')
+                  and 'network' in json.dumps(layout.get('icon-image'))):
                 layout['icon-image'] = ['concat', 'road_', ['get', 'ref_length']]
 
     # Patterns and extra icons referenced as `fx:name` live in a second sheet.

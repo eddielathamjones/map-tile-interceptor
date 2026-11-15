@@ -44,7 +44,9 @@ function switchVibe(vibe) {
     btn.classList.toggle('active', btn.dataset.vibe === vibe);
   });
   document.getElementById('menu-current').textContent = VIBES[vibe].label;
-  map.setStyle(VIBES[vibe].styleUrl);
+  // diff: false forces a full load, so 'style.load' fires and the per-style
+  // setup (POI filters, 3D fade, label pitch, vibe effects) runs again.
+  map.setStyle(VIBES[vibe].styleUrl, { diff: false });
 }
 
 function buildVibePicker() {
@@ -182,9 +184,60 @@ function initMap() {
     applyPoiFilter();
     updateCompassBearing();
     updateScaleBar();
+    labelsUpright = null;
+    updateLabelPitch();
+    captureExtrusions();
+    updateExtrusions();
+    window.vibeFx?.apply(currentVibe());
   });
   map.on('rotate', updateCompassBearing);
   map.on('move', updateScaleBar);
+  map.on('pitch', updateLabelPitch);
+  map.on('pitch', updateExtrusions);
+}
+
+// ── 3D buildings fade in with tilt ─────────────────────────────────────────────
+
+// Top-down, every vibe draws its flat building footprints; 3D roofs drawn
+// straight down only hide them. Extrusions fade in between 8° and 30° of pitch.
+const EXTRUDE_FROM = 8, EXTRUDE_FULL = 30;
+let extrusions = [];      // [{id, opacity}] with each layer's own opacity
+
+function captureExtrusions() {
+  extrusions = map.getStyle().layers
+    .filter(l => l.type === 'fill-extrusion')
+    .map(l => {
+      const o = l.paint?.['fill-extrusion-opacity'];
+      return { id: l.id, opacity: typeof o === 'number' ? o : 1, hidden: l.layout?.visibility === 'none' };
+    });
+}
+
+function updateExtrusions() {
+  const t = Math.min(1, Math.max(0, (map.getPitch() - EXTRUDE_FROM) / (EXTRUDE_FULL - EXTRUDE_FROM)));
+  for (const { id, opacity, hidden } of extrusions) {
+    if (hidden || !map.getLayer(id)) continue;
+    map.setLayoutProperty(id, 'visibility', t > 0 ? 'visible' : 'none');
+    if (t > 0) map.setPaintProperty(id, 'fill-extrusion-opacity', opacity * t);
+  }
+}
+
+// ── Labels in 3D ───────────────────────────────────────────────────────────────
+
+// Street names follow their road and lie flat on the ground, which at a steep
+// pitch paints them across rooftops. Past 30° they stand up and face the viewer.
+const PITCH_UPRIGHT = 30;
+let labelsUpright = null;
+
+function updateLabelPitch() {
+  const upright = map.getPitch() > PITCH_UPRIGHT;
+  if (upright === labelsUpright || !map.isStyleLoaded()) return;
+  labelsUpright = upright;
+  for (const layer of map.getStyle().layers) {
+    if (layer.type === 'symbol' && layer['source-layer'] === 'transportation_name'
+        && layer.layout?.['symbol-placement'] === 'line') {
+      map.setLayoutProperty(layer.id, 'text-pitch-alignment', upright ? 'viewport' : 'map');
+    }
+  }
 }
 
 // ── Compass rose ───────────────────────────────────────────────────────────────
@@ -205,7 +258,7 @@ const NICE_DISTANCES_M = [
 ];
 
 function formatImperial(meters) {
-  if (meters >= MI) {
+  if (meters >= MI / 2 - 1) {    // half a mile and up reads better in miles
     const miles = meters / MI;
     return (Number.isInteger(miles) ? miles : +miles.toFixed(1)) + ' mi';
   }

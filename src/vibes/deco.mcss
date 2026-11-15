@@ -2,6 +2,7 @@
    that turn to gold as they rise. */
 
 @vibe { label: "Deco"; order: 12; font: "Poiret One Regular"; }
+@import "_shared.mcss";
 
 :root {
   --lacquer: #14100a;
@@ -13,7 +14,8 @@
 }
 
 background { color: var(--lacquer); }
-raster     { maxzoom: unset; opacity: zoom(4 0.6, 7 0); }
+/* brown relief under the lacquer read as mud; keep only a trace */
+raster     { maxzoom: unset; opacity: zoom(4 0.35, 6 0); }
 
 /* ── Ground ── */
 .pattern, landuse, landcover.wetland, landcover.sand, landcover.ice, aeroway.fill { display: none; }
@@ -22,7 +24,13 @@ park.outline { color: var(--bronze); }
 
 /* ── Water: fish-scale fans, gold shoreline ── */
 water        { color: var(--navy); pattern: "fx:deco-fan"; }
-water::after { type: line; color: var(--gold); width: zoom(4 0.5, 12 1, 16 1.6); }
+/* drawn under the water fill at double width: the land-side half shows on
+   shorelines, while seams between water polygons (river meets bay) stay hidden */
+/* a double gold rule offset onto the land, echoing the frame */
+water::before { type: line; color: var(--gold);
+                width: zoom(4 0.5, 12 0.7, 16 1);
+                gap: zoom(4 1, 12 2, 16 3);
+                line-offset: zoom(4 -1.2, 12 -2, 16 -3); }
 waterway     { color: #1f3350; }
 
 /* ── Streets: three weights of gold ── */
@@ -30,6 +38,9 @@ road.casing                { color: var(--lacquer); }
 road:not(.casing)          { color: var(--bronze); }
 road.secondary:not(.casing), road.link:not(.casing) { color: var(--gold); }
 road.trunk:not(.casing), road.motorway:not(.casing) { color: var(--bright); }
+/* motorways are an inlaid double band: a thin lacquer line down the gold */
+road.motorway:not(.casing):not(.link)::after
+                           { type: line; color: var(--lacquer); width: zoom(8 0.3, 14 1, 18 2.2); }
 road.path                  { color: var(--bronze); }
 rail                       { color: var(--bronze); }
 rail.hatching              { color: var(--lacquer); }
@@ -41,15 +52,25 @@ boundary                   { color: var(--gold); dash: 6 2 1 2; }
 building.extrusion { color: json(["interpolate", ["linear"], ["get", "render_height"],
                                   0, "#241c12", 90, "#33281a", 180, "#544220", 300, "#c9a84c", 420, "#e8cf8a"]);
                      opacity: 0.95; }
+/* towers over 150 m wear a gilded crown on their top eighth */
+building.extrusion::after
+                   { type: fill-extrusion; color: var(--bright); opacity: 1;
+                     filter: json(["all", ["!", ["has", "hide_3d"]], [">", ["get", "render_height"], 150]]);
+                     fill-extrusion-base: json(["*", ["get", "render_height"], 0.875]);
+                     fill-extrusion-height: json(["get", "render_height"]); }
 
 /* ── Lettering: marquee capitals for places, wide-set Poiret for streets ── */
 label        { color: var(--cream); halo: var(--lacquer) 1.8; transform: uppercase; spacing: 0.14; }
 label.place  { font: "Limelight Regular"; color: var(--bright); spacing: 0.08; }
 label.road   { size: zoom(13 11, 16 15); }
-label.water  { color: #8fa6c8; halo: var(--navy) 1.5; }
-label.shield { color: #14100a; halo: unset; }
+/* water named like a liner's nameplate: wide-set gold */
+label.water  { color: var(--gold); halo: var(--navy) 2.5; spacing: 0.3; }
+label.shield { icon: json(["concat", "fx:deco-shield-", ["get", "ref_length"]]); icon-scale: 1; color: var(--bright); halo: unset; }
 
 label.poi    { size: 12; text-offset: 0 1.1;
                icon: json(["coalesce", ["image", ["concat", "fx:deco-", ["get", "class"]]], ["image", "fx:deco-dot"]]); }
 #poi_transit { text-offset: 1.1 0; }
+/* landmarks shine like hood ornaments: a sunburst behind the top-ranked POIs */
+#poi_r1      { icon: json(["coalesce", ["image", ["concat", "fx:deco-sun-", ["get", "class"]]], ["image", "fx:deco-dot"]]);
+               icon-scale: 0.9; text-offset: 0 1.7; }
 #airport     { icon: "fx:deco-airport"; }

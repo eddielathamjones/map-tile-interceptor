@@ -1,0 +1,65 @@
+/* Shared rules for the 8-bit overworld vibes (Mario, Mario Underground).
+   Each vibe sets the :root tokens: colours and which fx: tiles to use. */
+
+background { color: var(--ground); pattern: var(--ground-tile, unset); }
+
+/* ── Ground ── */
+.pattern, landuse, landcover.wetland, aeroway.fill, boundary { display: none; }
+/* built-up land is a courtyard tile, so towns stand out from the overworld */
+#landuse_residential   { display: visible; color: var(--court); pattern: var(--court-tile); opacity: 1; }
+park, #landcover_grass { color: var(--park); opacity: 1; }
+/* black park outlines read as cracks across the desert below z10 */
+park.outline           { color: var(--black); minzoom: 10; }
+#landcover_wood        { pattern: var(--wood-tile, unset); opacity: 1; }
+#landcover_sand        { pattern: var(--sand-tile, unset); }
+#landcover_ice         { color: var(--white); }
+
+/* ── Water: tiles that animate between two frames (see fx.js) ── */
+water         { color: var(--water); pattern: var(--water-tile); }
+/* drawn under the water fill at double width: the land-side half shows on
+   shorelines, while seams between water polygons (river meets bay) stay hidden */
+water::before { type: line; color: var(--black); width: zoom(6 2, 12 4, 16 6); join: miter; cap: butt; }
+waterway      { color: var(--water); }
+
+/* ── Roads: pixel-built, a tan tile with a dark kerb; highways in brick ── */
+road, rail   { cap: butt; join: miter; }
+road.casing  { color: var(--black); }
+road:not(.casing) { color: var(--road); pattern: var(--road-tile); }
+road.trunk:not(.casing), road.motorway:not(.casing) { color: var(--highway); pattern: unset; }
+/* trails are a line of coins; sidewalks (mapped on every city block) stay
+   thin pixel road so downtown isn't a carpet of coins */
+road.path        { dash: unset; cap: butt;
+                   pattern: json(["match", ["get", "subclass"],
+                                  ["footway", "sidewalk", "crossing", "pedestrian", "steps", "corridor"], "fx:mario-road",
+                                  "fx:mario-coin"]);
+                   width: json(["interpolate", ["linear"], ["zoom"],
+                                14, ["match", ["get", "subclass"], ["footway", "sidewalk", "crossing", "pedestrian", "steps", "corridor"], 1.5, 5],
+                                18, ["match", ["get", "subclass"], ["footway", "sidewalk", "crossing", "pedestrian", "steps", "corridor"], 4, 12]]); }
+road.path.casing { display: none; }
+rail             { color: var(--black); }
+rail.hatching    { color: var(--white); }
+aeroway.line     { color: var(--road); }
+
+/* ── Buildings: one tile per vibe (block, stone or plaster) ── */
+#building          { color: var(--building); pattern: var(--building-tile); opacity: 1; }
+#building::after   { type: line; color: var(--building-edge); minzoom: 15; width: zoom(15 0.6, 17 1.4); join: miter; cap: butt; }
+building.extrusion { color: var(--building); pattern: var(--building-tile); }
+
+/* ── Labels: white with a hard black edge; places on a black title card ── */
+label        { color: var(--white); halo: var(--black) 1.6; transform: uppercase; }
+label.place  { size: zoom(4 9, 10 13, 14 16); halo: unset;
+               icon: "fx:mario-card"; icon-text-fit: both; icon-text-fit-padding: 5 7 4 7;
+               icon-anchor: center; text-anchor: center; text-offset: 0 0; icon-scale: 1; }
+label.road   { size: 8; }
+label.poi    { size: 8; text-offset: 0 1.7; }
+label.water  { color: var(--white); halo: var(--water-halo) 1.6; }
+label.shield { icon: json(["concat", "fx:mario-shield-", ["get", "ref_length"]]); icon-scale: 1;
+               color: var(--black); halo: unset; size: 9; text-anchor: center; text-offset: 0 0; }
+
+/* The custom icon sheet is small: fall back to a dot for anything it lacks.
+   Subway and rail stops are pipes. */
+.arrow       { display: none; }
+label.poi    { icon: json(["coalesce", ["image", ["get", "class"]], ["image", "dot_10"]]); }
+#poi_transit { text-offset: 1.4 0;
+               icon: json(["match", ["get", "class"], ["railway", "rail", "subway"], "fx:mario-pipe",
+                           ["coalesce", ["image", ["get", "class"]], ["image", "dot_10"]]]); }

@@ -2,6 +2,7 @@
    Buildings are black mass, streets are red structure, labels are slabs. */
 
 @vibe { label: "Mockva"; order: 10; font: "Bebas Neue Regular"; }
+@import "_shared.mcss";
 
 :root {
   --paper: #f0ece0;
@@ -9,8 +10,8 @@
   --red:   #cc1a1a;
 }
 
-background { color: var(--paper); }
-raster     { maxzoom: unset; opacity: zoom(4 0.7, 7 0); }
+background { color: var(--paper); pattern: "fx:mk-grain"; }
+raster     { maxzoom: unset; opacity: zoom(4 0.6, 8 0.35, 10 0); }
 
 /* ── Ground ── */
 .pattern, landuse, landcover.wetland, landcover.ice, aeroway.fill, park.outline { display: none; }
@@ -26,6 +27,10 @@ road, rail       { cap: butt; join: miter; }
 road.casing      { display: none; }
 road:not(.casing) { color: var(--red); opacity: 1; }
 road.minor:not(.casing), road.service { width: zoom(exp 1.4, 12 0.4, 14 1.2, 18 8); }
+/* misregistered press: a faint second pass of red, knocked off true */
+road:not(.casing)::before
+                 { type: line; color: var(--red); opacity: 0.3; translate: 1.5 1;
+                   width: zoom(exp 1.4, 10 1, 14 3, 18 12); }
 road.trunk:not(.casing), road.motorway:not(.casing)
                  { width: zoom(exp 1.4, 5 1, 10 3.5, 14 9, 18 30); }
 road.motorway.casing, road.trunk.casing
@@ -38,17 +43,23 @@ boundary         { color: var(--red); dash: 8 3; }
 
 /* ── Buildings: black mass; the tallest catch red ── */
 #building          { color: var(--black); outline: var(--black); }
-building.extrusion { color: json(["interpolate", ["linear"], ["get", "render_height"],
-                                  0, "#1c1c1c", 170, "#262626", 280, "#cc1a1a"]);
+/* two inks, no gradient: a tower is either black mass or red */
+building.extrusion { color: json(["step", ["get", "render_height"], "#1c1c1c", 200, "#cc1a1a"]);
                      opacity: 1; }
 
 /* ── Lettering: paper on a red slab for places, black for the rest ── */
 label        { color: var(--black); halo: var(--paper) 1.6; transform: uppercase; spacing: 0.06; }
 label.place  { color: var(--paper); halo: var(--red) 3; text-halo-blur: 0; spacing: 0.1; }
 label.city   { size: zoom(4 14, 8 20, 12 28); halo: var(--black) 3.5; }
+/* place names in Cyrillic where the data has it, set in a Cyrillic-capable face */
+label.place  { font: "Fira Sans Compressed Heavy";
+               text: json(["coalesce", ["get", "name:ru"], ["get", "name:latin"], ["get", "name"]]); }
+/* lesser places tilt ±8°, the cheapest way to read as Constructivist */
+label.place:not(.city)
+             { text-rotate: json(["*", ["-", ["%", ["to-number", ["id"], 0], 2], 0.5], 16]); }
 label.water  { color: var(--paper); halo: var(--black) 1.5; }
 label.road   { size: zoom(13 10, 16 14); }
-label.shield { color: var(--black); halo: unset; }
+label.shield { icon: json(["concat", "fx:mk-shield-", ["get", "ref_length"]]); icon-scale: 1; color: var(--paper); halo: unset; }
 
 label.poi    { text-offset: 0 1.1;
                icon: json(["coalesce", ["image", ["concat", "fx:mk-", ["get", "class"]]], ["image", "fx:mk-dot"]]); }

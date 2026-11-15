@@ -1,0 +1,28 @@
+/* Mario Underground: the same overworld rules after dark. Black ground,
+   blue-grey blocks, cyan water, the classic underground-level palette. */
+
+@vibe { label: "Mario Underground"; order: 3.5; font: "Press Start 2P Regular"; sprite: mario; }
+@import "_shared.mcss";
+@import "_mario.mcss";
+
+:root {
+  --ground:      #000000;
+  --park:        #102018;
+  --court:       #202838;
+  --court-tile:  "fx:mario-ug-court";
+  --water:       #008888;
+  --water-tile:  "fx:mario-ug-water";
+  --water-halo:  #004848;
+  --road:        #3c5c7c;
+  --road-tile:   unset;
+  --highway:     #7c9cbc;
+  --building:      #3c5c7c;
+  --building-tile: "fx:mario-ug-block";
+  --building-edge: #101830;
+  --black:       #000000;
+  --white:       #ffffff;
+}
+
+raster { display: none; }
+#landcover_wood { color: #0c1810; }
+#landcover_sand { color: #181818; }

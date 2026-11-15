@@ -2,6 +2,7 @@
    lamps, a few windows still lit, captions off a typewriter. */
 
 @vibe { label: "Noir"; order: 13; font: "Special Elite Regular"; }
+@import "_shared.mcss";
 
 :root {
   --night:  #0b0c0e;
@@ -12,7 +13,7 @@
 }
 
 background { color: var(--night); }
-raster     { maxzoom: unset; opacity: zoom(4 0.6, 7 0); }
+raster     { maxzoom: unset; opacity: zoom(4 0.5, 8 0.25, 10 0); }
 
 /* ── Ground ── */
 .pattern, landuse, landcover.wetland, landcover.sand, landcover.ice, aeroway.fill { display: none; }
@@ -21,18 +22,29 @@ park.outline { display: none; }
 
 /* ── Water: ink, with a thin pale edge ── */
 water        { color: #050607; }
-water::after { type: line; color: var(--smoke); width: zoom(4 0.4, 12 0.8, 16 1.2); }
+/* drawn under the water fill at double width: the land-side half shows on
+   shorelines, while seams between water polygons (river meets bay) stay hidden */
+water::before { type: line; color: var(--smoke); width: zoom(4 0.8, 12 1.6, 16 2.4); }
 waterway     { color: #15181b; }
 
 /* ── Streets: grey side streets, lamplit avenues with a glow on the wet road ── */
 road.casing                { display: none; }
 road:not(.casing)          { color: var(--ash); }
 road.secondary:not(.casing), road.link:not(.casing) { color: var(--smoke); }
+/* sodium lamps on the motorways and trunk roads, with a glow on the wet road */
 road.trunk:not(.casing), road.motorway:not(.casing) { color: var(--sodium); }
-road.trunk:not(.casing)::before, road.motorway:not(.casing)::before
+road.trunk:not(.casing):not(.tunnel)::before, road.motorway:not(.casing):not(.tunnel)::before
                            { color: var(--sodium); opacity: 0.22; blur: 7;
                              width: zoom(exp 1.4, 5 3, 10 9, 14 22, 18 50); }
-road.secondary:not(.casing)::before
+/* glows and streaks skip tunnels (the stray glow over SoMa).
+   wet asphalt: a tight specular streak riding off-centre on lit roads */
+road.motorway:not(.casing):not(.tunnel)::after, road.trunk:not(.casing):not(.tunnel)::after
+                           { type: line; color: #fff3d0; opacity: 0.35; blur: 1; translate: 0 1.5;
+                             width: zoom(exp 1.4, 10 0.4, 14 1, 18 3); }
+road.primary:not(.casing):not(.tunnel)::after
+                           { type: line; color: var(--bone); opacity: 0.18; blur: 1; translate: 0 1;
+                             width: zoom(exp 1.4, 12 0.3, 14 0.7, 18 2); }
+road.secondary:not(.casing):not(.tunnel)::before
                            { color: var(--bone); opacity: 0.1; blur: 5;
                              width: zoom(exp 1.4, 10 4, 14 14, 18 36); }
 road.path                  { color: var(--ash); dash: 1 2; }
@@ -52,7 +64,7 @@ label        { color: var(--bone); halo: var(--night) 1.6; }
 label.place  { transform: uppercase; spacing: 0.12; }
 label.road   { color: #9a968a; size: zoom(13 9, 16 12); }
 label.water  { color: var(--smoke); }
-label.shield { color: #0b0c0e; halo: unset; }
+label.shield { icon: json(["concat", "fx:noir-shield-", ["get", "ref_length"]]); icon-scale: 1; color: var(--bone); halo: unset; }
 
 label.poi    { color: #9a968a; size: 10; text-offset: 0 1.2;
                icon: json(["coalesce", ["image", ["concat", "fx:noir-", ["get", "class"]]], ["image", "fx:noir-dot"]]); }

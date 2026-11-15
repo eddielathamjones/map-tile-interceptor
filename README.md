@@ -55,7 +55,7 @@ Specificity and source order work as in CSS.
 
 **`@vibe` block.** `label` and `order` drive the picker; `font` moves every label to a hosted glyph set; `sprite` swaps the whole icon sheet. Images named `fx:<name>` come from the shared pattern sheet drawn by `scripts/build_fx_sprites.py`.
 
-Files starting with `_` are partials for `@import`. Survey and Survey Night share `_survey.mcss` and differ only in their `:root` tokens.
+Files starting with `_` are partials for `@import`. Every vibe imports `_shared.mcss` first: fixes to Liberty defaults that apply everywhere (transit-label density, small-water label size, park edge colour, boundaries and tunnel rail over water). A vibe's own rules still win when they set the same property.
 
 ---
 
@@ -63,17 +63,17 @@ Files starting with `_` are partials for `@import`. Survey and Survey Night shar
 
 | Vibe | Description |
 |---|---|
-| Survey, Survey Night | The main register of the ELJ brand, light and dark, sharing `_survey.mcss`: paper or midnight ground with contour lines, cobalt water edge, mustard arterials, Barlow lettering, the pin on cities |
-| Field Day | The kids' register of the ELJ brand: paper ground, sticker buildings with ink outline and hard shadow, Fredoka labels |
-| Nouveau | Mucha-poster Paris: terracotta blocks, peacock water with wave lines, gold boulevards, ink leading, Federo labels |
-| Mario | 8-bit overworld: tiled grass and water, brick buildings, coin-trail footpaths |
-| Tom Clancy | Phosphor tactical display: dark ground, road brightness by importance, glow on arterials, scanlines |
-| Mockva | Constructivist poster in three inks: black building mass, red streets, paper ground, slab labels; the tallest towers turn red |
-| Blueprint | Drafting sheet: ruled grid, hollow double-line roads, outlined footprints, hatched water, stencilled capitals |
-| Deco | Gold on black lacquer: fish-scale water, chevron parks, three weights of gold streets, towers that gild with height |
-| Noir | The city at 2 a.m.: grey side streets, sodium-lit avenues with a glow, lit windows on 3D buildings, typewriter captions |
+| Field Day | The kids' register of the ELJ brand: paper ground, a sheet of pastel sticker buildings, pop-up-book 3D, red race-track motorways, place names on sticker plates, chalked pitches and prize ribbons |
+| Nouveau | Mucha-poster Paris: pale stained-glass blocks with ink leading, mosaic 3D, peacock water and stem-like rivers, gilded halos behind cities, Glass Antiqua lettering, a whiplash frame; Effects: poster mode |
+| Mario | 8-bit overworld: tiled grass, animated water, pixel roads with brick highways, coin trails, pipes for subway stops, place names on title cards; Effects: four building treatments, sound |
+| Mario Underground | The same rules after dark: black ground, blue-grey blocks, cyan water |
+| Tom Clancy | Phosphor tactical display: road brightness by importance, glow, scanlines, contact-marker POIs with amber for health, grid-reference ticks, banner strips with a live Zulu time, radar sweep, target lock on click; Effects: Sentinel-2 satellite pass |
+| Mockva | Constructivist poster in three inks: black mass, red streets on grained paper, misregistered second pass, Cyrillic slab labels tilted off true, towers that are black or red, a red wedge |
+| Blueprint | Drafting sheet: ruled grid, hollow double-line roads with centre lines, line-only footprints, hatched water, crosshatched parks, dimension-line labels, one redline colour, an aged folded print, roads that plot themselves in |
+| Deco | Gold on black lacquer: fish-scale water with a double gold shoreline, bronze chevron parks, inlaid gold motorways, towers with gilded crowns, sunburst landmarks, a passing gold sheen |
+| Noir | The city at 2 a.m.: sodium-lit roads with glow and a wet sheen, lit windows in 3D, Venetian-blind light, a case-file menu, crime-scene pins on click; Effects: rain |
 
-The chrome around the map (menu, compass, scale bar, frame) is themed per vibe in `src/frontend/css/app.css`. The menu (top left) holds the vibe picker, POI toggles, export and issue reporting.
+The chrome around the map (menu, compass, scale bar, frame) is themed per vibe in `src/frontend/css/app.css`. The menu (top left) holds the vibe picker, POI toggles, per-vibe effects, export and issue reporting. Effects that a stylesheet can't express (overlays, animation, click behaviours, extra sources) live in `src/frontend/js/fx.js`, one function per vibe. 3D buildings fade in as the map tilts; top-down, every vibe shows its flat footprints.
 
 **Export.** *Save image* and *Print* compose a finished sheet in the vibe's own colours and type: the map at 2x resolution inside a neat line, and a title band with the place name (taken from the nearest prominent place label, or typed in), coordinates, vibe and date, compass, scale bar and attribution.
 
@@ -127,7 +127,7 @@ python scripts/prewarm_tiles.py --base-url http://localhost:5003 --max-zoom 4
 
 ```
 src/
-  vibes/              one .mcss stylesheet per vibe (+ _survey.mcss partial)
+  vibes/              one .mcss stylesheet per vibe (+ _shared.mcss partial)
   backend/
     app.py            Flask app + blueprint registration
     mapcss.py         stylesheet parser and compiler
@@ -135,7 +135,7 @@ src/
     tiles.py          /api/tiles/vibes, /style and /raster routes
     transforms.py     PIL transforms for the raster underlay + optional AI hook
     glyphs.py, sprites.py
-  frontend/           index.html, css/app.css (per-vibe chrome), js/app.js
+  frontend/           index.html, css/app.css (per-vibe chrome), js/app.js, js/fx.js (per-vibe effects)
   static/             glyph PBFs, sprite sheets, liberty.json snapshot
 scripts/
   build_fx_sprites.py draws the shared pattern/icon sheet

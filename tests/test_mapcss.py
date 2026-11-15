@@ -59,11 +59,17 @@ def test_generated_layers():
     assert out['water::after']['source-layer'] == 'water'
 
 
+def test_zoom_array_stops_are_literals():
+    # MapLibre reads a bare list inside an expression as another expression
+    expr = mapcss.parse_value('zoom(14 1 1, 18 3 3)')
+    assert expr == ['interpolate', ['linear'], ['zoom'], 14, ['literal', [1, 1]], 18, ['literal', [3, 3]]]
+
+
 def test_every_vibe_compiles():
     for vibe in style_builder.list_vibes():
         assert style_builder.build_style(vibe['id'])['layers']
 
 
 if __name__ == '__main__':
-    test_cascade_and_aliases(); test_generated_layers(); test_every_vibe_compiles()
+    test_cascade_and_aliases(); test_generated_layers(); test_zoom_array_stops_are_literals(); test_every_vibe_compiles()
     print('ok')
