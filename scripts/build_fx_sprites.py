@@ -369,10 +369,10 @@ MARIO_UG_TILES = {
 }
 
 
-def mario_road() -> Image.Image:
-    """Line pattern for roads: tan with a darker pixel kerb on both edges."""
+def mario_road(fill: str = MARIO['s'], shade: str = MARIO['S']) -> Image.Image:
+    """Line pattern for roads: a fill with a darker pixel kerb on both edges."""
     rows = ['kkkkkkkk', 'SSSSSSSS', 'ssssssss', 'ssssssss', 'ssssSsss', 'ssssssss', 'SSSSSSSS', 'kkkkkkkk']
-    return pixel_art(rows, {**MARIO, 'k': '#000000'}, scale=1)
+    return pixel_art(rows, {'s': fill, 'S': shade, 'k': '#000000'}, scale=1)
 
 
 # ── Field Day extras ─────────────────────────────────────────────────────────
@@ -546,6 +546,7 @@ def build() -> None:
     for name, (rows, pal) in MARIO_ICONS.items():
         sprites[name] = pixel_art(rows, pal)
     sprites['mario-road'] = mario_road()
+    sprites['mario-ug-road'] = mario_road('#3c5c7c', '#2c4060')
     sprites['mario-card'] = mario_card()
     for name, rows in MARIO_UG_TILES.items():
         sprites[name] = pixel_art(rows, MARIO_UG)

@@ -176,6 +176,22 @@ function initMap() {
     preserveDrawingBuffer: true,   // lets export read the canvas
   });
 
+  // On a vibe switch, cached tiles lay out before the new sprite sheet has
+  // arrived, so icon fallbacks can't tell which icons exist and ask for ones
+  // the sheet lacks, and MapLibre logs a warning for each. A blank stand-in
+  // answers the request quietly; it is taken away again once the map settles,
+  // which makes MapLibre redo the layout and pick the real fallback icon.
+  const standIns = new Set();
+  map.on('styleimagemissing', e => {
+    if (map.hasImage(e.id)) return;
+    map.addImage(e.id, { width: 1, height: 1, data: new Uint8Array(4) });
+    standIns.add(e.id);
+  });
+  map.on('idle', () => {
+    for (const id of standIns) if (map.hasImage(id)) map.removeImage(id);
+    standIns.clear();
+  });
+
   map.on('style.load', () => {
     origFilters = {};
     RANK_LAYERS.forEach(id => {
