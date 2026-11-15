@@ -15,6 +15,7 @@
   --water-halo:  #004848;
   --road:        #3c5c7c;
   --road-tile:   unset;
+  --path-tile:   fx:mario-ug-road;   /* sidewalks; no quotes, it is spliced into an expression */
   --highway:     #7c9cbc;
   --building:      #3c5c7c;
   --building-tile: "fx:mario-ug-block";

@@ -4522,15 +4522,22 @@
     "height": 16,
     "pixelRatio": 2
   },
-  "nv-stem": {
+  "mario-ug-road": {
     "x": 636,
+    "y": 1644,
+    "width": 16,
+    "height": 16,
+    "pixelRatio": 2
+  },
+  "nv-stem": {
+    "x": 654,
     "y": 1644,
     "width": 96,
     "height": 16,
     "pixelRatio": 2
   },
   "mk-halftone": {
-    "x": 734,
+    "x": 752,
     "y": 1644,
     "width": 12,
     "height": 12,

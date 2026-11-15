@@ -18,6 +18,7 @@
   --water-halo:  #2038ec;
   --road:        #fcd8a8;
   --road-tile:   "fx:mario-road";
+  --path-tile:   fx:mario-road;      /* sidewalks; no quotes, it is spliced into an expression */
   --highway:     #c84c0c;
   /* buildings: plaster by default; the menu's Effects section also offers
      hard block, castle stone and brick (see MARIO_BLOCKS in fx.js) */

@@ -30,7 +30,7 @@ road.trunk:not(.casing), road.motorway:not(.casing) { color: var(--highway); pat
    thin pixel road so downtown isn't a carpet of coins */
 road.path        { dash: unset; cap: butt;
                    pattern: json(["match", ["get", "subclass"],
-                                  ["footway", "sidewalk", "crossing", "pedestrian", "steps", "corridor"], "fx:mario-road",
+                                  ["footway", "sidewalk", "crossing", "pedestrian", "steps", "corridor"], "var(--path-tile)",
                                   "fx:mario-coin"]);
                    width: json(["interpolate", ["linear"], ["zoom"],
                                 14, ["match", ["get", "subclass"], ["footway", "sidewalk", "crossing", "pedestrian", "steps", "corridor"], 1.5, 5],
